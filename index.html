@@ -1,0 +1,3056 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="도쿄 3박4일" />
+  <meta name="theme-color" content="#121324" />
+  <title>2026 도쿄 3박 4일 픽셀 플래너 | 모바일 & 데스크톱 최적화</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fonts: DungGeunMo (Pixel Display) + Pretendard (High-Readability Body) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    @font-face {
+      font-family: 'DungGeunMo';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    :root {
+      --bg-main: #121324;
+      --bg-panel: #1e2038;
+      --bg-card: #262947;
+      --bg-card-hover: #2f3358;
+      --border-light: #4a4f7a;
+      --accent-yellow: #ffd166;
+      --accent-mint: #06d6a0;
+      --accent-pink: #ff5978;
+      --accent-cyan: #5ce1e6;
+      --accent-purple: #c9b6ff;
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      background-color: var(--bg-main);
+      background-image: radial-gradient(#2b2f54 1px, transparent 1px);
+      background-size: 20px 20px;
+      color: #f8fafc;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      word-break: keep-all;
+      overscroll-behavior-y: none;
+    }
+
+    /* Pixel font for titles, badges, and retro points */
+    .font-pixel {
+      font-family: 'DungGeunMo', monospace;
+      letter-spacing: 0.02em;
+    }
+
+    /* High-visibility Retro Pixel Containers */
+    .pixel-panel {
+      background-color: var(--bg-panel);
+      border: 2px solid var(--border-light);
+      box-shadow: 4px 4px 0px #090a14;
+      border-radius: 12px;
+    }
+
+    .pixel-card {
+      background-color: var(--bg-card);
+      border: 2px solid #3d426b;
+      box-shadow: 3px 3px 0px #090a14;
+      border-radius: 12px;
+      transition: transform 0.12s ease, border-color 0.12s ease, background-color 0.12s ease;
+    }
+
+    @media (hover: hover) {
+      .pixel-card:hover {
+        background-color: var(--bg-card-hover);
+        border-color: var(--accent-yellow);
+        transform: translateY(-2px);
+      }
+    }
+
+    .pixel-card:active {
+      transform: scale(0.985);
+      border-color: var(--accent-yellow);
+    }
+
+    .pixel-btn {
+      border: 2px solid #090a14;
+      box-shadow: 2px 2px 0px #090a14;
+      border-radius: 10px;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.12s ease;
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .pixel-btn:active {
+      transform: translate(2px, 2px) scale(0.97);
+      box-shadow: 0px 0px 0px #090a14;
+    }
+
+    /* Prevent iOS Safari auto-zoom on input focus by enforcing >= 16px */
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+
+    /* Safe Area Padding for iPhone Home Indicator */
+    .pb-safe {
+      padding-bottom: calc(5.2rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    .bottom-nav-safe {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .sheet-safe {
+      padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Hide scrollbar for horizontal chip bar on mobile */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Bottom Sheet Slide Animation */
+    @keyframes slideUpSheet {
+      from {
+        transform: translateY(100%);
+        opacity: 0.5;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-sheet {
+      animation: slideUpSheet 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Custom Scrollbar for Desktop */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #121324;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4a4f7a;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-safe sm:pb-20">
+
+  <!-- ==========================================
+       1. STICKY TOP HEADER (MOBILE & DESKTOP OPTIMIZED)
+       ========================================== -->
+  <header class="sticky top-0 z-30 bg-[#121324]/95 backdrop-blur-md border-b-2 border-[#34385e]">
+    <div class="max-w-5xl mx-auto px-3.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2">
+      <!-- App Title -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#ffd166] text-[#121324] flex items-center justify-center font-pixel text-xl font-bold border-2 border-[#090a14] shadow-[2px_2px_0px_#090a14] shrink-0">
+          👾
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-pixel text-sm sm:text-lg text-white leading-tight truncate">
+              도쿄 3박 4일 플래너 <span class="text-[#ffd166] text-xs">(11.21~24)</span>
+            </h1>
+          </div>
+          <p id="liveSyncBannerText" class="text-[11px] sm:text-xs text-slate-300 truncate">
+            ⚡ 실시간 공동 편집 준비 중...
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <!-- Real-Time Cloud Sync Status Badge Button -->
+        <button
+          onclick="openMobileShareModal()"
+          id="syncStatusHeaderBtn"
+          class="pixel-btn min-h-[40px] px-2.5 sm:px-3 py-1.5 bg-[#1e2038] text-white border-[#06d6a0] font-pixel text-xs flex items-center gap-1.5"
+          title="실시간 클라우드 동기화 및 방 설정"
+        >
+          <span id="syncStatusDot" class="w-2.5 h-2.5 rounded-full bg-[#06d6a0] animate-pulse shrink-0"></span>
+          <span id="syncStatusLabel" class="truncate max-w-[115px] sm:max-w-none">실시간 연결중</span>
+        </button>
+
+        <button
+          onclick="openNipporiModal()"
+          class="pixel-btn min-h-[40px] px-2.5 sm:px-3 py-1.5 bg-[#5ce1e6] text-[#121324] font-pixel text-xs sm:text-sm font-bold flex items-center gap-1"
+          title="닛포리역 환승 족보"
+        >
+          <span>🏰</span>
+          <span class="hidden md:inline">환승족보</span>
+        </button>
+
+        <button
+          onclick="copyShareText()"
+          class="pixel-btn min-h-[40px] px-2.5 sm:px-3 py-1.5 bg-[#ffd166] text-[#121324] font-pixel text-xs sm:text-sm font-bold flex items-center gap-1"
+          title="카톡 공유 텍스트 복사"
+        >
+          <span>📋</span>
+          <span class="hidden sm:inline">카톡공유</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       2. MAIN CONTENT (SWIPEABLE ON MOBILE)
+       ========================================== -->
+  <main id="swipeArea" class="max-w-5xl mx-auto px-3.5 sm:px-4 pt-4 sm:pt-5 space-y-5">
+
+    <!-- DESKTOP/TABLET DAY TABS (Hidden on Mobile because Mobile uses Bottom Nav Bar) -->
+    <nav id="dayTabsContainer" class="hidden sm:grid sm:grid-cols-4 gap-2.5"></nav>
+
+    <!-- MOBILE CURRENT DAY PILL & SWIPE HINT BAR (Visible on Mobile) -->
+    <div class="flex sm:hidden items-center justify-between bg-[#1e2038] px-3 py-2 rounded-xl border border-[#3d426b]">
+      <button
+        onclick="stepDay(-1)"
+        class="min-w-[40px] min-h-[36px] rounded-lg bg-[#262947] active:bg-[#ffd166] active:text-[#121324] text-slate-200 font-pixel text-xs flex items-center justify-center"
+      >
+        ◀ 이전날
+      </button>
+      <div class="text-center">
+        <span id="mobileDayIndicator" class="font-pixel text-xs text-[#ffd166] font-bold">DAY 1 / 4</span>
+        <span class="block text-[11px] text-slate-400">좌우 스와이프 또는 하단 탭 터치</span>
+      </div>
+      <button
+        onclick="stepDay(1)"
+        class="min-w-[40px] min-h-[36px] rounded-lg bg-[#262947] active:bg-[#ffd166] active:text-[#121324] text-slate-200 font-pixel text-xs flex items-center justify-center"
+      >
+        다음날 ▶
+      </button>
+    </div>
+
+    <!-- COMPACT DAY ROUTE BANNER -->
+    <section id="dayRouteBanner" class="pixel-panel p-4 sm:p-5"></section>
+
+    <!-- ==========================================
+         SECTION 1: 📌 오늘 우리가 갈 코스 (TOUCH-OPTIMIZED SINGLE-ROW LIST)
+         ========================================== -->
+    <section class="pixel-panel p-3.5 sm:p-5 space-y-3">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="px-2 py-0.5 rounded bg-[#06d6a0] text-[#121324] font-pixel text-[11px] font-bold shrink-0">
+            COURSE
+          </span>
+          <h2 id="myCourseTitle" class="font-pixel text-sm sm:text-lg text-white truncate">
+            📌 오늘 우리가 갈 코스
+          </h2>
+          <span id="myCourseCountBadge" class="text-xs text-slate-300 font-semibold shrink-0">(0곳)</span>
+        </div>
+
+        <button
+          onclick="openQuickAddCourseModal()"
+          class="pixel-btn min-h-[40px] px-3 py-1.5 bg-[#06d6a0] text-[#121324] font-pixel text-xs sm:text-sm font-bold flex items-center gap-1 shrink-0"
+        >
+          <span>+ 직접 추가</span>
+        </button>
+      </div>
+
+      <!-- Course List Items -->
+      <div id="myCourseList" class="space-y-2.5"></div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 2: 🗺️ 주변 추천 스팟 도감 (COMPACT TILES, TAP FOR FULL MODAL)
+         ========================================== -->
+    <section class="space-y-3">
+      <div class="flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <h2 class="font-pixel text-sm sm:text-lg text-white flex flex-wrap items-center gap-2">
+            <span>🗺️ 주변 추천 스팟 도감</span>
+            <span class="text-[11px] font-sans font-normal text-[#ffd166] bg-[#262947] px-2 py-0.5 rounded border border-[#4a4f7a]">
+              👆 카드 터치 시 상세·꿀팁·구글맵
+            </span>
+          </h2>
+        </div>
+
+        <button
+          onclick="openSpotEditorModal(null)"
+          class="pixel-btn min-h-[40px] px-3 py-1.5 bg-[#ffd166] text-[#121324] font-pixel text-xs sm:text-sm font-bold shrink-0"
+        >
+          + 후보 등록
+        </button>
+      </div>
+
+      <!-- Horizontally Scrollable Category Filter Bar for Mobile Thumb Reach -->
+      <div class="bg-[#1e2038] p-2.5 rounded-xl border border-[#3d426b] space-y-2 sm:space-y-0 sm:flex sm:items-center sm:justify-between gap-2">
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 sm:pb-0">
+          <button onclick="setCatFilter('all')" data-cat="all" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-lg font-pixel text-xs bg-[#ffd166] text-[#121324] font-bold shrink-0">
+            전체
+          </button>
+          <button onclick="setCatFilter('subculture')" data-cat="subculture" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-lg font-pixel text-xs bg-[#262947] text-slate-200 shrink-0">
+            🕹️ 서브컬처/굿즈
+          </button>
+          <button onclick="setCatFilter('vintage')" data-cat="vintage" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-lg font-pixel text-xs bg-[#262947] text-slate-200 shrink-0">
+            🎸 빈티지/쇼핑
+          </button>
+          <button onclick="setCatFilter('food')" data-cat="food" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-lg font-pixel text-xs bg-[#262947] text-slate-200 shrink-0">
+            🍣 맛집/이자카야
+          </button>
+          <button onclick="setCatFilter('cafe')" data-cat="cafe" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-lg font-pixel text-xs bg-[#262947] text-slate-200 shrink-0">
+            ☕ 카페/산책
+          </button>
+          <button onclick="setCatFilter('starred')" data-cat="starred" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-lg font-pixel text-xs bg-[#262947] text-[#ffd166] shrink-0">
+            ★ 찜한 곳
+          </button>
+        </div>
+
+        <label class="flex items-center justify-end gap-2 text-xs text-slate-300 cursor-pointer px-1 pt-1 sm:pt-0 border-t border-[#2d3154] sm:border-0 shrink-0">
+          <input type="checkbox" id="showAllDaysToggle" onchange="renderSpotGrid()" class="accent-[#ffd166] w-4 h-4 rounded" />
+          <span>전 지역(D1~D4) 모두 보기</span>
+        </label>
+      </div>
+
+      <!-- Compact Spot Cards Grid -->
+      <div id="spotGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       3. MOBILE STICKY BOTTOM NAVIGATION BAR (THUMB ZONE)
+       ========================================== -->
+  <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#121324]/95 backdrop-blur-md border-t-2 border-[#3d426b] bottom-nav-safe">
+    <div class="grid grid-cols-5 gap-1 px-1.5 py-1.5">
+      <button onclick="selectDay(1)" id="mobNavDay1" class="mob-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl transition">
+        <span class="font-pixel text-[11px] font-bold">DAY 1</span>
+        <span class="text-[10px] truncate max-w-[64px]">미래·고엔지</span>
+      </button>
+      <button onclick="selectDay(2)" id="mobNavDay2" class="mob-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl transition">
+        <span class="font-pixel text-[11px] font-bold">DAY 2</span>
+        <span class="text-[10px] truncate max-w-[64px]">가마쿠라</span>
+      </button>
+      <button onclick="selectDay(3)" id="mobNavDay3" class="mob-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl transition">
+        <span class="font-pixel text-[11px] font-bold">DAY 3</span>
+        <span class="text-[10px] truncate max-w-[64px]">진보·아키바</span>
+      </button>
+      <button onclick="selectDay(4)" id="mobNavDay4" class="mob-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl transition">
+        <span class="font-pixel text-[11px] font-bold">DAY 4</span>
+        <span class="text-[10px] truncate max-w-[64px]">공항귀국</span>
+      </button>
+      <button onclick="openMobileShareModal()" class="flex flex-col items-center justify-center py-1.5 rounded-xl bg-[#262947] text-[#06d6a0] active:scale-95 transition border border-[#06d6a0]/50">
+        <span class="font-pixel text-[11px] font-bold">🟢 실시간</span>
+        <span class="text-[10px]">방/공유</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==========================================
+       MODAL 1: SPOT DETAIL POPUP (MOBILE BOTTOM-SHEET)
+       ========================================== -->
+  <div id="spotDetailModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-xs">
+    <div class="modal-sheet pixel-panel max-w-lg w-full overflow-hidden bg-[#1e2038] border-t-2 sm:border-2 border-[#ffd166] rounded-t-2xl sm:rounded-xl">
+      <!-- Mobile Drag Handle -->
+      <div class="sm:hidden flex justify-center pt-2.5 pb-1 bg-[#121324]" onclick="closeSpotDetailModal()">
+        <div class="w-12 h-1.5 rounded-full bg-[#4a4f7a]"></div>
+      </div>
+
+      <!-- Top Bar -->
+      <div class="bg-[#121324] px-4 sm:px-5 py-3 flex items-center justify-between border-b border-[#3d426b]">
+        <div id="detailModalBadges" class="flex flex-wrap items-center gap-1.5"></div>
+        <button onclick="closeSpotDetailModal()" class="min-w-[40px] min-h-[40px] rounded-lg bg-[#262947] hover:bg-[#ff5978] text-white font-bold text-base flex items-center justify-center">✕</button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-4 sm:p-6 space-y-4 max-h-[78vh] overflow-y-auto sheet-safe">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 id="detailModalName" class="text-xl sm:text-2xl font-bold text-white leading-snug"></h3>
+            <p id="detailModalSummary" class="text-sm text-[#ffd166] font-medium mt-1"></p>
+          </div>
+          <button id="detailModalStarBtn" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-[#4a4f7a] bg-[#262947] text-xs font-bold shrink-0"></button>
+        </div>
+
+        <!-- Detailed Description Box -->
+        <div class="bg-[#121324] p-4 rounded-xl border border-[#34385e] space-y-3 text-sm leading-relaxed text-slate-100">
+          <p id="detailModalDesc"></p>
+
+          <div id="detailModalTipBox" class="pt-2.5 border-t border-[#262947] text-[#5ce1e6]">
+            <strong class="font-pixel text-xs uppercase mr-1">💡 추천 포인트 & 꿀팁:</strong>
+            <span id="detailModalTip" class="text-slate-100"></span>
+          </div>
+
+          <div class="pt-2.5 border-t border-[#262947] text-slate-300 flex items-center gap-2 text-xs sm:text-sm">
+            <span class="font-pixel text-[#ffd166] shrink-0">🕒 영업시간:</span>
+            <span id="detailModalHours"></span>
+          </div>
+        </div>
+
+        <!-- Primary Action Buttons: Add to Course & Google Maps App Open -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+          <button
+            id="detailModalCourseBtn"
+            class="pixel-btn min-h-[46px] py-2.5 px-4 font-pixel text-sm font-bold flex items-center justify-center gap-1.5"
+          ></button>
+
+          <a
+            id="detailModalMapLink"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="pixel-btn min-h-[46px] py-2.5 px-4 bg-[#262947] hover:bg-[#34385e] text-white font-pixel text-sm flex items-center justify-center gap-1.5 border border-[#4a4f7a]"
+          >
+            <span>📍 구글맵 앱으로 열기 ↗</span>
+          </a>
+        </div>
+
+        <!-- Send to Another Day Bar -->
+        <div class="bg-[#262947] p-3 rounded-xl flex flex-wrap items-center justify-between gap-2 text-xs">
+          <span class="text-slate-300 font-medium">다른 요일 코스에 넣기:</span>
+          <div id="detailModalOtherDays" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+        <!-- Footer Edit / Delete Spot -->
+        <div class="pt-2 border-t border-[#34385e] flex items-center justify-between text-xs text-slate-400">
+          <span>도감 정보 직접 수정</span>
+          <div class="flex gap-2">
+            <button id="detailModalEditBtn" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-[#262947] hover:bg-[#ffd166] hover:text-[#121324] text-slate-200 font-medium transition">
+              ✏️ 내용 수정
+            </button>
+            <button id="detailModalDeleteBtn" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-[#262947] hover:bg-[#ff5978] hover:text-white text-slate-300 font-medium transition">
+              🗑️ 삭제
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 2: 🏰 NIPPORI BASECAMP TRANSIT GUIDE (#nipporiModal - FIXED & RESTORED)
+       ========================================== -->
+  <div id="nipporiModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-xs">
+    <div class="modal-sheet pixel-panel max-w-lg w-full overflow-hidden bg-[#1e2038] border-t-2 sm:border-2 border-[#5ce1e6] rounded-t-2xl sm:rounded-xl">
+      <div class="sm:hidden flex justify-center pt-2.5 pb-1 bg-[#121324]" onclick="closeNipporiModal()">
+        <div class="w-12 h-1.5 rounded-full bg-[#4a4f7a]"></div>
+      </div>
+
+      <div class="bg-[#121324] px-4 sm:px-5 py-3 flex items-center justify-between border-b border-[#3d426b]">
+        <span class="font-pixel text-sm sm:text-base text-[#5ce1e6]">🏰 닛포리역 베이스캠프 핵심 환승 족보</span>
+        <button onclick="closeNipporiModal()" class="min-w-[40px] min-h-[40px] rounded-lg bg-[#262947] hover:bg-[#ff5978] text-white font-bold text-base flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="p-4 sm:p-5 space-y-3.5 max-h-[80vh] overflow-y-auto sheet-safe text-xs sm:text-sm">
+        <p class="text-slate-300 leading-relaxed">
+          숙소가 있는 <strong>닛포리역(日暮里駅)</strong>에서 3박 4일 핵심 목적지로 이동하는 최적 전철 노선과 소요 시간입니다.
+        </p>
+
+        <!-- Route 1: Narita Airport <-> Nippori -->
+        <div class="bg-[#121324] p-3.5 rounded-xl border border-[#3d426b] space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-pixel text-xs sm:text-sm text-[#ffd166]">✈️ 나리타 공항 ↔ 닛포리역 (입출국)</span>
+            <span class="px-2 py-0.5 rounded bg-[#ffd166] text-[#121324] font-pixel text-[11px] font-bold">직통 36분</span>
+          </div>
+          <p class="text-slate-200 leading-relaxed">
+            <strong>케이세이 스카이라이너(전석 지정석)</strong> 탑승 시 환승 없이 36분 만에 직통 연결됩니다.
+          </p>
+          <p class="text-[11px] text-[#5ce1e6]">
+            💡 마지막 날(11/24 화) 10:00 비행기는 <strong>06:40 / 07:05 / 07:25 닛포리역 출발 열차</strong> 탑승 권장!
+          </p>
+          <a
+            href="https://www.google.com/maps/dir/?api=1&origin=Nippori+Station&destination=Narita+Airport&travelmode=transit"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 text-xs font-pixel text-[#06d6a0] hover:underline pt-1"
+          >
+            📍 닛포리역 ↔ 나리타 공항 구글맵 경로 보기 ↗
+          </a>
+        </div>
+
+        <!-- Route 2: Day 1 Nippori -> Mirai Suisan -> Koenji -->
+        <div class="bg-[#121324] p-3.5 rounded-xl border border-[#3d426b] space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-pixel text-xs sm:text-sm text-[#ff5978]">🍣 DAY 1 닛포리 ➔ 미래수산 ➔ 고엔지</span>
+            <span class="px-2 py-0.5 rounded bg-[#ff5978] text-white font-pixel text-[11px] font-bold">약 42~45분</span>
+          </div>
+          <ul class="space-y-1 text-slate-200 leading-relaxed list-disc list-inside">
+            <li><strong>닛포리 ➔ 미래수산(에이후쿠초역):</strong> JR 야마노테선(신주쿠행) ➔ 신주쿠역에서 게이오선(메이다이마에 환승) 또는 시부야역에서 게이오 이노카시라선 환승 ➔ <strong>에이후쿠초역(永福町駅)</strong> 하차 후 도보 7분</li>
+            <li><strong>에이후쿠초 ➔ 고엔지:</strong> 역 앞 관동버스(고엔지역행) 또는 키치조지 경유 JR 주오선 이용 (약 20분)</li>
+          </ul>
+          <a
+            href="https://www.google.com/maps/dir/?api=1&origin=Nippori+Station&destination=Mirai+Suisan+Suginami+Tokyo&travelmode=transit"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 text-xs font-pixel text-[#06d6a0] hover:underline pt-1"
+          >
+            📍 닛포리역 ➔ 미래수산 구글맵 전철 경로 보기 ↗
+          </a>
+        </div>
+
+        <!-- Route 3: Day 2 Nippori -> Kamakura -->
+        <div class="bg-[#121324] p-3.5 rounded-xl border border-[#3d426b] space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-pixel text-xs sm:text-sm text-[#06d6a0]">🌊 DAY 2 닛포리 ➔ 가마쿠라 · 에노시마</span>
+            <span class="px-2 py-0.5 rounded bg-[#06d6a0] text-[#121324] font-pixel text-[11px] font-bold">약 65분</span>
+          </div>
+          <p class="text-slate-200 leading-relaxed">
+            닛포리역에서 JR 야마노테선/게이힌도호쿠선으로 <strong>도쿄역 또는 시나가와역</strong> 이동 후 <strong>JR 요코스카선(즈시/구리하마행)</strong> 환승 ➔ 가마쿠라역 하차 후 <strong>에노덴 전철</strong>로 해안 투어!
+          </p>
+          <a
+            href="https://www.google.com/maps/dir/?api=1&origin=Nippori+Station&destination=Kamakura+Station&travelmode=transit"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 text-xs font-pixel text-[#06d6a0] hover:underline pt-1"
+          >
+            📍 닛포리역 ➔ 가마쿠라역 구글맵 전철 경로 보기 ↗
+          </a>
+        </div>
+
+        <!-- Route 4: Day 3 Nippori -> Jinbocho & Akihabara -->
+        <div class="bg-[#121324] p-3.5 rounded-xl border border-[#3d426b] space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-pixel text-xs sm:text-sm text-[#5ce1e6]">🕹️ DAY 3 닛포리 ➔ 진보초 · 아키하바라</span>
+            <span class="px-2 py-0.5 rounded bg-[#5ce1e6] text-[#121324] font-pixel text-[11px] font-bold">8분 ~ 18분</span>
+          </div>
+          <ul class="space-y-1 text-slate-200 leading-relaxed list-disc list-inside">
+            <li><strong>닛포리 ➔ 아키하바라:</strong> JR 야마노테선 / 게이힌도호쿠선 <strong>직통 8분 (4정거장)</strong></li>
+            <li><strong>진보초 ➔ 아키하바라:</strong> 오차노미즈 악기거리 & 칸다 묘진 경유 도보 산책(약 18~20분) 또는 전철 10분</li>
+          </ul>
+          <a
+            href="https://www.google.com/maps/dir/?api=1&origin=Nippori+Station&destination=Akihabara+Station&travelmode=transit"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 text-xs font-pixel text-[#06d6a0] hover:underline pt-1"
+          >
+            📍 닛포리역 ➔ 아키하바라역 구글맵 경로 보기 ↗
+          </a>
+        </div>
+
+        <div class="pt-1 flex justify-end">
+          <button onclick="closeNipporiModal()" class="pixel-btn min-h-[42px] px-5 py-2 bg-[#ffd166] text-[#121324] font-pixel text-xs font-bold">
+            확인 완료
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 3: COURSE ITEM DETAIL & RESERVATION EDIT (#courseItemModal)
+       ========================================== -->
+  <div id="courseItemModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-xs">
+    <div class="modal-sheet pixel-panel max-w-md w-full overflow-hidden bg-[#1e2038] border-t-2 sm:border-2 border-[#06d6a0] rounded-t-2xl sm:rounded-xl">
+      <div class="sm:hidden flex justify-center pt-2.5 pb-1 bg-[#121324]" onclick="closeCourseItemModal()">
+        <div class="w-12 h-1.5 rounded-full bg-[#4a4f7a]"></div>
+      </div>
+
+      <div class="bg-[#121324] px-4 sm:px-5 py-3 flex items-center justify-between border-b border-[#3d426b]">
+        <span class="font-pixel text-sm text-[#06d6a0]">📌 내 코스 상세 · 예약 상태 수정</span>
+        <button onclick="closeCourseItemModal()" class="min-w-[40px] min-h-[40px] rounded-lg bg-[#262947] hover:bg-[#ff5978] text-white font-bold text-base flex items-center justify-center">✕</button>
+      </div>
+
+      <form onsubmit="saveCourseItemModal(event)" class="p-4 sm:p-5 space-y-3.5 max-h-[82vh] overflow-y-auto sheet-safe text-xs sm:text-sm">
+        <input type="hidden" id="courseModalItemId" />
+
+        <!-- Linked Spot Quick Info Box -->
+        <div id="courseModalSpotInfoBox" class="hidden bg-[#121324] p-3.5 rounded-xl border border-[#34385e] space-y-1.5">
+          <div id="courseModalSpotSummary" class="font-bold text-[#ffd166] text-xs sm:text-sm"></div>
+          <p id="courseModalSpotDesc" class="text-xs text-slate-300 leading-relaxed"></p>
+          <div id="courseModalSpotHours" class="text-[11px] text-[#5ce1e6] pt-1"></div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">장소 이름</label>
+          <input type="text" id="courseModalName" required class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white font-bold" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">동네 / 역</label>
+            <input type="text" id="courseModalArea" placeholder="예: 고엔지, 아키바" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">카테고리</label>
+            <select id="courseModalCat" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white">
+              <option value="subculture">🕹️ 서브컬처/굿즈</option>
+              <option value="vintage">🎸 빈티지/쇼핑</option>
+              <option value="food">🍣 맛집/술집</option>
+              <option value="cafe">☕ 카페/산책</option>
+              <option value="etc">🚃 이동/기타</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-[#ffd166] mb-1">🍽️ 예약 / 방문 방식 배지</label>
+            <select id="courseModalResStatus" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#ffd166] text-white font-bold">
+              <option value="none">일반 방문 (배지 없음)</option>
+              <option value="booked">✅ 예약 완료</option>
+              <option value="call_needed">📞 전화/영업 확인 필수</option>
+              <option value="walkin">⏳ 현장 웨이팅</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">요일 이동</label>
+            <select id="courseModalDay" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white font-bold">
+              <option value="1">DAY 1 (토)</option>
+              <option value="2">DAY 2 (일)</option>
+              <option value="3">DAY 3 (월)</option>
+              <option value="4">DAY 4 (화)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">우리만의 메모 / 예약 시간 기록</label>
+          <input type="text" id="courseModalMemo" placeholder="예: 19:50 도착 예정, 생참치 소진 전 전화 확인!" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white" />
+        </div>
+
+        <!-- Quick External Links (Google Maps & Tabelog) -->
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <a
+            id="courseModalMapBtn"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="min-h-[40px] px-3 py-2 rounded-lg bg-[#262947] hover:bg-[#34385e] text-white font-pixel text-xs flex items-center justify-center gap-1 border border-[#4a4f7a]"
+          >
+            📍 구글맵 열기 ↗
+          </a>
+          <a
+            id="courseModalTabelogBtn"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="min-h-[40px] px-3 py-2 rounded-lg bg-[#262947] hover:bg-[#34385e] text-[#ffd166] font-pixel text-xs flex items-center justify-center gap-1 border border-[#4a4f7a]"
+          >
+            🍽️ 타베로그 검색 ↗
+          </a>
+        </div>
+
+        <div class="pt-3 border-t border-[#34385e] flex items-center justify-between gap-2">
+          <button
+            type="button"
+            onclick="deleteCurrentCourseItem()"
+            class="min-h-[42px] px-3.5 py-2 rounded-lg bg-[#262947] hover:bg-[#ff5978] text-slate-200 hover:text-white font-pixel text-xs"
+          >
+            🗑️ 코스 제외
+          </button>
+          <div class="flex gap-2">
+            <button type="button" onclick="closeCourseItemModal()" class="min-h-[42px] px-4 py-2 rounded-lg bg-[#262947] text-slate-300 font-pixel text-xs">
+              취소
+            </button>
+            <button type="submit" class="pixel-btn min-h-[42px] px-5 py-2 bg-[#06d6a0] text-[#121324] font-pixel text-xs font-bold">
+              💾 저장
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 4: QUICK ADD TO MY COURSE (#quickAddModal)
+       ========================================== -->
+  <div id="quickAddModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-xs">
+    <div class="modal-sheet pixel-panel max-w-md w-full overflow-hidden bg-[#1e2038] border-t-2 sm:border-2 border-[#06d6a0] rounded-t-2xl sm:rounded-xl">
+      <div class="sm:hidden flex justify-center pt-2.5 pb-1 bg-[#121324]" onclick="closeQuickAddCourseModal()">
+        <div class="w-12 h-1.5 rounded-full bg-[#4a4f7a]"></div>
+      </div>
+
+      <div class="bg-[#121324] px-4 sm:px-5 py-3 flex items-center justify-between border-b border-[#3d426b]">
+        <span class="font-pixel text-sm text-[#06d6a0]">+ 내 코스에 장소 직접 추가</span>
+        <button onclick="closeQuickAddCourseModal()" class="min-w-[40px] min-h-[40px] rounded-lg bg-[#262947] hover:bg-[#ff5978] text-white font-bold text-base flex items-center justify-center">✕</button>
+      </div>
+
+      <form onsubmit="submitQuickAddCourse(event)" class="p-4 sm:p-5 space-y-3.5 sheet-safe text-xs sm:text-sm">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">장소 이름 *</label>
+          <input type="text" id="addCourseName" required placeholder="예: 애니메이트 아키하바라, 이치란 라멘" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white font-bold" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">동네 / 역</label>
+            <input type="text" id="addCourseArea" placeholder="예: 아키하바라, 고엔지" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">카테고리</label>
+            <select id="addCourseCat" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white">
+              <option value="subculture">🕹️ 서브컬처/굿즈</option>
+              <option value="vintage">🎸 빈티지/쇼핑</option>
+              <option value="food">🍣 맛집/술집</option>
+              <option value="cafe">☕ 카페/산책</option>
+              <option value="etc">🚃 이동/기타</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#ffd166] mb-1">🍽️ 예약 / 방문 상태 배지</label>
+          <select id="addCourseResStatus" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#ffd166] text-white font-bold">
+            <option value="none">일반 방문 (배지 없음)</option>
+            <option value="booked">✅ 예약 완료</option>
+            <option value="call_needed">📞 전화/영업 확인 필수</option>
+            <option value="walkin">⏳ 현장 웨이팅</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">한 줄 메모 / 시간</label>
+          <input type="text" id="addCourseMemo" placeholder="예: 14:00 방문, 굿즈 구경 후 저녁식사" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white" />
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeQuickAddCourseModal()" class="min-h-[42px] px-4 py-2 rounded-lg bg-[#262947] text-slate-300 font-pixel text-xs">
+            취소
+          </button>
+          <button type="submit" class="pixel-btn min-h-[42px] px-5 py-2 bg-[#06d6a0] text-[#121324] font-pixel text-xs font-bold">
+            + 코스에 추가
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 5: DAY ROUTE EDIT & DAY SWAP (#dayEditModal)
+       ========================================== -->
+  <div id="dayEditModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-xs">
+    <div class="modal-sheet pixel-panel max-w-md w-full overflow-hidden bg-[#1e2038] border-t-2 sm:border-2 border-[#ffd166] rounded-t-2xl sm:rounded-xl">
+      <div class="sm:hidden flex justify-center pt-2.5 pb-1 bg-[#121324]" onclick="closeDayEditModal()">
+        <div class="w-12 h-1.5 rounded-full bg-[#4a4f7a]"></div>
+      </div>
+
+      <div class="bg-[#121324] px-4 sm:px-5 py-3 flex items-center justify-between border-b border-[#3d426b]">
+        <span class="font-pixel text-sm text-[#ffd166]">✏️ 일자 제목·동선 수정 & 🔄 요일 스왑</span>
+        <button onclick="closeDayEditModal()" class="min-w-[40px] min-h-[40px] rounded-lg bg-[#262947] hover:bg-[#ff5978] text-white font-bold text-base flex items-center justify-center">✕</button>
+      </div>
+
+      <form onsubmit="saveDayEditModal(event)" class="p-4 sm:p-5 space-y-3.5 max-h-[82vh] overflow-y-auto sheet-safe text-xs sm:text-sm">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">탭 짧은 지역명</label>
+          <input type="text" id="dayEditShortArea" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white font-bold" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">일자 메인 타이틀</label>
+          <input type="text" id="dayEditTitle" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white font-bold" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">상단 한 줄 설명</label>
+          <input type="text" id="dayEditSub" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">러프 동선 배지 (쉼표 `,`로 구분)</label>
+          <input type="text" id="dayEditSteps" placeholder="예: 닛포리 출발, 미래수산 저녁, 고엔지 이자카야" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white" />
+        </div>
+
+        <!-- Swap Entire Day Schedule Box -->
+        <div class="bg-[#121324] p-3.5 rounded-xl border border-[#3d426b] space-y-2">
+          <div class="font-pixel text-xs text-[#5ce1e6]">🔄 다른 요일과 일정 통째로 맞바꾸기 (요일 스왑)</div>
+          <div class="flex items-center gap-2">
+            <select id="swapTargetDaySelect" class="flex-1 px-3 py-2 rounded-lg bg-[#1e2038] border border-[#4a4f7a] text-white font-bold">
+              <option value="1">DAY 1 (11/21 토)</option>
+              <option value="2">DAY 2 (11/22 일)</option>
+              <option value="3">DAY 3 (11/23 월)</option>
+              <option value="4">DAY 4 (11/24 화)</option>
+            </select>
+            <button type="button" onclick="swapEntireDays()" class="pixel-btn min-h-[40px] px-3.5 py-2 bg-[#5ce1e6] text-[#121324] font-pixel text-xs font-bold shrink-0">
+              🔄 맞바꾸기
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeDayEditModal()" class="min-h-[42px] px-4 py-2 rounded-lg bg-[#262947] text-slate-300 font-pixel text-xs">
+            취소
+          </button>
+          <button type="submit" class="pixel-btn min-h-[42px] px-5 py-2 bg-[#ffd166] text-[#121324] font-pixel text-xs font-bold">
+            💾 저장
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 6: SPOT DICTIONARY EDITOR (#spotEditorModal)
+       ========================================== -->
+  <div id="spotEditorModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-xs">
+    <div class="modal-sheet pixel-panel max-w-lg w-full overflow-hidden bg-[#1e2038] border-t-2 sm:border-2 border-[#ffd166] rounded-t-2xl sm:rounded-xl">
+      <div class="sm:hidden flex justify-center pt-2.5 pb-1 bg-[#121324]" onclick="closeSpotEditorModal()">
+        <div class="w-12 h-1.5 rounded-full bg-[#4a4f7a]"></div>
+      </div>
+
+      <div class="bg-[#121324] px-4 sm:px-5 py-3 flex items-center justify-between border-b border-[#3d426b]">
+        <span id="spotEditorTitle" class="font-pixel text-sm text-[#ffd166]">+ 새 후보 장소 등록</span>
+        <button onclick="closeSpotEditorModal()" class="min-w-[40px] min-h-[40px] rounded-lg bg-[#262947] hover:bg-[#ff5978] text-white font-bold text-base flex items-center justify-center">✕</button>
+      </div>
+
+      <form onsubmit="saveSpotEditorForm(event)" class="p-4 sm:p-5 space-y-3 max-h-[82vh] overflow-y-auto sheet-safe text-xs sm:text-sm">
+        <input type="hidden" id="formSpotId" />
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">추천 요일</label>
+            <select id="formSpotDay" class="w-full px-2.5 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white">
+              <option value="1">DAY 1</option>
+              <option value="2">DAY 2</option>
+              <option value="3">DAY 3</option>
+              <option value="4">DAY 4</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">카테고리</label>
+            <select id="formSpotCat" class="w-full px-2.5 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white">
+              <option value="subculture">🕹️ 서브컬처</option>
+              <option value="vintage">🎸 빈티지/쇼핑</option>
+              <option value="food">🍣 맛집/술집</option>
+              <option value="cafe">☕ 카페/산책</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">동네/역 이름</label>
+            <input type="text" id="formSpotArea" required placeholder="예: 고엔지" class="w-full px-2.5 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">장소 이름 *</label>
+          <input type="text" id="formSpotName" required placeholder="예: 선트랩 빈티지, 스루가야 본점" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white font-bold" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">카드 한 줄 핵심 요약 *</label>
+          <input type="text" id="formSpotSummary" required placeholder="카드 겉면에 표시될 짧은 한 줄 소개" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">상세 설명</label>
+          <textarea id="formSpotDesc" rows="2" placeholder="클릭 시 팝업에 표시될 상세 설명" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">추천 포인트 / 예약 꿀팁</label>
+            <input type="text" id="formSpotTip" placeholder="예: 현장 웨이팅, 면세 가능 등" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">영업시간 / 전화번호(선택)</label>
+            <input type="text" id="formSpotHours" placeholder="예: 11:00 ~ 20:00" class="w-full px-3 py-2 rounded-lg bg-[#121324] border border-[#4a4f7a] text-white" />
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeSpotEditorModal()" class="min-h-[42px] px-4 py-2 rounded-lg bg-[#262947] text-slate-300 font-pixel text-xs">
+            취소
+          </button>
+          <button type="submit" class="pixel-btn min-h-[42px] px-5 py-2 bg-[#ffd166] text-[#121324] font-pixel text-xs font-bold">
+            💾 도감 저장
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 7: 📱 REAL-TIME CLOUD SYNC & ONE-CLICK INVITE LINK HUB
+       ========================================== -->
+  <div id="mobileShareModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-xs">
+    <div class="modal-sheet pixel-panel max-w-lg w-full overflow-hidden bg-[#1e2038] border-t-2 sm:border-2 border-[#06d6a0] rounded-t-2xl sm:rounded-xl">
+      <div class="sm:hidden flex justify-center pt-2.5 pb-1 bg-[#121324]" onclick="closeMobileShareModal()">
+        <div class="w-12 h-1.5 rounded-full bg-[#4a4f7a]"></div>
+      </div>
+
+      <div class="bg-[#121324] px-4 sm:px-5 py-3 flex items-center justify-between border-b border-[#3d426b]">
+        <span class="font-pixel text-sm text-[#06d6a0]">🟢 실시간 클라우드 공동 편집 & 공유 설정</span>
+        <button onclick="closeMobileShareModal()" class="min-w-[40px] min-h-[40px] rounded-lg bg-[#262947] hover:bg-[#ff5978] text-white font-bold text-base flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="p-4 sm:p-5 space-y-4 max-h-[82vh] overflow-y-auto sheet-safe text-xs sm:text-sm">
+        <!-- 1. Real-Time Cloud Room & Nickname Settings -->
+        <div class="bg-[#121324] p-3.5 rounded-xl border-2 border-[#06d6a0]/70 space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-pixel text-xs sm:text-sm text-[#06d6a0]">⚡ 1. 실시간 공유 방(Room) & 내 닉네임</span>
+            <span id="modalSyncBadge" class="px-2 py-0.5 rounded bg-[#06d6a0] text-[#121324] font-pixel text-[11px] font-bold">
+              실시간 연동 중
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-300 leading-relaxed">
+            같은 <strong>방 코드(Room ID)</strong>를 쓰는 친구들끼리 일정을 추가·수정·체크하면 모든 폰에서 <strong>1초 만에 실시간으로 똑같이 반영</strong>됩니다.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">내 닉네임 (수정 시 친구에게 표시)</label>
+              <input
+                type="text"
+                id="syncNicknameInput"
+                placeholder="예: 상언, 민수, 지훈"
+                class="w-full px-3 py-2 rounded-lg bg-[#1e2038] border border-[#4a4f7a] text-white font-bold focus:outline-none focus:border-[#06d6a0]"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">공유 방 코드 (Room ID)</label>
+              <input
+                type="text"
+                id="syncRoomIdInput"
+                placeholder="예: TOKYO-2026"
+                class="w-full px-3 py-2 rounded-lg bg-[#1e2038] border border-[#4a4f7a] text-[#ffd166] font-pixel font-bold uppercase focus:outline-none focus:border-[#ffd166]"
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <div class="text-[11px] text-slate-400 break-all">
+              내 접속 ID: <span id="currentUserIdDisplay" class="font-mono text-slate-300">연결 확인 중...</span>
+            </div>
+            <button
+              onclick="applyRoomAndNickname()"
+              class="pixel-btn min-h-[40px] px-4 py-1.5 bg-[#06d6a0] text-[#121324] font-pixel text-xs font-bold shrink-0"
+            >
+              🔄 닉네임 / 방 코드 적용
+            </button>
+          </div>
+
+          <div id="lastSyncInfoBox" class="px-3 py-2 rounded-lg bg-[#1e2038] text-xs text-[#ffd166] font-medium">
+            최근 업데이트: 아직 기록이 없습니다.
+          </div>
+
+          <!-- ONE-CLICK AUTO-CONNECT INVITE LINK FOR FRIENDS -->
+          <div class="pt-2 border-t border-[#262947] space-y-1.5">
+            <button
+              onclick="copyMagicInviteLink()"
+              class="pixel-btn w-full min-h-[44px] px-3 py-2.5 bg-[#ffd166] text-[#121324] font-pixel text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5"
+            >
+              <span>🔗 친구 초대용 자동연결 링크 복사 (클릭 시 친구들도 DB 자동 세팅)</span>
+            </button>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              💡 <strong>친구들이 각자 DB 주소를 입력할 필요가 없습니다!</strong> 대표 1명이 아래 2번 칸에 무료 Firebase DB 주소를 넣은 뒤 위 버튼을 눌러 단톡방에 공유하면, 친구들은 링크만 터치해도 똑같은 DB와 방 코드로 즉시 자동 연결됩니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2. External Free Hosting (Vercel / GitHub Pages) Custom DB URL -->
+        <div class="bg-[#121324] p-3.5 rounded-xl border border-[#34385e] space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="font-pixel text-xs text-[#5ce1e6]">🌐 2. Vercel 무료 배포 & Firebase DB 연결 (대표 1명만 설정)</span>
+            <span class="text-[11px] text-[#06d6a0] font-bold">100% 평생 무료</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            제미나이 화면 안에서는 기본 클라우드로 즉시 작동합니다. 외부 링크(<strong>Vercel</strong> 등)로 배포할 때는 대표 1명만 무료 Firebase DB 주소를 발급받아 아래에 넣거나 코드 상단 <code>HARDCODED_FIREBASE_DB_URL</code>에 넣어두면 전원이 함께 쓸 수 있습니다.
+          </p>
+          <div class="flex gap-2">
+            <input
+              type="text"
+              id="customDbUrlInput"
+              placeholder="https://프로젝트명-default-rtdb.firebaseio.com"
+              class="flex-1 px-3 py-2 rounded-lg bg-[#1e2038] border border-[#4a4f7a] text-white font-mono text-xs focus:outline-none focus:border-[#5ce1e6]"
+            />
+            <button
+              onclick="saveCustomDbUrl()"
+              class="pixel-btn min-h-[40px] px-3.5 py-1.5 bg-[#5ce1e6] text-[#121324] font-pixel text-xs font-bold shrink-0"
+            >
+              연결
+            </button>
+          </div>
+          <details class="text-xs text-slate-300 bg-[#1e2038] p-2.5 rounded-lg border border-[#2d3154]">
+            <summary class="cursor-pointer font-bold text-[#ffd166]">💡 Vercel + Firebase 1분 무료 세팅법 (대표 1명만 하면 끝!)</summary>
+            <ol class="list-decimal list-inside space-y-1.5 mt-2 text-slate-300 leading-relaxed">
+              <li><strong>Firebase 무료 DB 생성:</strong> <code>console.firebase.google.com</code> 접속 ➔ 프로젝트 추가 ➔ 왼쪽 메뉴 <strong>[빌드] ➔ [Realtime Database] ➔ [데이터베이스 만들기] ➔ [테스트 모드에서 시작]</strong> 선택 후 상단 주소(<code>https://...firebasedatabase.app</code>) 복사</li>
+              <li><strong>Vercel 무료 호스팅 배포:</strong> HTML 파일을 다운로드해 이름을 <code>index.html</code>로 바꾼 뒤 <code>vercel.com</code> (또는 GitHub Pages)에 무료 업로드하여 사이트 주소 발급</li>
+              <li><strong>단톡방 원클릭 공유:</strong> 배포된 사이트에서 위 칸에 DB 주소를 넣고 <strong>[🔗 친구 초대용 자동연결 링크 복사]</strong>를 눌러 카톡 단톡방에 올리면, 친구들은 그 링크만 눌러도 자동 연결됩니다!</li>
+            </ol>
+          </details>
+        </div>
+
+        <!-- 3. Quick Share Buttons (KakaoTalk Text & JSON Backup) -->
+        <div class="bg-[#121324] p-3.5 rounded-xl border border-[#34385e] space-y-2.5">
+          <div class="font-pixel text-xs text-[#ffd166]">3️⃣ 카카오톡 일정표 텍스트 복사 & 백업</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button onclick="copyShareText()" class="pixel-btn min-h-[42px] px-3 py-2 bg-[#ffd166] text-[#121324] font-pixel text-xs font-bold flex items-center justify-center gap-1.5">
+              <span>📋 카톡 일정 텍스트 복사</span>
+            </button>
+            <button onclick="downloadBackupJson()" class="pixel-btn min-h-[42px] px-3 py-2 bg-[#c9b6ff] text-[#121324] font-pixel text-xs font-bold flex items-center justify-center gap-1.5">
+              <span>📥 일정 백업파일(.json) 저장</span>
+            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <label class="min-h-[40px] px-3 py-2 rounded-lg bg-[#262947] hover:bg-[#34385e] text-slate-200 font-pixel text-xs flex items-center justify-center gap-1.5 cursor-pointer border border-[#4a4f7a]">
+              <span>📂 백업파일(.json) 불러오기</span>
+              <input type="file" accept=".json" onchange="uploadBackupJson(event)" class="hidden" />
+            </label>
+            <button onclick="copyExportCode()" class="min-h-[40px] px-3 py-2 rounded-lg bg-[#262947] hover:bg-[#34385e] text-[#06d6a0] font-pixel text-xs border border-[#4a4f7a]">
+              📋 세이브 코드 복사
+            </button>
+          </div>
+          <input type="hidden" id="exportCodeArea" />
+          <div class="flex gap-2 pt-1">
+            <input type="text" id="importCodeArea" placeholder="세이브 코드 수동 붙여넣기..." class="flex-1 px-3 py-2 rounded-lg bg-[#1e2038] border border-[#4a4f7a] text-white font-mono text-xs" />
+            <button onclick="applyImportCode()" class="pixel-btn min-h-[40px] px-3.5 py-1.5 bg-[#262947] text-white border-[#4a4f7a] font-pixel text-xs shrink-0">
+              코드적용
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. Reset All -->
+        <div class="pt-1 flex items-center justify-between">
+          <button onclick="closeMobileShareModal(); openResetModal();" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-[#262947] hover:bg-[#ff5978] text-slate-300 hover:text-white font-pixel text-xs">
+            ↺ 초기 추천 상태로 리셋
+          </button>
+          <button onclick="closeMobileShareModal()" class="pixel-btn min-h-[40px] px-5 py-1.5 bg-[#ffd166] text-[#121324] font-pixel text-xs font-bold">
+            닫기
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 8: RESET CONFIRMATION MODAL
+       ========================================== -->
+  <div id="resetModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+    <div class="pixel-panel max-w-sm w-full overflow-hidden bg-[#1e2038] border-2 border-[#ff5978] text-center">
+      <div class="bg-[#121324] px-5 py-3 flex items-center justify-between border-b border-[#3d426b]">
+        <span class="font-pixel text-xs text-[#ff5978]">↺ 초기화 확인</span>
+        <button onclick="closeResetModal()" class="w-8 h-8 rounded bg-[#262947] text-white text-xs">✕</button>
+      </div>
+      <div class="p-5 space-y-4">
+        <p class="text-sm text-white font-bold">수정한 일정을 초기 추천 상태로 되돌릴까요?</p>
+        <p class="text-xs text-slate-300">직접 추가하거나 변경한 코스가 기본 세팅으로 초기화됩니다.</p>
+        <div class="flex justify-center gap-2">
+          <button onclick="closeResetModal()" class="min-h-[42px] px-4 py-2 rounded-lg bg-[#262947] text-slate-300 font-pixel text-xs">취소</button>
+          <button onclick="confirmResetAll()" class="pixel-btn min-h-[42px] px-4 py-2 bg-[#ff5978] text-white font-pixel text-xs font-bold">네, 초기화합니다</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION (ABOVE MOBILE BOTTOM NAV) -->
+  <div id="toast" class="fixed bottom-20 sm:bottom-6 right-4 left-4 sm:left-auto z-50 pointer-events-none opacity-0 translate-y-3 transition-all duration-200 flex justify-center sm:justify-end">
+    <div class="px-4 py-2.5 rounded-xl bg-[#ffd166] text-[#121324] font-pixel text-xs sm:text-sm font-bold border-2 border-[#090a14] shadow-[3px_3px_0px_#090a14]">
+      <span id="toastText">저장 완료!</span>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       JAVASCRIPT LOGIC, FIREBASE CLOUD SYNC & PRE-LOADED DATA
+       ========================================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // ============================================================================
+    // 💡 [대표 1명 전용 설정] Vercel / GitHub Pages에 올리기 전에 아래 큰따옴표 안에
+    // 본인 무료 Firebase Realtime Database 주소(https://...firebasedatabase.app)를
+    // 붙여넣어 두면, 친구들은 아무 설정 없이 기본 주소로 접속해도 100% 자동 연결됩니다!
+    // ============================================================================
+    const HARDCODED_FIREBASE_DB_URL = "";
+
+    const STORAGE_KEY = 'TOKYO_PIXEL_V6_CLOUD_SYNC';
+    const META_STORAGE_KEY = 'TOKYO_PIXEL_V6_USER_META';
+
+    const CAT_STYLE = {
+      subculture: { label: '🕹️ 서브컬처', badgeBg: 'bg-[#5ce1e6] text-[#121324]' },
+      vintage:    { label: '🎸 빈티지/쇼핑', badgeBg: 'bg-[#c9b6ff] text-[#121324]' },
+      food:       { label: '🍣 맛집/술집', badgeBg: 'bg-[#ff5978] text-white' },
+      cafe:       { label: '☕ 카페/산책', badgeBg: 'bg-[#06d6a0] text-[#121324]' },
+      etc:        { label: '🚃 이동/기타', badgeBg: 'bg-[#ffd166] text-[#121324]' }
+    };
+
+    const RES_STATUS_STYLE = {
+      none:        { label: '', badgeBg: '' },
+      booked:      { label: '✅ 예약완료', badgeBg: 'bg-[#06d6a0] text-[#121324]' },
+      call_needed: { label: '📞 전화확인필수', badgeBg: 'bg-[#ff5978] text-white' },
+      walkin:      { label: '⏳ 현장웨이팅', badgeBg: 'bg-[#ffd166] text-[#121324]' }
+    };
+
+    const DEFAULT_DAYS = {
+      1: {
+        tabLabel: 'DAY 1 (11/21 토)',
+        shortArea: '🍣 미래수산 · 고엔지',
+        title: 'DAY 1 · 스기나미(미래수산) & 고엔지 나이트',
+        sub: '19:00 닛포리 숙소 체크인 ▶ 20:10 스기나미 미래수산(저녁) ▶ 21:15 고엔지 야간 산책 & 이자카야',
+        steps: [
+          '18:00 나리타 도착',
+          '19:00 닛포리 숙소 체크인',
+          '20:10 스기나미 미래수산(저녁)',
+          '21:15 고엔지 야간 산책 & 이자카야'
+        ]
+      },
+      2: {
+        tabLabel: 'DAY 2 (11/22 일)',
+        shortArea: '🌊 가마쿠라 · 에노시마',
+        title: 'DAY 2 · 가마쿠라 & 에노시마 투어',
+        sub: '닛포리역 출발 ▶ 가마쿠라 코마치도리(점심) ▶ 에노덴 & 슬램덩크 건널목 ▶ 대불 & 하세데라 ▶ 에노시마 노을',
+        steps: [
+          '닛포리역 출발',
+          '가마쿠라 코마치도리(점심)',
+          '에노덴 & 슬램덩크 건널목',
+          '대불 & 하세데라',
+          '에노시마 노을'
+        ]
+      },
+      3: {
+        tabLabel: 'DAY 3 (11/23 월)',
+        shortArea: '📚 진보초 · 🕹️ 아키바',
+        title: 'DAY 3 · 진보초 & 아키하바라 올데이',
+        sub: '진보초 고서점 & 카레 ▶ 오차노미즈 악기거리 ▶ 칸다 묘진 ▶ 아키하바라 올데이 ▶ 요도바시 아키바 저녁',
+        steps: [
+          '진보초 고서점 & 카레',
+          '오차노미즈 악기거리',
+          '칸다 묘진',
+          '아키하바라 올데이',
+          '요도바시 아키바 저녁'
+        ]
+      },
+      4: {
+        tabLabel: 'DAY 4 (11/24 화)',
+        shortArea: '✈️ 10:00 나리타 귀국',
+        title: 'DAY 4 · 10:00 나리타 귀국',
+        sub: '06:20 숙소 체크아웃 ▶ 06:40 닛포리역 스카이라이너 ▶ 07:30 나리타 공항 도착/수속 ▶ 10:00 비행기 출발',
+        steps: [
+          '06:20 숙소 체크아웃',
+          '06:40 닛포리역 스카이라이너',
+          '07:30 나리타 공항 도착/수속',
+          '10:00 비행기 출발'
+        ]
+      }
+    };
+
+    const DEFAULT_SPOTS = [
+      // ==========================================
+      // DAY 1: SUGINAMI (MIRAI SUISAN) & KOENJI
+      // ==========================================
+      {
+        id: 'd1-mirai-suisan',
+        day: 1,
+        category: 'food',
+        area: '에이후쿠초',
+        name: '★ 미래수산 (みらい水産)',
+        summary: '도요스 직송 생참치 덮밥 전문점 (첫날 저녁 메인!)',
+        desc: '스기나미구 이즈미(에이후쿠초역 도보권)에 자리한 생참치 전문점입니다. 19:00 닛포리 숙소 체크인 후 이동해 오토로·주토로·아카미가 듬뿍 올라간 참치덮밥으로 첫날 저녁을 시작합니다.',
+        tip: '📞 온라인 예약 API 미지원(현장 방문 및 전화 문의 매장)입니다. 저녁 20:10경 도착 예정이므로 저녁 영업 시간 및 참치 재료 소진 여부를 방문 전 전화(+81-3-3323-0620) 또는 구글맵 최신 리뷰로 꼭 확인하세요!',
+        hours: '점심 11:00~14:30 / 저녁 방문 전 영업·재료 소진 확인 필수',
+        tel: '+81-3-3323-0620',
+        tabelogQuery: 'みらい水産 永福町',
+        starred: true
+      },
+      {
+        id: 'd1-village-vanguard',
+        day: 1,
+        category: 'subculture',
+        area: '고엔지',
+        name: '빌리지 뱅가드 고엔지점',
+        summary: '밤 11시까지 영업하는 서브컬처 만물상 서점·잡화점',
+        desc: '미래수산에서 저녁 식사 후 21:15경 고엔지로 넘어왔을 때 일반 빈티지 의류 매장들이 문을 닫아도 밤 11시까지 활짝 열려 있는 서브컬처 서점 겸 캐릭터 굿즈 만물상입니다.',
+        tip: '만화, 인디 서브컬처 굿즈, 레트로 잡화가 1~2층 미로처럼 쌓여 있어 친구들과 소화 겸 구경하기 최고입니다.',
+        hours: '11:00 ~ 23:00',
+        starred: true
+      },
+      {
+        id: 'd1-koenji-guard-izakaya',
+        day: 1,
+        category: 'food',
+        area: '고엔지',
+        name: '고엔지 고가교 아래 야키토리/이자카야 거리 (대장군·덴소쿠)',
+        summary: '전철 철길 아래 붉은 등불이 켜지는 로컬 야간 술집 거리',
+        desc: 'JR 고엔지역 전철 고가교 아래를 따라 레트로 감성의 야키토리 노포 "대장군(大将)"과 튀김 주점 "덴소쿠" 등 로컬 이자카야들이 끝없이 이어지는 거리입니다.',
+        tip: '21:15 이후 고엔지 야간 산책 후 꼬치구이와 생맥주·하이볼로 첫날 밤을 기념하기 가장 좋습니다.',
+        hours: '17:00 ~ 24:00 (점포별 상이)',
+        starred: true
+      },
+      {
+        id: 'd1-koenji-vintage-night',
+        day: 1,
+        category: 'vintage',
+        area: '고엔지',
+        name: '키스멧(kissmet) / 선트랩(Suntrap) / 사파리(SAFARI)',
+        summary: '고엔지 대표 빈티지 거리 야간 쇼윈도 & 골목 분위기 산책',
+        desc: '디자이너 아카이브 셀렉트샵 키스멧(kissmet), 1930~60년대 아메리칸 빈티지 박물관 같은 선트랩(Suntrap), 하이엔드 빈티지 명소 사파리(SAFARI 1st)가 모인 고엔지 남쪽 빈티지 골목입니다.',
+        tip: '매장 영업은 보통 20:00~20:30 마감이지만, 밤에도 개성 넘치는 쇼윈도와 스트리트 무드를 구경하며 산책하기 좋습니다.',
+        hours: '매장 12:00 ~ 20:00 (야간 골목 산책 상시)',
+        starred: false
+      },
+      {
+        id: 'd1-23coffee-jalk',
+        day: 1,
+        category: 'cafe',
+        area: '니시에이후쿠',
+        name: '23COFFEE & Jalk Coffee',
+        summary: '미래수산 인근 니시에이후쿠역 스페셜티 로스터리 카페 2선',
+        desc: '미래수산이 있는 에이후쿠·니시에이후쿠 권역의 대표 로스터리 카페들입니다. 역 바로 앞 모던한 감성의 23COFFEE와 정교한 핸드드립·치즈케이크가 유명한 Jalk Coffee가 있습니다.',
+        tip: '일정을 앞당겨 낮이나 이른 오후에 미래수산을 방문할 경우 식후 커피 코스로 강력 추천합니다.',
+        hours: '10:00 ~ 18:30 (요일별 상이)',
+        starred: false
+      },
+
+      // ==========================================
+      // DAY 2: KAMAKURA & ENOSHIMA TOUR
+      // ==========================================
+      {
+        id: 'd2-komachidori-shirasu',
+        day: 2,
+        category: 'food',
+        area: '가마쿠라',
+        name: '코마치도리 상점가 & 시라스동(잔멸치 덮밥)',
+        summary: '가마쿠라 명물 시라스동 점심과 길거리 간식 천국',
+        desc: 'JR 가마쿠라역 동쪽 출구에서 시작되는 활기찬 상점가입니다. 가마쿠라 앞바다 명물인 잔멸치 덮밥(시라스동) 맛집과 말차 디저트, 수제 고로케, 당고 등 먹거리가 가득합니다.',
+        tip: '가마아게 시라스(익힌 잔멸치)와 생 시라스 반반 덮밥이 가장 인기 있습니다.',
+        hours: '10:00 ~ 19:00 (식당별 상이)',
+        starred: true
+      },
+      {
+        id: 'd2-enoden-train',
+        day: 2,
+        category: 'subculture',
+        area: '가마쿠라~후지사와',
+        name: '에노덴 전철 (가마쿠라~후지사와 해안 열차)',
+        summary: '주택가 골목과 쇼난 바다를 스치듯 달리는 초록색 레트로 전철',
+        desc: '가마쿠라역에서 에노시마를 거쳐 후지사와까지 이어지는 노면 전철입니다. 창밖으로 펼쳐지는 반짝이는 바다 풍경 자체가 애니메이션 속 한 장면 같습니다.',
+        tip: '가마쿠라역에서 에노덴 1일 승차권(노리오리군, 800엔)을 구매하면 하루 종일 무제한 승하차할 수 있습니다.',
+        hours: '06:00 ~ 23:00 (약 12~14분 간격)',
+        starred: true
+      },
+      {
+        id: 'd2-slamdunk-crossing',
+        day: 2,
+        category: 'subculture',
+        area: '가마쿠라코코마에',
+        name: '가마쿠라코코마에역 건널목 (슬램덩크 성지)',
+        summary: '초록색 에노덴 열차와 반짝이는 바다가 만나는 애니 명장면',
+        desc: '애니메이션 <슬램덩크> 오프닝에서 강백호와 채소연이 서 있던 바로 그 철길 건널목입니다. 에노덴 전철이 지나갈 때 건널목 너머로 펼쳐지는 쇼난 바다가 장관을 이룹니다.',
+        tip: '에노덴 열차가 양방향으로 교차하는 타이밍에 맞춰 연사로 촬영하면 인생샷을 건질 수 있습니다.',
+        hours: '상시 개방',
+        starred: true
+      },
+      {
+        id: 'd2-kotokuin-hasedera',
+        day: 2,
+        category: 'cafe',
+        area: '하세',
+        name: '가마쿠라 대불(고토쿠인) & 하세데라',
+        summary: '국보 청동 대불과 11월 말 단풍·바다 전망대가 어우러진 명찰',
+        desc: '높이 11.3m의 압도적인 청동 대불이 있는 고토쿠인과, 언덕 위에서 가마쿠라 바다 전망과 11월 말 가을 단풍 라이트업을 동시에 감상할 수 있는 하세데라입니다.',
+        tip: '두 사찰은 도보 5분 거리로 가까워 한 번에 묶어 둘러보기 아주 좋습니다.',
+        hours: '08:00 ~ 17:00 (하세데라 단풍 시즌 야간 연장)',
+        starred: true
+      },
+      {
+        id: 'd2-enoshima-seacandle',
+        day: 2,
+        category: 'cafe',
+        area: '에노시마',
+        name: '에노시마 섬 & 시캔들 타워 노을',
+        summary: '문어 전병 간식과 바다 건너 후지산·석양이 보이는 전망대',
+        desc: '다리를 건너 들어가는 에노시마 섬 상점가와 시캔들(캔들 타워) 등대 전망대입니다. 11월 말 맑은 날 해 질 녘에는 붉은 석양 너머로 후지산 실루엣이 선명하게 떠오릅니다.',
+        tip: '11월 말 일몰 시각은 16:30 전후이므로 오후 4시경 에노시마에 도착하는 동선이 최적입니다!',
+        hours: '09:00 ~ 20:00',
+        starred: true
+      },
+      {
+        id: 'd2-yoridocoro',
+        day: 2,
+        category: 'cafe',
+        area: '이나무라가사키',
+        name: '카페 요리도코로 (Cafe Yoridocoro)',
+        summary: '기찻길 바로 옆에서 에노덴 전철을 보며 쉬어가는 감성 카페',
+        desc: '에노덴 이나무라가사키역 철길 바로 옆에 자리한 목조 카페입니다. 손에 닿을 듯 가까이 지나가는 에노덴 열차를 보며 폭신한 머랭 달걀밥과 커피를 즐길 수 있습니다.',
+        tip: '대기 등록 후 도보 2분 거리의 이나무라가사키 검은 모래 해변을 산책하고 오면 좋습니다.',
+        hours: '07:00 ~ 18:00',
+        starred: false
+      },
+
+      // ==========================================
+      // DAY 3: JIMBOCHO & AKIHABARA ALL-DAY
+      // ==========================================
+      {
+        id: 'd3-atwonder-jimbocho',
+        day: 3,
+        category: 'vintage',
+        area: '진보초',
+        name: '진보초 앳원더(@Wonder) & 고서점 거리',
+        summary: 'SF·서브컬처·고전 만화·빈티지 영화 포스터 디깅 성지',
+        desc: '약 180여 개의 고서점이 모인 진보초에서도 서브컬처 팬들에게 가장 인기 있는 앳원더(@Wonder)입니다. 옛날 영화 포스터, SF 잡지, 70~90년대 만화 단행본, 게임 화집 등을 발굴할 수 있습니다.',
+        tip: '월요일(11/23)에는 일요일 휴무였던 서점들까지 활짝 열려 진보초 특유의 레트로 분위기를 만끽할 수 있습니다.',
+        hours: '11:00 ~ 19:00',
+        starred: true
+      },
+      {
+        id: 'd3-bondy-manten',
+        day: 3,
+        category: 'food',
+        area: '진보초',
+        name: '본디 (Bondy) / 만텐 카레',
+        summary: '진보초 고서점 빌딩 2층의 전설적인 유럽풍 치즈 카레',
+        desc: '고서점 빌딩 2층으로 들어가 먹는 "본디(Bondy)"의 진한 유럽풍 비프 치즈 카레(식전 통감자 버터 제공) 또는 가성비 끝판왕 "만텐"의 돈가스 카레입니다.',
+        tip: '오전 11시 오픈 직후 방문하면 웨이팅을 최소화할 수 있습니다.',
+        hours: '11:00 ~ 21:30',
+        starred: true
+      },
+      {
+        id: 'd3-sabouru',
+        day: 3,
+        category: 'cafe',
+        area: '진보초',
+        name: '사보우루 (Sabouru · 1955년 오픈 레트로 킷사텐)',
+        summary: '산장 컨셉 인테리어와 7색 크림소다로 유명한 전설의 킷사텐',
+        desc: '진보초역 A7 출구 바로 앞에서 1955년부터 자리를 지켜온 역사적인 킷사텐입니다. 영롱한 색감의 크림소다와 두툼한 피자 토스트, 나폴리탄 스파게티가 명물입니다.',
+        tip: '음료 중심의 사보우루 1과 식사 중심의 사보우루 2가 나란히 붙어 있습니다.',
+        hours: '11:00 ~ 21:00',
+        starred: false
+      },
+      {
+        id: 'd3-ochanomizu-music',
+        day: 3,
+        category: 'subculture',
+        area: '오차노미즈',
+        name: '오차노미즈 악기거리 (기타·베이스·신디사이저 성지)',
+        summary: '진보초에서 아키하바라로 걸어가는 길목의 악기·음반 거리',
+        desc: '진보초에서 언덕을 따라 도보 7분 올라오면 JR 오차노미즈역 앞 메이지도리 양옆으로 대형 기타·베이스·이펙터 매장(이시바시, 구로사와 악기 등)과 디스크 유니온이 펼쳐집니다.',
+        tip: '밴드 음악이나 악기에 관심 있는 친구들과 구경하며 칸다 묘진·아키하바라로 걸어 내려가는 코스가 일품입니다.',
+        hours: '11:00 ~ 20:00',
+        starred: true
+      },
+      {
+        id: 'd3-kanda-myojin',
+        day: 3,
+        category: 'subculture',
+        area: '아키하바라',
+        name: '칸다 묘진 (애니 성지 신사)',
+        summary: '오차노미즈와 아키바를 잇는 서브컬처 성지 & 콜라보 에마',
+        desc: '오차노미즈에서 아키하바라로 내려가는 길목에 위치한 신사로, 수많은 애니메이션 공식 콜라보 굿즈와 팬들이 직접 그린 수준급 일러스트 소원패(에마)를 구경할 수 있습니다.',
+        tip: 'IT·전자상가 수호 신사답게 컴퓨터·스마트폰 액운 방지 부적도 인기입니다.',
+        hours: '경내 24시간 (수여소 09:00 ~ 19:00)',
+        starred: false
+      },
+      {
+        id: 'd3-radio-kaikan',
+        day: 3,
+        category: 'subculture',
+        area: '아키하바라',
+        name: '라디오회관 (1~10F 피규어/굿즈)',
+        summary: 'JR 아키바역 바로 앞 10층 규모 피규어·굿즈 총집합 랜드마크',
+        desc: '아키하바라 전기상점가 출구 바로 앞의 노란 네온 간판 빌딩입니다. 아미아미, K-BOOKS, 보크스, 카이요도, 옐로우 서브마린 등 핵심 하비샵이 1~10층에 모두 모여 있습니다.',
+        tip: '엘리베이터로 10층까지 올라간 뒤 에스컬레이터로 한 층씩 내려오며 구경하세요!',
+        hours: '10:00 ~ 20:00',
+        starred: true
+      },
+      {
+        id: 'd3-amiami-tower',
+        day: 3,
+        category: 'subculture',
+        area: '아키하바라',
+        name: '아미아미 피규어 타워 (1~8F 신축)',
+        summary: '8층 전관이 피규어로만 채워진 신상 초대형 피규어 타워',
+        desc: '주오도리 대로변에 문을 연 8층 규모의 피규어 전문 빌딩입니다. 신품 스케일 피규어, 넨도로이드부터 상태 좋은 중고 미개봉 피규어까지 장르별로 총망라되어 있습니다.',
+        tip: '여권 지참 시 5,500엔 이상 Tax-Free 면세 혜택을 받을 수 있습니다.',
+        hours: '11:00 ~ 20:00',
+        starred: true
+      },
+      {
+        id: 'd3-mandarake-surugaya',
+        day: 3,
+        category: 'subculture',
+        area: '아키하바라',
+        name: '만다라케 컴플렉스 & 스루가야 (레어 중고 보물찾기)',
+        summary: '검은색 8층 빌딩 만다라케와 스루가야의 희귀 중고 굿즈 디깅',
+        desc: '단종된 한정판 피규어, 초합금, 레트로 게임팩, 원화집, 동인지 등 구하기 힘든 레어 중고 아이템을 보물찾기하듯 발굴할 수 있는 양대 산맥입니다.',
+        tip: '만다라케는 8층부터 1층 순서로 내려오며 구경하는 것을 추천합니다.',
+        hours: '12:00 ~ 20:00 (스루가야 11:00~21:00)',
+        starred: true
+      },
+      {
+        id: 'd3-superpotato',
+        day: 3,
+        category: 'subculture',
+        area: '아키하바라',
+        name: '슈퍼 포테이토 (3~5F 레트로 게임 & 5층 고전 오락실)',
+        summary: '8090 레트로 게임팩 총집합 & 5층 100엔 추억의 오락실',
+        desc: '패미컴·슈퍼패미컴·게임보이·세가새턴 등 추억의 명작이 가득한 3~4층 매장과, 실제 100엔 동전을 넣고 고전 아케이드 게임을 즐길 수 있는 5층 레트로 오락실입니다.',
+        tip: '5층 오락실에서 친구들과 스트리트 파이터2·메탈슬러그 한 판 대결 필수!',
+        hours: '11:00 ~ 20:00',
+        starred: true
+      },
+      {
+        id: 'd3-yodobashi-akiba',
+        day: 3,
+        category: 'food',
+        area: '아키하바라',
+        name: '요도바시 아키바 (6층 건프라 & 8층 식당가)',
+        summary: '피규어샵 마감(20시) 이후 밤 10시까지 즐기는 건프라·가챠·저녁식사',
+        desc: '일반 피규어샵들이 문을 닫는 20시 이후에도 밤 22시까지 영업하는 초대형 복합 매장입니다. 6층에서 압도적인 규모의 건프라·게임·가챠 코너를 털고 8층 식당가에서 저녁 만찬을 즐기세요.',
+        tip: '20시 전까지는 라디오회관·만다라케 등 전문샵을 돌고, 20시 이후에 요도바시로 넘어오면 시간이 딱 맞습니다!',
+        hours: '09:30 ~ 22:00 (8층 식당가 ~23:00)',
+        starred: true
+      },
+
+      // ==========================================
+      // DAY 4: 10:00 NARITA RETURN FLIGHT
+      // ==========================================
+      {
+        id: 'd4-nippori-skyliner',
+        day: 4,
+        category: 'cafe',
+        area: '닛포리역',
+        name: '케이세이 스카이라이너 (닛포리~나리타 36분 직통)',
+        summary: '06:40 탑승 ➔ 07:20경 나리타 공항 논스톱 직통 도착!',
+        desc: '오전 10:00 비행기 탑승을 위해 06:20 숙소 체크아웃 후 케이세이 닛포리역에서 06:40(또는 07:00) 스카이라이너를 탑승하면 36분 만에 나리타 공항에 도착합니다.',
+        tip: '전 좌석 지정석이므로 전날 미리 티켓을 교환해 두면 아침에 더욱 여유롭습니다.',
+        hours: '06:40 / 07:00 열차 탑승 권장',
+        starred: true
+      },
+      {
+        id: 'd4-nippori-ekiben',
+        day: 4,
+        category: 'food',
+        area: '닛포리역',
+        name: '닛포리역 에키벤 & 편의점 털이',
+        summary: '스카이라이너 탑승 전 아침 식사용 에키벤·타마고산도 구매',
+        desc: '닛포리역 개찰구 내외 매점과 편의점(NewDays·로손 등)에서 따뜻한 차와 타마고산도(달걀 샌드위치), 에키벤 도시락을 구매해 스카이라이너 열차 안에서 아침 식사로 즐기세요.',
+        tip: '열차 내 테이블이 넓어 바깥 풍경을 보며 아침을 먹기에 아주 쾌적합니다.',
+        hours: '06:00 ~',
+        starred: false
+      },
+      {
+        id: 'd4-narita-dutyfree',
+        day: 4,
+        category: 'vintage',
+        area: '나리타 공항',
+        name: '나리타 공항 면세점 (도쿄바나나·로이즈·시로이코이비토)',
+        summary: '출국 전 마지막 기념품 과자 & 남은 엔화 동전 가챠 털이',
+        desc: '수하물 위탁 및 출국 심사 후 면세점에서 도쿄바나나, 로이즈 생초콜릿, 시로이코이비토 등 필수 기념품과 공항 한정 굿즈를 구매하며 3박 4일 여정을 마무리합니다.',
+        tip: '보안검색대 통과 전후에 있는 공항 가챠 존에서 남은 100엔 동전을 모두 소진해 보세요!',
+        hours: '07:30 ~ 10:00 출국 전',
+        starred: true
+      }
+    ];
+
+    const DEFAULT_COURSES = {
+      1: [
+        {
+          id: 'c1-1',
+          spotId: 'd1-mirai-suisan',
+          name: '스기나미 미래수산 (생참치 덮밥 저녁)',
+          area: '에이후쿠초',
+          category: 'food',
+          resStatus: 'call_needed',
+          memo: '20:10 도착 예정 · 방문 전 저녁 영업/재료 소진 전화 확인 필수',
+          done: false
+        },
+        {
+          id: 'c1-2',
+          spotId: 'd1-village-vanguard',
+          name: '빌리지 뱅가드 고엔지점',
+          area: '고엔지',
+          category: 'subculture',
+          resStatus: 'none',
+          memo: '21:15 이동 · 밤 23시까지 여는 서브컬처 만물상 구경',
+          done: false
+        },
+        {
+          id: 'c1-3',
+          spotId: 'd1-koenji-guard-izakaya',
+          name: '고엔지 고가교 아래 야키토리/이자카야 거리',
+          area: '고엔지',
+          category: 'food',
+          resStatus: 'walkin',
+          memo: '야키토리 대장군·덴소쿠 등 로컬 야간 이자카야 한잔',
+          done: false
+        }
+      ],
+      2: [
+        {
+          id: 'c2-1',
+          spotId: 'd2-komachidori-shirasu',
+          name: '가마쿠라 코마치도리 상점가 & 시라스동',
+          area: '가마쿠라역',
+          category: 'food',
+          memo: '명물 잔멸치 덮밥 점심 & 길거리 간식 투어',
+          done: false
+        },
+        {
+          id: 'c2-2',
+          spotId: 'd2-slamdunk-crossing',
+          name: '에노덴 탑승 & 가마쿠라코코마에역 건널목',
+          area: '에노덴',
+          category: 'subculture',
+          memo: '슬램덩크 성지순례 & 쇼난 바다 포토존',
+          done: false
+        },
+        {
+          id: 'c2-3',
+          spotId: 'd2-kotokuin-hasedera',
+          name: '가마쿠라 대불(고토쿠인) & 하세데라',
+          area: '하세역',
+          category: 'cafe',
+          memo: '국보 청동 대불 & 11월 말 단풍 바다 전망대',
+          done: false
+        },
+        {
+          id: 'c2-4',
+          spotId: 'd2-enoshima-seacandle',
+          name: '에노시마 섬 & 캔들 타워 노을',
+          area: '에노시마',
+          category: 'cafe',
+          memo: '16:30 해 질 녘 태평양 석양 감상 후 도쿄 복귀',
+          done: false
+        }
+      ],
+      3: [
+        {
+          id: 'c3-1',
+          spotId: 'd3-bondy-manten',
+          name: '진보초 본디(Bondy) / 만텐 카레 & 앳원더 고서점',
+          area: '진보초',
+          category: 'food',
+          memo: '유럽풍 치즈 카레 점심 후 서브컬처 고서점 거리 디깅',
+          done: false
+        },
+        {
+          id: 'c3-2',
+          spotId: 'd3-ochanomizu-music',
+          name: '오차노미즈 악기거리 & 칸다 묘진',
+          area: '오차노미즈 ➔ 아키바',
+          category: 'subculture',
+          memo: '기타·베이스 성지 구경하며 애니 성지 신사로 도보 이동',
+          done: false
+        },
+        {
+          id: 'c3-3',
+          spotId: 'd3-radio-kaikan',
+          name: '라디오회관(1~10F) & 아미아미 피규어 타워(1~8F)',
+          area: '아키하바라',
+          category: 'subculture',
+          memo: '아키하바라 대표 대형 피규어·굿즈 빌딩 투어',
+          done: false
+        },
+        {
+          id: 'c3-4',
+          spotId: 'd3-mandarake-surugaya',
+          name: '만다라케 컴플렉스 & 슈퍼 포테이토(5층 고전 오락실)',
+          area: '아키하바라',
+          category: 'subculture',
+          memo: '레어 중고 보물찾기 & 추억의 100엔 레트로 게임 대결',
+          done: false
+        },
+        {
+          id: 'c3-5',
+          spotId: 'd3-yodobashi-akiba',
+          name: '요도바시 아키바 (6층 건프라 & 8층 식당가 저녁)',
+          area: '아키하바라',
+          category: 'food',
+          memo: '20시 이후 밤 22시까지 건프라·가챠 구경 및 저녁 식사',
+          done: false
+        }
+      ],
+      4: [
+        {
+          id: 'c4-1',
+          spotId: 'd4-nippori-skyliner',
+          name: '06:40 닛포리역 케이세이 스카이라이너 탑승',
+          area: '닛포리역',
+          category: 'cafe',
+          memo: '06:20 체크아웃 · 에키벤/편의점 간식 사서 36분 직통 이동',
+          done: false
+        },
+        {
+          id: 'c4-2',
+          spotId: 'd4-narita-dutyfree',
+          name: '07:30 나리타 공항 수속 & 면세점 쇼핑',
+          area: '나리타 공항',
+          category: 'vintage',
+          memo: '도쿄바나나·로이즈·시로이코이비토 구매 후 10:00 비행기 출발',
+          done: false
+        }
+      ]
+    };
+
+    // ==========================================
+    // STATE & CLOUD SYNC VARIABLES
+    // ==========================================
+    let state = {
+      currentDay: 1,
+      catFilter: 'all',
+      days: JSON.parse(JSON.stringify(DEFAULT_DAYS)),
+      spots: JSON.parse(JSON.stringify(DEFAULT_SPOTS)),
+      courses: JSON.parse(JSON.stringify(DEFAULT_COURSES)),
+      updatedAt: 0,
+      updatedBy: '초기세팅',
+      lastAction: '기본 일정 로드됨'
+    };
+
+    let userMeta = {
+      nickname: '여행자' + Math.floor(10 + Math.random() * 89),
+      roomId: 'TOKYO-2026',
+      customDbUrl: HARDCODED_FIREBASE_DB_URL ? HARDCODED_FIREBASE_DB_URL.trim() : ''
+    };
+
+    let activeDetailSpotId = null;
+    let activeEditCourseItem = null;
+
+    // Firebase Firestore & Custom RTDB references
+    let fbApp = null;
+    let fbAuth = null;
+    let fbDb = null;
+    let currentUser = null;
+    let firestoreUnsubscribe = null;
+    let customEventSource = null;
+    let isApplyingRemoteUpdate = false;
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'tokyo-trip-2026-app';
+
+    function loadLocalMetaAndBackup() {
+      try {
+        const rawMeta = localStorage.getItem(META_STORAGE_KEY);
+        if (rawMeta) {
+          const parsedMeta = JSON.parse(rawMeta);
+          if (parsedMeta.nickname) userMeta.nickname = parsedMeta.nickname;
+          if (parsedMeta.roomId) userMeta.roomId = parsedMeta.roomId.toUpperCase();
+          if (parsedMeta.customDbUrl) userMeta.customDbUrl = parsedMeta.customDbUrl;
+        }
+      } catch (e) {
+        console.warn('Meta load error:', e);
+      }
+
+      // Override with hardcoded constant if set in code
+      if (HARDCODED_FIREBASE_DB_URL && HARDCODED_FIREBASE_DB_URL.trim().startsWith('https://')) {
+        userMeta.customDbUrl = HARDCODED_FIREBASE_DB_URL.trim();
+      }
+
+      // Check URL query parameters (?db=...&room=...) for One-Click Friend Auto-Setup!
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const urlDb = params.get('db');
+        const urlRoom = params.get('room');
+        let updatedFromUrl = false;
+
+        if (urlDb && urlDb.startsWith('https://')) {
+          userMeta.customDbUrl = urlDb.trim();
+          updatedFromUrl = true;
+        }
+        if (urlRoom && urlRoom.trim()) {
+          userMeta.roomId = urlRoom.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '') || 'TOKYO-2026';
+          updatedFromUrl = true;
+        }
+        if (updatedFromUrl) {
+          localStorage.setItem(META_STORAGE_KEY, JSON.stringify(userMeta));
+          setTimeout(() => {
+            showToast(`🔗 초대 링크를 통해 [${userMeta.roomId}] 실시간 방에 자동 연결되었습니다!`);
+          }, 500);
+        }
+      } catch (e) {
+        console.warn('URL param parse error:', e);
+      }
+
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY + '_' + userMeta.roomId);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.days) state.days = parsed.days;
+          if (parsed.spots) state.spots = parsed.spots;
+          if (parsed.courses) state.courses = parsed.courses;
+          if (parsed.updatedAt) state.updatedAt = parsed.updatedAt;
+          if (parsed.updatedBy) state.updatedBy = parsed.updatedBy;
+          if (parsed.lastAction) state.lastAction = parsed.lastAction;
+        }
+      } catch (e) {
+        console.warn('Local backup load error:', e);
+      }
+    }
+
+    function saveLocalBackup() {
+      try {
+        localStorage.setItem(META_STORAGE_KEY, JSON.stringify(userMeta));
+        localStorage.setItem(STORAGE_KEY + '_' + userMeta.roomId, JSON.stringify({
+          days: state.days,
+          spots: state.spots,
+          courses: state.courses,
+          updatedAt: state.updatedAt,
+          updatedBy: state.updatedBy,
+          lastAction: state.lastAction
+        }));
+      } catch (e) {
+        console.warn('Local backup save error:', e);
+      }
+    }
+
+    // ==========================================
+    // CLOUD REAL-TIME SYNC ENGINE (FIRESTORE + HYBRID CUSTOM DB URL)
+    // ==========================================
+    async function initCloudSync() {
+      updateSyncStatusUI('connecting', `연결중 (${userMeta.roomId})`);
+
+      // 1. If Custom Firebase Realtime Database URL is configured (for external hosting like GitHub Pages)
+      if (userMeta.customDbUrl && userMeta.customDbUrl.startsWith('https://')) {
+        connectCustomRealtimeDb(userMeta.customDbUrl, userMeta.roomId);
+        return;
+      }
+
+      // 2. Built-in Environment Firestore Connection (Zero-config)
+      if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+        try {
+          const firebaseConfig = JSON.parse(__firebase_config);
+          if (!fbApp) {
+            fbApp = initializeApp(firebaseConfig);
+            fbAuth = getAuth(fbApp);
+            fbDb = getFirestore(fbApp);
+          }
+
+          // RULE 3: Auth Before Queries
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(fbAuth, __initial_auth_token);
+          } else {
+            await signInAnonymously(fbAuth);
+          }
+
+          onAuthStateChanged(fbAuth, (user) => {
+            currentUser = user;
+            const uidEl = document.getElementById('currentUserIdDisplay');
+            if (uidEl) {
+              uidEl.textContent = user ? user.uid : '익명 세션';
+            }
+            if (user) {
+              subscribeToFirestoreRoom(userMeta.roomId);
+            }
+          });
+          return;
+        } catch (err) {
+          console.warn('Built-in Firestore init fallback:', err);
+        }
+      }
+
+      // 3. Fallback if offline or no cloud config yet
+      updateSyncStatusUI('local', `로컬 저장 (${userMeta.roomId})`);
+      const uidEl = document.getElementById('currentUserIdDisplay');
+      if (uidEl) uidEl.textContent = '로컬 모드 (외부 호스팅 시 DB URL 입력 가능)';
+    }
+
+    function subscribeToFirestoreRoom(roomId) {
+      if (!currentUser || !fbDb) return;
+      if (firestoreUnsubscribe) {
+        firestoreUnsubscribe();
+        firestoreUnsubscribe = null;
+      }
+
+      // RULE 1: Strict Public Path `/artifacts/{appId}/public/data/tokyo_trip_rooms/{roomId}`
+      const roomDocRef = doc(fbDb, 'artifacts', appId, 'public', 'data', 'tokyo_trip_rooms', roomId);
+
+      firestoreUnsubscribe = onSnapshot(
+        roomDocRef,
+        (snapshot) => {
+          updateSyncStatusUI('online', `실시간 ON (${roomId})`);
+          if (snapshot.exists()) {
+            const remoteData = snapshot.data();
+            applyRemoteData(remoteData);
+          } else {
+            // Initialize room in cloud with current state
+            pushStateToCloud('방 최초 생성');
+          }
+        },
+        (error) => {
+          console.error('Firestore onSnapshot error:', error);
+          updateSyncStatusUI('local', `오프라인 백업 (${roomId})`);
+        }
+      );
+    }
+
+    function connectCustomRealtimeDb(baseUrl, roomId) {
+      if (customEventSource) {
+        customEventSource.close();
+        customEventSource = null;
+      }
+      const cleanUrl = baseUrl.replace(/\/+$/, '');
+      const endpoint = `${cleanUrl}/tokyo_rooms/${encodeURIComponent(roomId)}.json`;
+
+      try {
+        customEventSource = new EventSource(endpoint);
+        customEventSource.addEventListener('put', (e) => {
+          try {
+            const packet = JSON.parse(e.data);
+            updateSyncStatusUI('online', `실시간 ON (${roomId})`);
+            if (packet && packet.data && packet.path === '/') {
+              applyRemoteData(packet.data);
+            } else if (packet && packet.data === null && packet.path === '/') {
+              pushStateToCloud('외부 DB 초기 생성');
+            }
+          } catch (parseErr) {
+            console.warn('Custom DB parse error:', parseErr);
+          }
+        });
+        customEventSource.onerror = () => {
+          updateSyncStatusUI('local', `재연결 대기 (${roomId})`);
+        };
+      } catch (err) {
+        console.warn('Custom EventSource error:', err);
+        updateSyncStatusUI('local', `로컬 모드 (${roomId})`);
+      }
+    }
+
+    function applyRemoteData(remote) {
+      if (!remote) return;
+      try {
+        isApplyingRemoteUpdate = true;
+        const parsedDays = typeof remote.daysJson === 'string' ? JSON.parse(remote.daysJson) : remote.days;
+        const parsedSpots = typeof remote.spotsJson === 'string' ? JSON.parse(remote.spotsJson) : remote.spots;
+        const parsedCourses = typeof remote.coursesJson === 'string' ? JSON.parse(remote.coursesJson) : remote.courses;
+
+        if (parsedDays) state.days = parsedDays;
+        if (parsedSpots) state.spots = parsedSpots;
+        if (parsedCourses) state.courses = parsedCourses;
+
+        const prevUpdatedAt = state.updatedAt;
+        state.updatedAt = remote.updatedAt || Date.now();
+        state.updatedBy = remote.updatedBy || '친구';
+        state.lastAction = remote.lastAction || '일정 동기화됨';
+
+        saveLocalBackup();
+        renderAll();
+        updateLiveSyncBanner();
+
+        // Notify user if a friend made an update
+        if (prevUpdatedAt && state.updatedAt > prevUpdatedAt && state.updatedBy !== userMeta.nickname) {
+          showToast(`⚡ [${state.updatedBy}]님이 수정: ${state.lastAction}`);
+        }
+      } catch (e) {
+        console.warn('Error applying remote data:', e);
+      } finally {
+        isApplyingRemoteUpdate = false;
+      }
+    }
+
+    async function pushStateToCloud(actionDesc) {
+      if (isApplyingRemoteUpdate) return;
+
+      state.updatedAt = Date.now();
+      state.updatedBy = userMeta.nickname || '익명';
+      state.lastAction = actionDesc || '일정 업데이트';
+
+      saveLocalBackup();
+      updateLiveSyncBanner();
+
+      const payload = {
+        daysJson: JSON.stringify(state.days),
+        spotsJson: JSON.stringify(state.spots),
+        coursesJson: JSON.stringify(state.courses),
+        updatedAt: state.updatedAt,
+        updatedBy: state.updatedBy,
+        lastAction: state.lastAction
+      };
+
+      // 1. Custom DB URL Mode
+      if (userMeta.customDbUrl && userMeta.customDbUrl.startsWith('https://')) {
+        const cleanUrl = userMeta.customDbUrl.replace(/\/+$/, '');
+        const endpoint = `${cleanUrl}/tokyo_rooms/${encodeURIComponent(userMeta.roomId)}.json`;
+        try {
+          await fetch(endpoint, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          updateSyncStatusUI('online', `실시간 ON (${userMeta.roomId})`);
+        } catch (err) {
+          console.warn('Custom DB PUT error:', err);
+        }
+        return;
+      }
+
+      // 2. Built-in Firestore Mode (RULE 3: guard with if (!currentUser) return;)
+      if (!currentUser || !fbDb) return;
+      try {
+        const roomDocRef = doc(fbDb, 'artifacts', appId, 'public', 'data', 'tokyo_trip_rooms', userMeta.roomId);
+        await setDoc(roomDocRef, payload);
+        updateSyncStatusUI('online', `실시간 ON (${userMeta.roomId})`);
+      } catch (err) {
+        console.error('Firestore setDoc error:', err);
+      }
+    }
+
+    function updateSyncStatusUI(mode, text) {
+      const dot = document.getElementById('syncStatusDot');
+      const label = document.getElementById('syncStatusLabel');
+      const btn = document.getElementById('syncStatusHeaderBtn');
+      const modalBadge = document.getElementById('modalSyncBadge');
+
+      if (!dot || !label || !btn) return;
+
+      label.textContent = text;
+      if (mode === 'online') {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-[#06d6a0] animate-pulse shrink-0';
+        btn.className = 'pixel-btn min-h-[40px] px-2.5 sm:px-3 py-1.5 bg-[#1e2038] text-[#06d6a0] border-[#06d6a0] font-pixel text-xs flex items-center gap-1.5';
+        if (modalBadge) {
+          modalBadge.textContent = `🟢 실시간 연결됨 (방: ${userMeta.roomId})`;
+          modalBadge.className = 'px-2 py-0.5 rounded bg-[#06d6a0] text-[#121324] font-pixel text-[11px] font-bold';
+        }
+      } else if (mode === 'connecting') {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-[#ffd166] animate-ping shrink-0';
+        btn.className = 'pixel-btn min-h-[40px] px-2.5 sm:px-3 py-1.5 bg-[#1e2038] text-[#ffd166] border-[#ffd166] font-pixel text-xs flex items-center gap-1.5';
+      } else {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-[#ffd166] shrink-0';
+        btn.className = 'pixel-btn min-h-[40px] px-2.5 sm:px-3 py-1.5 bg-[#1e2038] text-[#ffd166] border-[#4a4f7a] font-pixel text-xs flex items-center gap-1.5';
+        if (modalBadge) {
+          modalBadge.textContent = `🟡 로컬 저장 모드 (방: ${userMeta.roomId})`;
+          modalBadge.className = 'px-2 py-0.5 rounded bg-[#ffd166] text-[#121324] font-pixel text-[11px] font-bold';
+        }
+      }
+    }
+
+    function updateLiveSyncBanner() {
+      const banner = document.getElementById('liveSyncBannerText');
+      const infoBox = document.getElementById('lastSyncInfoBox');
+      if (!state.updatedAt) return;
+
+      const timeStr = new Date(state.updatedAt).toLocaleTimeString('ko-KR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      const summary = `⚡ [${state.updatedBy}] ${state.lastAction} (${timeStr})`;
+      if (banner) banner.textContent = summary;
+      if (infoBox) infoBox.textContent = `최근 실시간 반영: ${summary}`;
+    }
+
+    function saveState(msg, actionLog) {
+      renderAll();
+      pushStateToCloud(actionLog || msg || '일정 편집');
+      if (msg) showToast(msg);
+    }
+
+    function renderAll() {
+      renderDayTabs();
+      renderMobileNav();
+      renderDayRouteBanner();
+      renderMyCourseList();
+      renderSpotGrid();
+    }
+
+    // ==========================================
+    // 1. RENDER DAY SELECTOR TABS (DESKTOP) & BOTTOM NAV (MOBILE)
+    // ==========================================
+    function renderDayTabs() {
+      const container = document.getElementById('dayTabsContainer');
+      container.innerHTML = [1, 2, 3, 4].map(d => {
+        const info = state.days[d];
+        const count = (state.courses[d] || []).length;
+        const active = state.currentDay === d;
+
+        return `
+          <button
+            onclick="selectDay(${d})"
+            class="pixel-btn p-3 text-left flex flex-col justify-between transition ${
+              active
+                ? 'bg-[#ffd166] text-[#121324] border-[#090a14]'
+                : 'bg-[#1e2038] text-slate-200 border-[#3d426b] hover:bg-[#262947]'
+            }"
+          >
+            <div class="flex items-center justify-between w-full">
+              <span class="font-pixel text-xs sm:text-sm font-bold">${escapeHtml(info.tabLabel)}</span>
+              <span class="px-1.5 py-0.5 rounded text-[11px] font-pixel font-bold ${
+                active ? 'bg-[#121324] text-[#ffd166]' : 'bg-[#262947] text-[#06d6a0]'
+              }">
+                ${count}곳
+              </span>
+            </div>
+            <div class="font-bold text-sm sm:text-base mt-1 truncate ${active ? 'text-[#121324]' : 'text-white'}">
+              ${escapeHtml(info.shortArea)}
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderMobileNav() {
+      const indicator = document.getElementById('mobileDayIndicator');
+      if (indicator) {
+        const info = state.days[state.currentDay];
+        indicator.textContent = `${info.tabLabel} · ${info.shortArea}`;
+      }
+
+      [1, 2, 3, 4].forEach(d => {
+        const btn = document.getElementById('mobNavDay' + d);
+        if (!btn) return;
+        const active = state.currentDay === d;
+        if (active) {
+          btn.className = 'mob-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl bg-[#ffd166] text-[#121324] font-bold shadow-[2px_2px_0px_#090a14] transition';
+        } else {
+          btn.className = 'mob-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-300 hover:bg-[#262947] transition';
+        }
+      });
+    }
+
+    function selectDay(d) {
+      state.currentDay = d;
+      renderAll();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function stepDay(delta) {
+      let next = state.currentDay + delta;
+      if (next < 1) next = 4;
+      if (next > 4) next = 1;
+      selectDay(next);
+      showToast(`📅 DAY ${next} 일정으로 이동했습니다`);
+    }
+
+    // ==========================================
+    // 2. RENDER COMPACT DAY ROUTE BAR
+    // ==========================================
+    function renderDayRouteBanner() {
+      const box = document.getElementById('dayRouteBanner');
+      const info = state.days[state.currentDay];
+
+      const stepsHtml = (info.steps || []).map((st, idx) => `
+        <span class="px-2.5 py-1 rounded-lg bg-[#262947] border border-[#4a4f7a] text-xs font-medium text-white">
+          ${escapeHtml(st)}
+        </span>
+        ${idx < info.steps.length - 1 ? '<span class="text-[#ffd166] font-pixel text-xs">▶</span>' : ''}
+      `).join('');
+
+      box.innerHTML = `
+        <div class="flex flex-wrap items-start justify-between gap-2.5">
+          <div class="min-w-0 flex-1">
+            <h2 class="font-pixel text-base sm:text-xl text-[#ffd166] leading-snug">${escapeHtml(info.title)}</h2>
+            <p class="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">${escapeHtml(info.sub)}</p>
+          </div>
+          <button
+            onclick="openDayEditModal()"
+            class="min-h-[38px] px-3 py-1.5 rounded-lg bg-[#262947] hover:bg-[#ffd166] hover:text-[#121324] active:bg-[#ffd166] active:text-[#121324] text-slate-200 font-pixel text-xs border border-[#4a4f7a] transition shrink-0"
+          >
+            ✏️ 동선수정 · 🔄 스왑
+          </button>
+        </div>
+        <div class="flex flex-wrap items-center gap-1.5 mt-3 pt-3 border-t border-[#34385e]">
+          ${stepsHtml}
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 3. RENDER MY COURSE LIST (GENEROUS TOUCH TARGETS)
+    // ==========================================
+    function renderMyCourseList() {
+      const dayNum = state.currentDay;
+      const list = state.courses[dayNum] || [];
+      const container = document.getElementById('myCourseList');
+      const countBadge = document.getElementById('myCourseCountBadge');
+      const titleEl = document.getElementById('myCourseTitle');
+
+      titleEl.textContent = `📌 DAY ${dayNum} 오늘 우리가 갈 코스`;
+      countBadge.textContent = `(${list.length}곳)`;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="p-5 rounded-xl bg-[#121324] border border-dashed border-[#4a4f7a] text-center text-xs sm:text-sm text-slate-400">
+            아직 등록된 코스가 없습니다. 아래 추천 카드에서 <strong>[+ 코스 담기]</strong>를 누르거나 <strong>[+ 직접 추가]</strong>를 눌러보세요!
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map((item, idx) => {
+        const cat = CAT_STYLE[item.category] || CAT_STYLE.etc;
+        const resStyle = RES_STATUS_STYLE[item.resStatus || 'none'] || RES_STATUS_STYLE.none;
+
+        return `
+          <div
+            onclick="openCourseItemModal('${item.id}')"
+            class="pixel-card p-3 flex items-center justify-between gap-2 cursor-pointer ${
+              item.done ? 'opacity-60 bg-[#181a30]' : ''
+            }"
+          >
+            <!-- Left: 40px Touch Checkbox + Order + Name + Memo -->
+            <div class="flex items-center gap-2.5 min-w-0 flex-1">
+              <button
+                onclick="toggleCourseDone(event, '${item.id}')"
+                class="w-9 h-9 rounded-lg border-2 border-[#4a4f7a] flex items-center justify-center text-sm font-bold shrink-0 ${
+                  item.done ? 'bg-[#06d6a0] text-[#121324] border-[#06d6a0]' : 'bg-[#121324] text-transparent hover:border-[#06d6a0]'
+                }"
+                title="방문 완료 체크"
+              >✓</button>
+
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="font-pixel text-xs text-[#ffd166]">#${idx + 1}</span>
+                  <span class="px-1.5 py-0.5 rounded font-pixel text-[10px] font-bold ${cat.badgeBg}">
+                    ${cat.label}
+                  </span>
+                  ${resStyle.label ? `<span class="px-1.5 py-0.5 rounded font-pixel text-[10px] font-bold ${resStyle.badgeBg}">${resStyle.label}</span>` : ''}
+                  ${item.area ? `<span class="text-xs text-[#5ce1e6] font-medium">${escapeHtml(item.area)}</span>` : ''}
+                </div>
+
+                <div class="font-bold text-sm sm:text-base text-white truncate mt-0.5 ${item.done ? 'line-through text-slate-400' : ''}">
+                  ${escapeHtml(item.name)}
+                </div>
+
+                ${item.memo ? `<div class="text-xs text-slate-300 truncate mt-0.5">${escapeHtml(item.memo)}</div>` : ''}
+              </div>
+            </div>
+
+            <!-- Right: Generous Touch Up/Down & Edit Buttons -->
+            <div class="flex items-center gap-1 shrink-0" onclick="event.stopPropagation()">
+              <button
+                onclick="moveCourseOrder(${idx}, -1)"
+                ${idx === 0 ? 'disabled class="w-8 h-9 text-slate-600 text-xs cursor-not-allowed"' : 'class="w-8 h-9 rounded-lg bg-[#121324] active:bg-[#ffd166] active:text-[#121324] text-slate-200 text-xs border border-[#3d426b]"'}
+                title="위로 이동"
+              >▲</button>
+              <button
+                onclick="moveCourseOrder(${idx}, 1)"
+                ${idx === list.length - 1 ? 'disabled class="w-8 h-9 text-slate-600 text-xs cursor-not-allowed"' : 'class="w-8 h-9 rounded-lg bg-[#121324] active:bg-[#ffd166] active:text-[#121324] text-slate-200 text-xs border border-[#3d426b]"'}
+                title="아래로 이동"
+              >▼</button>
+              <button
+                onclick="openCourseItemModal('${item.id}')"
+                class="min-h-[36px] px-2.5 py-1.5 rounded-lg bg-[#121324] active:bg-[#ffd166] active:text-[#121324] text-[#5ce1e6] font-pixel text-xs border border-[#3d426b]"
+              >
+                상세 ▸
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleCourseDone(e, itemId) {
+      e.stopPropagation();
+      const list = state.courses[state.currentDay] || [];
+      const item = list.find(c => c.id === itemId);
+      if (!item) return;
+      item.done = !item.done;
+      saveState(item.done ? '✅ 방문 완료 체크!' : null);
+    }
+
+    function moveCourseOrder(idx, delta) {
+      const list = state.courses[state.currentDay] || [];
+      const target = idx + delta;
+      if (target < 0 || target >= list.length) return;
+      const temp = list[idx];
+      list[idx] = list[target];
+      list[target] = temp;
+      saveState();
+    }
+
+    // ==========================================
+    // 4. RENDER COMPACT SPOT GRID
+    // ==========================================
+    function setCatFilter(cat) {
+      state.catFilter = cat;
+      document.querySelectorAll('.cat-chip').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.className = 'cat-chip min-h-[38px] px-3.5 py-1.5 rounded-lg font-pixel text-xs bg-[#ffd166] text-[#121324] font-bold shrink-0';
+        } else {
+          btn.className = 'cat-chip min-h-[38px] px-3.5 py-1.5 rounded-lg font-pixel text-xs bg-[#262947] text-slate-200 shrink-0';
+        }
+      });
+      renderSpotGrid();
+    }
+
+    function isSpotInDayCourse(spotId, dayNum) {
+      return (state.courses[dayNum] || []).some(c => c.spotId === spotId);
+    }
+
+    function renderSpotGrid() {
+      const grid = document.getElementById('spotGrid');
+      const showAllDays = document.getElementById('showAllDaysToggle')?.checked;
+
+      const filtered = state.spots.filter(s => {
+        if (!showAllDays && Number(s.day) !== Number(state.currentDay)) return false;
+        if (state.catFilter === 'starred') return !!s.starred;
+        if (state.catFilter !== 'all' && s.category !== state.catFilter) return false;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full pixel-panel p-8 text-center text-slate-300 text-sm">
+            해당 카테고리에 표시할 장소가 없습니다. 다른 필터를 선택해 보세요!
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(s => {
+        const cat = CAT_STYLE[s.category] || CAT_STYLE.subculture;
+        const inCourse = isSpotInDayCourse(s.id, state.currentDay);
+
+        return `
+          <article
+            onclick="openSpotDetailModal('${s.id}')"
+            class="pixel-card p-4 cursor-pointer flex flex-col justify-between gap-3 ${
+              inCourse ? 'border-[#06d6a0] bg-[#1f2c3f]' : ''
+            }"
+          >
+            <div>
+              <!-- Row 1: Category Badge + Area Tag + Star Button -->
+              <div class="flex items-center justify-between gap-1.5 mb-2">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="px-2 py-0.5 rounded font-pixel text-[11px] font-bold shrink-0 ${cat.badgeBg}">
+                    ${cat.label}
+                  </span>
+                  <span class="px-2 py-0.5 rounded bg-[#121324] text-[#ffd166] text-xs font-medium truncate">
+                    ${escapeHtml(s.area)}
+                  </span>
+                </div>
+
+                <button
+                  onclick="toggleSpotStar(event, '${s.id}')"
+                  class="w-8 h-8 rounded-lg flex items-center justify-center text-lg leading-none ${
+                    s.starred ? 'text-[#ffd166]' : 'text-slate-500'
+                  }"
+                  title="찜하기"
+                >★</button>
+              </div>
+
+              <!-- Row 2: Large Crisp Spot Name -->
+              <h3 class="text-base sm:text-lg font-bold text-white leading-snug">
+                ${escapeHtml(s.name)}
+              </h3>
+
+              <!-- Row 3: 1-Line Summary -->
+              <p class="text-xs sm:text-sm text-slate-300 mt-1 line-clamp-1">
+                ${escapeHtml(s.summary)}
+              </p>
+            </div>
+
+            <!-- Row 4: Touch Action Bar -->
+            <div class="pt-2.5 border-t border-[#34385e] flex items-center justify-between gap-2">
+              <span class="text-xs text-[#5ce1e6] font-medium">상세정보·구글맵 ▸</span>
+
+              <button
+                onclick="quickToggleSpotInCurrentDay(event, '${s.id}')"
+                class="min-h-[38px] px-3 py-1.5 rounded-lg font-pixel text-xs font-bold transition ${
+                  inCourse
+                    ? 'bg-[#06d6a0] text-[#121324]'
+                    : 'bg-[#121324] active:bg-[#ffd166] active:text-[#121324] text-slate-200 border border-[#4a4f7a]'
+                }"
+              >
+                ${inCourse ? '✓ 코스 담김' : '+ 코스 담기'}
+              </button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function toggleSpotStar(e, spotId) {
+      e.stopPropagation();
+      const s = state.spots.find(x => x.id === spotId);
+      if (!s) return;
+      s.starred = !s.starred;
+      saveState(s.starred ? '★ 찜 목록에 추가했습니다!' : null);
+    }
+
+    function quickToggleSpotInCurrentDay(e, spotId) {
+      e.stopPropagation();
+      toggleSpotInDay(spotId, state.currentDay);
+    }
+
+    function toggleSpotInDay(spotId, dayNum) {
+      const s = state.spots.find(x => x.id === spotId);
+      if (!s) return;
+      if (!state.courses[dayNum]) state.courses[dayNum] = [];
+      const list = state.courses[dayNum];
+      const idx = list.findIndex(c => c.spotId === spotId);
+
+      if (idx >= 0) {
+        list.splice(idx, 1);
+        saveState(`DAY ${dayNum} 코스에서 제외했습니다.`);
+      } else {
+        list.push({
+          id: 'c-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+          spotId: s.id,
+          name: s.name,
+          area: s.area,
+          category: s.category,
+          memo: s.summary,
+          done: false
+        });
+        saveState(`📌 [${s.name}] DAY ${dayNum} 코스에 추가 완료!`);
+      }
+
+      if (activeDetailSpotId === spotId) {
+        populateSpotDetailModal(spotId);
+      }
+    }
+
+    // ==========================================
+    // 5. SPOT DETAIL MODAL (BOTTOM-SHEET)
+    // ==========================================
+    function openSpotDetailModal(spotId) {
+      activeDetailSpotId = spotId;
+      populateSpotDetailModal(spotId);
+      const modal = document.getElementById('spotDetailModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function populateSpotDetailModal(spotId) {
+      const s = state.spots.find(x => x.id === spotId);
+      if (!s) return;
+      const cat = CAT_STYLE[s.category] || CAT_STYLE.subculture;
+      const inCurrentDay = isSpotInDayCourse(s.id, state.currentDay);
+
+      document.getElementById('detailModalBadges').innerHTML = `
+        <span class="px-2.5 py-0.5 rounded font-pixel text-xs font-bold ${cat.badgeBg}">${cat.label}</span>
+        <span class="px-2.5 py-0.5 rounded bg-[#262947] text-[#ffd166] text-xs font-bold">📍 ${escapeHtml(s.area)}</span>
+        <span class="px-2.5 py-0.5 rounded bg-[#262947] text-slate-300 text-xs">추천: DAY ${s.day}</span>
+      `;
+
+      document.getElementById('detailModalName').textContent = s.name;
+      document.getElementById('detailModalSummary').textContent = s.summary;
+      document.getElementById('detailModalDesc').textContent = s.desc || s.summary;
+      document.getElementById('detailModalTip').textContent = s.tip || '주변 스팟과 함께 묶어 둘러보기 좋습니다.';
+      document.getElementById('detailModalHours').textContent = s.hours || '매장별 상이';
+
+      const starBtn = document.getElementById('detailModalStarBtn');
+      starBtn.textContent = s.starred ? '★ 찜 완료' : '☆ 찜하기';
+      starBtn.className = `min-h-[40px] px-3 py-1.5 rounded-lg border text-xs font-pixel font-bold shrink-0 cursor-pointer ${
+        s.starred ? 'bg-[#ffd166] text-[#121324] border-[#090a14]' : 'bg-[#262947] text-slate-300 border-[#4a4f7a]'
+      }`;
+      starBtn.onclick = () => {
+        s.starred = !s.starred;
+        saveState();
+        populateSpotDetailModal(spotId);
+      };
+
+      const courseBtn = document.getElementById('detailModalCourseBtn');
+      if (inCurrentDay) {
+        courseBtn.textContent = `✓ DAY ${state.currentDay} 코스에 담김 (터치 시 제외)`;
+        courseBtn.className = 'pixel-btn min-h-[46px] py-2.5 px-4 bg-[#06d6a0] text-[#121324] font-pixel text-sm font-bold flex items-center justify-center';
+      } else {
+        courseBtn.textContent = `+ DAY ${state.currentDay} 오늘 코스에 담기`;
+        courseBtn.className = 'pixel-btn min-h-[46px] py-2.5 px-4 bg-[#ffd166] text-[#121324] font-pixel text-sm font-bold flex items-center justify-center';
+      }
+      courseBtn.onclick = () => toggleSpotInDay(s.id, state.currentDay);
+
+      const mapQuery = `${s.name} ${s.area} Japan`;
+      document.getElementById('detailModalMapLink').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
+
+      // Restaurant Reservation / Tabelog / HotPepper / Direct Phone Links for Food & Cafe spots
+      let resExtraBox = document.getElementById('detailModalResExtraBox');
+      if (!resExtraBox) {
+        resExtraBox = document.createElement('div');
+        resExtraBox.id = 'detailModalResExtraBox';
+        const mapLinkEl = document.getElementById('detailModalMapLink').parentElement;
+        mapLinkEl.insertAdjacentElement('afterend', resExtraBox);
+      }
+
+      if (s.category === 'food' || s.category === 'cafe') {
+        const cleanKeyword = (s.tabelogQuery || s.name.replace(/★/g, '').replace(/\(.*?\)/g, '').trim()) + ' ' + (s.area || '東京');
+        const tabelogUrl = `https://www.google.com/search?q=${encodeURIComponent('site:tabelog.com ' + cleanKeyword)}`;
+        const hotpepperUrl = `https://www.google.com/search?q=${encodeURIComponent('site:hotpepper.jp ' + cleanKeyword)}`;
+
+        resExtraBox.className = 'bg-[#121324] p-3.5 rounded-xl border border-[#ff5978]/60 space-y-2.5';
+        resExtraBox.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-pixel text-xs text-[#ffd166]">🍽️ 식당 평점 · 웨이팅 · 예약 플랫폼 연동</span>
+            ${s.id === 'd1-mirai-suisan' ? '<span class="px-2 py-0.5 rounded bg-[#ff5978] text-white font-pixel text-[10px] font-bold">📞 전화/현장방문 전용</span>' : ''}
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <a
+              href="${tabelogUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="min-h-[40px] px-3 py-2 rounded-lg bg-[#262947] hover:bg-[#ffd166] hover:text-[#121324] text-[#ffd166] font-pixel text-xs flex items-center justify-center gap-1 border border-[#4a4f7a] transition"
+            >
+              <span>🍽️ 타베로그 평점·예약 ↗</span>
+            </a>
+            <a
+              href="${hotpepperUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="min-h-[40px] px-3 py-2 rounded-lg bg-[#262947] hover:bg-[#ff5978] hover:text-white text-slate-200 font-pixel text-xs flex items-center justify-center gap-1 border border-[#4a4f7a] transition"
+            >
+              <span>🍻 핫페퍼 구르메 검색 ↗</span>
+            </a>
+          </div>
+          ${s.tel ? `
+            <a
+              href="tel:${escapeHtml(s.tel)}"
+              class="min-h-[40px] w-full px-3 py-2 rounded-lg bg-[#1e2038] hover:bg-[#06d6a0] hover:text-[#121324] text-[#06d6a0] font-pixel text-xs flex items-center justify-center gap-1.5 border border-[#06d6a0]/60 transition"
+            >
+              <span>📞 매장 직접 전화 걸기 (${escapeHtml(s.tel)})</span>
+            </a>
+          ` : ''}
+        `;
+      } else {
+        resExtraBox.className = 'hidden';
+        resExtraBox.innerHTML = '';
+      }
+
+      const otherDaysBox = document.getElementById('detailModalOtherDays');
+      otherDaysBox.innerHTML = [1, 2, 3, 4].map(d => {
+        const already = isSpotInDayCourse(s.id, d);
+        return `
+          <button
+            onclick="toggleSpotInDay('${s.id}', ${d})"
+            class="min-h-[36px] px-3 py-1 rounded-lg font-pixel text-xs font-bold border transition ${
+              already
+                ? 'bg-[#06d6a0] text-[#121324] border-[#090a14]'
+                : 'bg-[#121324] text-slate-300 border-[#4a4f7a]'
+            }"
+          >
+            ${already ? `✓ D${d}` : `+ D${d}`}
+          </button>
+        `;
+      }).join('');
+
+      document.getElementById('detailModalEditBtn').onclick = () => {
+        closeSpotDetailModal();
+        openSpotEditorModal(s.id);
+      };
+
+      document.getElementById('detailModalDeleteBtn').onclick = () => {
+        state.spots = state.spots.filter(x => x.id !== s.id);
+        closeSpotDetailModal();
+        saveState('🗑️ 도감에서 삭제했습니다.');
+      };
+    }
+
+    function closeSpotDetailModal() {
+      const modal = document.getElementById('spotDetailModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      activeDetailSpotId = null;
+    }
+
+    // ==========================================
+    // 6. COURSE ITEM DETAIL & EDIT MODAL
+    // ==========================================
+    function openCourseItemModal(itemId) {
+      const dayNum = state.currentDay;
+      const list = state.courses[dayNum] || [];
+      const item = list.find(c => c.id === itemId);
+      if (!item) return;
+
+      activeEditCourseItem = { dayNum, itemId };
+      document.getElementById('courseModalItemId').value = itemId;
+      document.getElementById('courseModalName').value = item.name || '';
+      document.getElementById('courseModalArea').value = item.area || '';
+      document.getElementById('courseModalCat').value = item.category || 'subculture';
+      document.getElementById('courseModalResStatus').value = item.resStatus || 'none';
+      document.getElementById('courseModalDay').value = String(dayNum);
+      document.getElementById('courseModalMemo').value = item.memo || '';
+
+      const mapQuery = `${item.name} ${item.area || ''} Japan`;
+      document.getElementById('courseModalMapBtn').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
+
+      const tabelogBtn = document.getElementById('courseModalTabelogBtn');
+      if (tabelogBtn) {
+        const tQuery = `site:tabelog.com ${item.name.replace(/★/g, '').trim()} ${item.area || '東京'}`;
+        tabelogBtn.href = `https://www.google.com/search?q=${encodeURIComponent(tQuery)}`;
+      }
+
+      const infoBox = document.getElementById('courseModalSpotInfoBox');
+      const linkedSpot = item.spotId ? state.spots.find(s => s.id === item.spotId) : null;
+      if (linkedSpot) {
+        infoBox.classList.remove('hidden');
+        document.getElementById('courseModalSpotSummary').textContent = `💡 ${linkedSpot.summary}`;
+        document.getElementById('courseModalSpotDesc').textContent = linkedSpot.desc || '';
+        document.getElementById('courseModalSpotHours').textContent = `🕒 영업시간: ${linkedSpot.hours || '상이'} | 팁: ${linkedSpot.tip || ''}`;
+      } else {
+        infoBox.classList.add('hidden');
+      }
+
+      const modal = document.getElementById('courseItemModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function saveCourseItemModal(e) {
+      e.preventDefault();
+      if (!activeEditCourseItem) return;
+      const { dayNum, itemId } = activeEditCourseItem;
+      const list = state.courses[dayNum] || [];
+      const idx = list.findIndex(c => c.id === itemId);
+      if (idx === -1) return;
+
+      const item = list[idx];
+      item.name = document.getElementById('courseModalName').value.trim();
+      item.area = document.getElementById('courseModalArea').value.trim();
+      item.category = document.getElementById('courseModalCat').value;
+      item.resStatus = document.getElementById('courseModalResStatus').value;
+      item.memo = document.getElementById('courseModalMemo').value.trim();
+
+      const targetDay = Number(document.getElementById('courseModalDay').value);
+      if (targetDay !== dayNum) {
+        list.splice(idx, 1);
+        if (!state.courses[targetDay]) state.courses[targetDay] = [];
+        state.courses[targetDay].push(item);
+      }
+
+      closeCourseItemModal();
+      saveState('💾 코스 및 예약 상태가 저장되었습니다!');
+    }
+
+    function deleteCurrentCourseItem() {
+      if (!activeEditCourseItem) return;
+      const { dayNum, itemId } = activeEditCourseItem;
+      state.courses[dayNum] = (state.courses[dayNum] || []).filter(c => c.id !== itemId);
+      closeCourseItemModal();
+      saveState('🗑️ 코스에서 제외했습니다.');
+    }
+
+    function closeCourseItemModal() {
+      const modal = document.getElementById('courseItemModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      activeEditCourseItem = null;
+    }
+
+    // ==========================================
+    // 7. QUICK ADD COURSE MODAL & DAY EDIT MODAL
+    // ==========================================
+    function openQuickAddCourseModal() {
+      document.getElementById('addCourseName').value = '';
+      document.getElementById('addCourseArea').value = '';
+      document.getElementById('addCourseResStatus').value = 'none';
+      document.getElementById('addCourseMemo').value = '';
+      const modal = document.getElementById('quickAddModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeQuickAddCourseModal() {
+      const modal = document.getElementById('quickAddModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function submitQuickAddCourse(e) {
+      e.preventDefault();
+      const name = document.getElementById('addCourseName').value.trim();
+      if (!name) return;
+      const area = document.getElementById('addCourseArea').value.trim();
+      const category = document.getElementById('addCourseCat').value;
+      const resStatus = document.getElementById('addCourseResStatus').value;
+      const memo = document.getElementById('addCourseMemo').value.trim();
+
+      const dayNum = state.currentDay;
+      if (!state.courses[dayNum]) state.courses[dayNum] = [];
+      state.courses[dayNum].push({
+        id: 'c-' + Date.now(),
+        spotId: null,
+        name,
+        area,
+        category,
+        resStatus,
+        memo,
+        done: false
+      });
+
+      closeQuickAddCourseModal();
+      saveState(`📌 [${name}] 장소를 추가했습니다!`);
+    }
+
+    function openDayEditModal() {
+      const info = state.days[state.currentDay];
+      document.getElementById('dayEditShortArea').value = info.shortArea || '';
+      document.getElementById('dayEditTitle').value = info.title || '';
+      document.getElementById('dayEditSub').value = info.sub || '';
+      document.getElementById('dayEditSteps').value = (info.steps || []).join(', ');
+
+      const swapSel = document.getElementById('swapTargetDaySelect');
+      if (swapSel) {
+        swapSel.value = state.currentDay === 2 ? '3' : '2';
+      }
+
+      const modal = document.getElementById('dayEditModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeDayEditModal() {
+      const modal = document.getElementById('dayEditModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function saveDayEditModal(e) {
+      e.preventDefault();
+      const info = state.days[state.currentDay];
+      info.shortArea = document.getElementById('dayEditShortArea').value.trim() || info.shortArea;
+      info.title = document.getElementById('dayEditTitle').value.trim();
+      info.sub = document.getElementById('dayEditSub').value.trim();
+      info.steps = document.getElementById('dayEditSteps').value.split(',').map(s => s.trim()).filter(Boolean);
+      closeDayEditModal();
+      saveState('💾 일자 및 동선 요약이 수정되었습니다!');
+    }
+
+    function swapEntireDays() {
+      const d1 = Number(state.currentDay);
+      const d2 = Number(document.getElementById('swapTargetDaySelect').value);
+      if (d1 === d2) {
+        showToast('⚠️ 다른 요일을 선택해 주세요!');
+        return;
+      }
+
+      const tab1 = state.days[d1].tabLabel;
+      const tab2 = state.days[d2].tabLabel;
+      const tempDay = JSON.parse(JSON.stringify(state.days[d1]));
+      state.days[d1] = JSON.parse(JSON.stringify(state.days[d2]));
+      state.days[d2] = tempDay;
+      state.days[d1].tabLabel = tab1;
+      state.days[d2].tabLabel = tab2;
+
+      state.days[d1].title = state.days[d1].title.replace(/^DAY\s*\d+/i, `DAY ${d1}`);
+      state.days[d2].title = state.days[d2].title.replace(/^DAY\s*\d+/i, `DAY ${d2}`);
+
+      const tempCourse = state.courses[d1] || [];
+      state.courses[d1] = state.courses[d2] || [];
+      state.courses[d2] = tempCourse;
+
+      state.spots.forEach(s => {
+        if (Number(s.day) === d1) s.day = d2;
+        else if (Number(s.day) === d2) s.day = d1;
+      });
+
+      closeDayEditModal();
+      saveState(`🔄 DAY ${d1} ↔ DAY ${d2} 일정을 맞바꾸었습니다!`);
+    }
+
+    // ==========================================
+    // 8. SPOT EDITOR MODAL (ADD / EDIT CATALOG CARD)
+    // ==========================================
+    function openSpotEditorModal(spotId) {
+      const titleEl = document.getElementById('spotEditorTitle');
+      if (spotId) {
+        const s = state.spots.find(x => x.id === spotId);
+        if (!s) return;
+        titleEl.textContent = '✏️ 도감 장소 수정';
+        document.getElementById('formSpotId').value = s.id;
+        document.getElementById('formSpotDay').value = String(s.day);
+        document.getElementById('formSpotCat').value = s.category;
+        document.getElementById('formSpotArea').value = s.area || '';
+        document.getElementById('formSpotName').value = s.name || '';
+        document.getElementById('formSpotSummary').value = s.summary || '';
+        document.getElementById('formSpotDesc').value = s.desc || '';
+        document.getElementById('formSpotTip').value = s.tip || '';
+        document.getElementById('formSpotHours').value = s.hours || '';
+      } else {
+        titleEl.textContent = '+ 새 후보 장소 등록';
+        document.getElementById('formSpotId').value = '';
+        document.getElementById('formSpotDay').value = String(state.currentDay);
+        document.getElementById('formSpotCat').value = 'subculture';
+        document.getElementById('formSpotArea').value = '';
+        document.getElementById('formSpotName').value = '';
+        document.getElementById('formSpotSummary').value = '';
+        document.getElementById('formSpotDesc').value = '';
+        document.getElementById('formSpotTip').value = '';
+        document.getElementById('formSpotHours').value = '11:00 ~ 20:00';
+      }
+
+      const modal = document.getElementById('spotEditorModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeSpotEditorModal() {
+      const modal = document.getElementById('spotEditorModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function saveSpotEditorForm(e) {
+      e.preventDefault();
+      const id = document.getElementById('formSpotId').value;
+      const payload = {
+        id: id || ('spot-' + Date.now()),
+        day: Number(document.getElementById('formSpotDay').value),
+        category: document.getElementById('formSpotCat').value,
+        area: document.getElementById('formSpotArea').value.trim(),
+        name: document.getElementById('formSpotName').value.trim(),
+        summary: document.getElementById('formSpotSummary').value.trim(),
+        desc: document.getElementById('formSpotDesc').value.trim(),
+        tip: document.getElementById('formSpotTip').value.trim(),
+        hours: document.getElementById('formSpotHours').value.trim(),
+        starred: false
+      };
+
+      if (id) {
+        const idx = state.spots.findIndex(x => x.id === id);
+        if (idx >= 0) {
+          payload.starred = state.spots[idx].starred;
+          state.spots[idx] = payload;
+        }
+      } else {
+        state.spots.unshift(payload);
+      }
+
+      closeSpotEditorModal();
+      saveState(`💾 [${payload.name}] 도감 정보가 저장되었습니다!`);
+    }
+
+    // ==========================================
+    // 9. MOBILE SHARE, BACKUP JSON, SYNC & RESET
+    // ==========================================
+    function openNipporiModal() {
+      const m = document.getElementById('nipporiModal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+    function closeNipporiModal() {
+      const m = document.getElementById('nipporiModal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function openMobileShareModal() {
+      const code = btoa(encodeURIComponent(JSON.stringify({
+        days: state.days,
+        spots: state.spots,
+        courses: state.courses
+      })));
+      document.getElementById('exportCodeArea').value = code;
+      document.getElementById('importCodeArea').value = '';
+      document.getElementById('syncNicknameInput').value = userMeta.nickname || '';
+      document.getElementById('syncRoomIdInput').value = userMeta.roomId || 'TOKYO-2026';
+      document.getElementById('customDbUrlInput').value = userMeta.customDbUrl || '';
+      updateLiveSyncBanner();
+
+      const m = document.getElementById('mobileShareModal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    function closeMobileShareModal() {
+      const m = document.getElementById('mobileShareModal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function applyRoomAndNickname() {
+      const newNick = document.getElementById('syncNicknameInput').value.trim() || '여행자';
+      const rawRoom = document.getElementById('syncRoomIdInput').value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '') || 'TOKYO-2026';
+      const roomChanged = rawRoom !== userMeta.roomId;
+
+      userMeta.nickname = newNick;
+      userMeta.roomId = rawRoom;
+      saveLocalBackup();
+
+      if (roomChanged) {
+        initCloudSync();
+        showToast(`🟢 [${rawRoom}] 공유 방으로 연결되었습니다!`);
+      } else {
+        pushStateToCloud(`닉네임 설정 (${newNick})`);
+        showToast(`✨ 닉네임이 [${newNick}](으)로 저장되었습니다!`);
+      }
+    }
+
+    function saveCustomDbUrl() {
+      const url = document.getElementById('customDbUrlInput').value.trim();
+      userMeta.customDbUrl = url;
+      saveLocalBackup();
+      initCloudSync();
+      if (url) {
+        showToast('🌐 외부 Firebase DB 주소로 실시간 연동을 시작합니다!');
+      } else {
+        showToast('🟢 기본 클라우드 연동 모드로 전환되었습니다.');
+      }
+    }
+
+    function copyMagicInviteLink() {
+      const inputUrl = document.getElementById('customDbUrlInput')?.value.trim();
+      const inputRoom = document.getElementById('syncRoomIdInput')?.value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+      if (inputUrl) userMeta.customDbUrl = inputUrl;
+      if (inputRoom) userMeta.roomId = inputRoom;
+      saveLocalBackup();
+
+      const base = window.location.origin + window.location.pathname;
+      const params = new URLSearchParams();
+      if (userMeta.customDbUrl) {
+        params.set('db', userMeta.customDbUrl);
+      }
+      params.set('room', userMeta.roomId || 'TOKYO-2026');
+
+      const magicUrl = `${base}?${params.toString()}`;
+      copyToClipboard(
+        magicUrl,
+        '🔗 자동연결 초대 링크가 복사되었습니다! 카톡 단톡방에 공유하세요!'
+      );
+    }
+
+    function copyShareText() {
+      const lines = [
+        `👾 [2026 도쿄 3박 4일 여행 일정표 | 방: ${userMeta.roomId}]`,
+        '🏰 숙소: 닛포리역 (나리타 스카이라이너 36분 직통)',
+        ''
+      ];
+      [1, 2, 3, 4].forEach(d => {
+        const info = state.days[d];
+        const list = state.courses[d] || [];
+        lines.push(`■ ${info.title}`);
+        lines.push(`▶ 동선: ${(info.steps || []).join(' ➔ ')}`);
+        if (list.length === 0) {
+          lines.push('  - 등록된 세부 장소 없음');
+        } else {
+          list.forEach((c, idx) => {
+            lines.push(`  ${idx + 1}. ${c.name} (${c.area || ''}) ${c.memo ? '- ' + c.memo : ''}`);
+          });
+        }
+        lines.push('');
+      });
+      copyToClipboard(lines.join('\n'), '📋 카톡 공유용 일정표가 복사되었습니다!');
+    }
+
+    function copyExportCode() {
+      copyToClipboard(document.getElementById('exportCodeArea').value, '💾 세이브 코드가 복사되었습니다!');
+    }
+
+    function applyImportCode() {
+      const raw = document.getElementById('importCodeArea').value.trim();
+      if (!raw) return;
+      try {
+        const parsed = JSON.parse(decodeURIComponent(atob(raw)));
+        if (parsed.days && parsed.courses) {
+          state.days = parsed.days;
+          if (parsed.spots) state.spots = parsed.spots;
+          state.courses = parsed.courses;
+          closeMobileShareModal();
+          saveState('🎉 친구의 세이브 코드를 성공적으로 불러왔습니다!');
+        }
+      } catch (e) {
+        showToast('⚠️ 올바르지 않은 세이브 코드입니다.');
+      }
+    }
+
+    function downloadBackupJson() {
+      try {
+        const dataStr = JSON.stringify({
+          days: state.days,
+          spots: state.spots,
+          courses: state.courses
+        }, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'tokyo_trip_2026_backup.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('📥 백업 파일(.json)이 저장되었습니다!');
+      } catch (e) {
+        showToast('⚠️ 파일 저장 중 오류가 발생했습니다.');
+      }
+    }
+
+    function uploadBackupJson(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed.days && parsed.courses) {
+            state.days = parsed.days;
+            if (parsed.spots) state.spots = parsed.spots;
+            state.courses = parsed.courses;
+            closeMobileShareModal();
+            saveState('📂 백업 파일을 성공적으로 불러왔습니다!');
+          }
+        } catch (err) {
+          showToast('⚠️ 올바른 백업 파일이 아닙니다.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function openResetModal() {
+      const m = document.getElementById('resetModal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+    function closeResetModal() {
+      const m = document.getElementById('resetModal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+    function confirmResetAll() {
+      state.days = JSON.parse(JSON.stringify(DEFAULT_DAYS));
+      state.spots = JSON.parse(JSON.stringify(DEFAULT_SPOTS));
+      state.courses = JSON.parse(JSON.stringify(DEFAULT_COURSES));
+      closeResetModal();
+      saveState('↺ 초기 추천 일정으로 리셋되었습니다!');
+    }
+
+    // ==========================================
+    // 10. MOBILE TOUCH SWIPE GESTURES (LEFT / RIGHT DAY SWITCH)
+    // ==========================================
+    function initTouchSwipe() {
+      const area = document.getElementById('swipeArea');
+      if (!area) return;
+
+      let startX = 0;
+      let startY = 0;
+      let ignoreSwipe = false;
+
+      area.addEventListener('touchstart', function (e) {
+        if (e.touches.length !== 1) return;
+        // Ignore swipe if user is touching a horizontally scrollable filter bar or input
+        if (e.target.closest('.no-scrollbar, input, textarea, select')) {
+          ignoreSwipe = true;
+          return;
+        }
+        ignoreSwipe = false;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+
+      area.addEventListener('touchend', function (e) {
+        if (ignoreSwipe || !e.changedTouches || e.changedTouches.length !== 1) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        const dy = e.changedTouches[0].clientY - startY;
+
+        // Trigger horizontal day switch only on deliberate horizontal swipe
+        if (Math.abs(dx) > 75 && Math.abs(dy) < 42) {
+          if (dx < 0) {
+            stepDay(1); // Swipe Left -> Next Day
+          } else {
+            stepDay(-1); // Swipe Right -> Prev Day
+          }
+        }
+      }, { passive: true });
+    }
+
+    // Helpers
+    function copyToClipboard(text, msg) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showToast(msg)).catch(() => fallbackCopy(text, msg));
+      } else {
+        fallbackCopy(text, msg);
+      }
+    }
+
+    function fallbackCopy(text, msg) {
+      const t = document.createElement('textarea');
+      t.value = text;
+      t.style.position = 'fixed';
+      t.style.opacity = '0';
+      document.body.appendChild(t);
+      t.focus();
+      t.select();
+      try {
+        document.execCommand('copy');
+        showToast(msg);
+      } catch (e) {
+        showToast('복사 실패');
+      }
+      document.body.removeChild(t);
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const box = document.getElementById('toast');
+      document.getElementById('toastText').textContent = msg;
+      box.classList.remove('opacity-0', 'translate-y-3');
+      box.classList.add('opacity-100', 'translate-y-0');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        box.classList.add('opacity-0', 'translate-y-3');
+        box.classList.remove('opacity-100', 'translate-y-0');
+      }, 2200);
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Close modals on backdrop click or ESC
+    ['spotDetailModal', 'courseItemModal', 'quickAddModal', 'nipporiModal', 'dayEditModal', 'spotEditorModal', 'mobileShareModal', 'resetModal'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('click', function (e) {
+          if (e.target === this) {
+            this.classList.add('hidden');
+            this.classList.remove('flex');
+          }
+        });
+      }
+    });
+
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeSpotDetailModal();
+        closeCourseItemModal();
+        closeQuickAddCourseModal();
+        closeNipporiModal();
+        closeDayEditModal();
+        closeSpotEditorModal();
+        closeMobileShareModal();
+        closeResetModal();
+      }
+    });
+
+    // Expose all interactive handlers to window for inline onclick attributes
+    Object.assign(window, {
+      selectDay,
+      stepDay,
+      setCatFilter,
+      renderSpotGrid,
+      toggleCourseDone,
+      moveCourseOrder,
+      toggleSpotStar,
+      quickToggleSpotInCurrentDay,
+      toggleSpotInDay,
+      openSpotDetailModal,
+      closeSpotDetailModal,
+      openCourseItemModal,
+      closeCourseItemModal,
+      saveCourseItemModal,
+      deleteCurrentCourseItem,
+      openQuickAddCourseModal,
+      closeQuickAddCourseModal,
+      submitQuickAddCourse,
+      openDayEditModal,
+      closeDayEditModal,
+      saveDayEditModal,
+      swapEntireDays,
+      openSpotEditorModal,
+      closeSpotEditorModal,
+      saveSpotEditorForm,
+      openNipporiModal,
+      closeNipporiModal,
+      openMobileShareModal,
+      closeMobileShareModal,
+      applyRoomAndNickname,
+      saveCustomDbUrl,
+      copyMagicInviteLink,
+      copyShareText,
+      copyExportCode,
+      applyImportCode,
+      downloadBackupJson,
+      uploadBackupJson,
+      openResetModal,
+      closeResetModal,
+      confirmResetAll
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadLocalMetaAndBackup();
+      renderAll();
+      initTouchSwipe();
+      initCloudSync();
+    });
+  </script>
+</body>
+</html>
