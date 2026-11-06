@@ -114,46 +114,11 @@
           <h2 id="courseHeaderTitle" class="font-pixel text-sm sm:text-lg text-white">📌 오늘 우리가 갈 코스</h2>
         </div>
         <button onclick="openAddCourseModal()" class="pixel-btn px-3 py-1.5 bg-[#06d6a0] text-[#0f1424] font-pixel text-xs sm:text-sm font-bold">
-          + 장소 직접 추가 (🤖 AI 자동검색)
+          + 장소 직접 추가 (🔗 구글맵 링크 자동분석)
         </button>
       </div>
       <div id="courseContainer" class="space-y-2"></div>
-    </section>
-
-    <!-- SECTION 2: RECOMMENDED SPOTS DICTIONARY -->
-    <section class="space-y-3">
-      <div class="flex items-center justify-between gap-2">
-        <h2 class="font-pixel text-sm sm:text-lg text-white flex items-center gap-2">
-          <span>🗺️ 주변 추천 스팟 도감</span>
-          <span class="text-[11px] font-sans text-[#ffd166] bg-[#232c4a] px-2 py-0.5 rounded">👆 카드 터치 시 상세·예약·구글맵</span>
-        </h2>
-        <button onclick="openSpotFormModal(null)" class="pixel-btn px-3 py-1.5 bg-[#ffd166] text-[#0f1424] font-pixel text-xs font-bold">
-          + 도감 등록
-        </button>
-      </div>
-
-      <div class="bg-[#1a2138] p-2.5 rounded-xl border border-[#3a446e] flex flex-wrap items-center justify-between gap-2">
-        <div id="catBar" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar"></div>
-        <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer">
-          <input type="checkbox" id="showAllDaysChk" onchange="renderSpots()" class="accent-[#ffd166] w-4 h-4" />
-          <span>전 요일(D1~D4) 보기</span>
-        </label>
-      </div>
-
-      <div id="spotGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
-    </section>
-  </main>
-
-  <!-- MOBILE BOTTOM NAVIGATION -->
-  <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0f1424]/95 backdrop-blur-md border-t-2 border-[#3a446e] px-1.5 py-1.5 grid grid-cols-5 gap-1">
-    <button onclick="selectDay(1)" id="mTab1" class="py-1.5 rounded-xl flex flex-col items-center justify-center"><span class="font-pixel text-[11px]">DAY 1</span><span class="text-[10px]">미래·고엔지</span></button>
-    <button onclick="selectDay(2)" id="mTab2" class="py-1.5 rounded-xl flex flex-col items-center justify-center"><span class="font-pixel text-[11px]">DAY 2</span><span class="text-[10px]">가마쿠라</span></button>
-    <button onclick="selectDay(3)" id="mTab3" class="py-1.5 rounded-xl flex flex-col items-center justify-center"><span class="font-pixel text-[11px]">DAY 3</span><span class="text-[10px]">진보·아키바</span></button>
-    <button onclick="selectDay(4)" id="mTab4" class="py-1.5 rounded-xl flex flex-col items-center justify-center"><span class="font-pixel text-[11px]">DAY 4</span><span class="text-[10px]">나리타귀국</span></button>
-    <button onclick="openModal('syncModal')" class="py-1.5 rounded-xl flex flex-col items-center justify-center bg-[#232c4a] text-[#06d6a0] border border-[#06d6a0]/50"><span class="font-pixel text-[11px]">🟢 실시간</span><span class="text-[10px]">공유/링크</span></button>
-  </nav>
-
-  <!-- MODAL 1: ADD / EDIT COURSE ITEM (WITH GEMINI AI SEARCH) -->
+  <!-- MODAL 1: ADD / EDIT COURSE ITEM (WITH GOOGLE MAPS LINK PARSER) -->
   <div id="courseModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 bg-black/75">
     <div class="pixel-panel max-w-md w-full bg-[#1a2138] border-2 border-[#06d6a0] overflow-hidden">
       <div class="bg-[#0f1424] px-4 py-3 flex items-center justify-between border-b border-[#3a446e]">
@@ -162,11 +127,38 @@
       </div>
       <form onsubmit="saveCourseForm(event)" class="p-4 space-y-3 max-h-[82vh] overflow-y-auto text-xs sm:text-sm">
         <input type="hidden" id="cFormId" />
-        <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1">장소 이름 * <span class="text-[#5ce1e6] font-normal">(입력 후 🤖 AI 자동검색 클릭!)</span></label>
+        <input type="hidden" id="cFormLat" />
+        <input type="hidden" id="cFormLng" />
+
+        <!-- GOOGLE MAPS LINK & SHARE TEXT PARSER BOX -->
+        <div class="p-3 rounded-xl bg-[#0f1424] border-2 border-[#06d6a0] space-y-2">
+          <label class="block font-pixel text-xs text-[#06d6a0]">
+            🔗 구글 지도 링크 또는 공유 텍스트 붙여넣기 (오차 0%)
+          </label>
           <div class="flex gap-1.5">
-            <input type="text" id="cFormName" required placeholder="예: 이치란 신주쿠, 스루가야" class="flex-1 px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white font-bold" />
-            <button type="button" onclick="autoFillWithGemini('course')" class="pixel-btn px-3 py-2 bg-[#5ce1e6] text-[#0f1424] font-pixel text-xs font-bold shrink-0">🤖 AI 검색</button>
+            <input
+              type="text"
+              id="cFormMapRaw"
+              onpaste="setTimeout(() => parseGoogleMapInput('course'), 80)"
+              placeholder="구글맵 주소창 링크 또는 앱 공유 문구 붙여넣기"
+              class="flex-1 px-2.5 py-2 rounded-lg bg-[#1a2138] border border-[#06d6a0]/60 text-white text-xs"
+            />
+            <button
+              type="button"
+              onclick="parseGoogleMapInput('course')"
+              class="pixel-btn px-2.5 py-2 bg-[#06d6a0] text-[#0f1424] font-pixel text-xs font-bold shrink-0"
+            >
+              ⚡ 링크에서 정보 추출
+            </button>
+          </div>
+          <p id="cFormParseStatus" class="text-[11px] text-[#ffd166] hidden"></p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">장소 이름 *</label>
+          <div class="flex gap-1.5">
+            <input type="text" id="cFormName" required placeholder="예: 멘야 무사시, 스루가야" class="flex-1 px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white font-bold" />
+            <button type="button" onclick="autoFillWithGemini('course')" class="pixel-btn px-3 py-2 bg-[#5ce1e6] text-[#0f1424] font-pixel text-xs font-bold shrink-0">🔍 키워드 보완</button>
           </div>
           <p id="cFormSearchMsg" class="text-[11px] text-[#ffd166] mt-1 hidden"></p>
         </div>
@@ -225,8 +217,16 @@
           <input type="text" id="cFormMemo" placeholder="예: 참치 소진 전 전화 확인" class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white" />
         </div>
 
+        <div>
+          <label class="block text-[11px] text-slate-400 mb-1">📍 원본 구글맵 링크 (자동 저장됨)</label>
+          <input type="text" id="cFormCustomUrl" placeholder="https://maps.app.goo.gl/... 또는 google.com/maps/..." class="w-full px-3 py-1.5 rounded-lg bg-[#0f1424] border border-[#3a446e] text-[#5ce1e6] text-xs font-mono" />
+        </div>
+
         <div class="flex items-center justify-between pt-1">
-          <button type="button" onclick="searchGoogleHours('cFormName')" class="text-xs font-pixel text-[#5ce1e6] underline">🌐 구글 실시간 검색 ↗</button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="searchGoogleHours('cFormName')" class="text-xs font-pixel text-[#5ce1e6] underline">🌐 구글 영업시간 ↗</button>
+            <button type="button" onclick="openCustomOrSearchMap('cFormCustomUrl', 'cFormName', 'cFormArea')" class="text-xs font-pixel text-[#06d6a0] underline">📍 구글맵 열기 ↗</button>
+          </div>
           <button type="button" id="cFormDelBtn" onclick="deleteCourseFromModal()" class="hidden px-3 py-1 rounded bg-[#ff5978] text-white font-pixel text-xs">🗑️ 삭제</button>
         </div>
 
@@ -261,7 +261,8 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
           <a id="sdMapLink" href="#" target="_blank" class="pixel-btn py-2 px-3 bg-[#232c4a] text-white font-pixel text-xs text-center">📍 구글맵 열기 ↗</a>
           <a id="sdTabelogLink" href="#" target="_blank" class="pixel-btn py-2 px-3 bg-[#232c4a] text-[#ffd166] font-pixel text-xs text-center">🍽️ 타베로그 예약 ↗</a>
-          <a id="sdPhoneLink" href="#" class="pixel-btn py-2 px-3 bg-[#ff5978] text-white font-pixel text-xs text-center hidden">📞 전화걸기</a>
+          <a id="sdHotpepperLink" href="#" target="_blank" class="pixel-btn py-2 px-3 bg-[#232c4a] text-[#5ce1e6] font-pixel text-xs text-center">🍻 핫페퍼 검색 ↗</a>
+          <a id="sdPhoneLink" href="#" class="pixel-btn py-2 px-3 bg-[#ff5978] text-white font-pixel text-xs text-center hidden col-span-2 sm:col-span-3">📞 전화걸기</a>
         </div>
         <div class="pt-2 border-t border-[#323c63] flex flex-wrap items-center justify-between gap-2">
           <button id="sdAddCourseBtn" class="pixel-btn flex-1 py-2.5 px-4 bg-[#06d6a0] text-[#0f1424] font-pixel text-xs sm:text-sm font-bold"></button>
@@ -272,7 +273,7 @@
     </div>
   </div>
 
-  <!-- MODAL 3: SPOT FORM MODAL -->
+  <!-- MODAL 3: SPOT FORM MODAL (WITH GOOGLE MAPS LINK PARSER) -->
   <div id="spotFormModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 bg-black/75">
     <div class="pixel-panel max-w-md w-full bg-[#1a2138] border-2 border-[#ffd166] overflow-hidden">
       <div class="bg-[#0f1424] px-4 py-3 flex items-center justify-between border-b border-[#3a446e]">
@@ -281,11 +282,38 @@
       </div>
       <form onsubmit="saveSpotForm(event)" class="p-4 space-y-3 max-h-[82vh] overflow-y-auto text-xs sm:text-sm">
         <input type="hidden" id="sFormId" />
+        <input type="hidden" id="sFormLat" />
+        <input type="hidden" id="sFormLng" />
+
+        <!-- GOOGLE MAPS LINK & SHARE TEXT PARSER BOX -->
+        <div class="p-3 rounded-xl bg-[#0f1424] border-2 border-[#06d6a0] space-y-2">
+          <label class="block font-pixel text-xs text-[#06d6a0]">
+            🔗 구글 지도 링크 또는 공유 텍스트 붙여넣기
+          </label>
+          <div class="flex gap-1.5">
+            <input
+              type="text"
+              id="sFormMapRaw"
+              onpaste="setTimeout(() => parseGoogleMapInput('spot'), 80)"
+              placeholder="구글맵 링크 또는 공유 텍스트 붙여넣기"
+              class="flex-1 px-2.5 py-2 rounded-lg bg-[#1a2138] border border-[#06d6a0]/60 text-white text-xs"
+            />
+            <button
+              type="button"
+              onclick="parseGoogleMapInput('spot')"
+              class="pixel-btn px-2.5 py-2 bg-[#06d6a0] text-[#0f1424] font-pixel text-xs font-bold shrink-0"
+            >
+              ⚡ 링크에서 정보 추출
+            </button>
+          </div>
+          <p id="sFormParseStatus" class="text-[11px] text-[#ffd166] hidden"></p>
+        </div>
+
         <div>
           <label class="block text-xs font-bold text-slate-300 mb-1">장소 이름 *</label>
           <div class="flex gap-1.5">
             <input type="text" id="sFormName" required placeholder="예: 스루가야 아키하바라" class="flex-1 px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white font-bold" />
-            <button type="button" onclick="autoFillWithGemini('spot')" class="pixel-btn px-3 py-2 bg-[#5ce1e6] text-[#0f1424] font-pixel text-xs font-bold">🤖 AI 검색</button>
+            <button type="button" onclick="autoFillWithGemini('spot')" class="pixel-btn px-3 py-2 bg-[#5ce1e6] text-[#0f1424] font-pixel text-xs font-bold">🔍 키워드 보완</button>
           </div>
         </div>
         <div class="grid grid-cols-3 gap-2">
@@ -323,6 +351,10 @@
             <label class="block text-xs font-bold text-slate-300 mb-1">영업시간</label>
             <input type="text" id="sFormHours" class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white" />
           </div>
+        </div>
+        <div>
+          <label class="block text-[11px] text-slate-400 mb-1">📍 원본 구글맵 링크</label>
+          <input type="text" id="sFormCustomUrl" placeholder="https://maps.app.goo.gl/..." class="w-full px-3 py-1.5 rounded-lg bg-[#0f1424] border border-[#3a446e] text-[#5ce1e6] text-xs font-mono" />
         </div>
         <div class="pt-2 flex justify-end gap-2">
           <button type="button" onclick="closeModal('spotFormModal')" class="px-4 py-2 rounded-lg bg-[#232c4a] text-slate-300 font-pixel text-xs">취소</button>
@@ -415,6 +447,37 @@
     </div>
   </div>
 
+  <!-- MODAL 6: DAY EDIT & SWAP MODAL -->
+  <div id="daySwapModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 bg-black/75">
+    <div class="pixel-panel max-w-md w-full bg-[#1a2138] border-2 border-[#ffd166] overflow-hidden">
+      <div class="bg-[#0f1424] px-4 py-3 flex items-center justify-between border-b border-[#3a446e]">
+        <span class="font-pixel text-sm text-[#ffd166]">✏️ 일자 제목 수정 & 🔄 요일 통째로 스왑</span>
+        <button onclick="closeModal('daySwapModal')" class="w-8 h-8 rounded-lg bg-[#232c4a] text-white font-bold">✕</button>
+      </div>
+      <div class="p-4 space-y-4 text-xs sm:text-sm">
+        <div class="space-y-2">
+          <label class="block font-pixel text-xs text-[#06d6a0]">✏️ 현재 DAY 제목 및 설명 수정</label>
+          <input type="text" id="dEditShort" placeholder="탭 요약 제목 (예: 미래수산·고엔지)" class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white font-bold" />
+          <input type="text" id="dEditTitle" placeholder="배너 큰 제목" class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white" />
+          <input type="text" id="dEditSub" placeholder="배너 부제목 설명" class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white" />
+          <button onclick="saveDayMetaEdit()" class="pixel-btn w-full py-2 bg-[#06d6a0] text-[#0f1424] font-pixel text-xs font-bold">💾 일자 제목/설명 저장</button>
+        </div>
+        <div class="pt-3 border-t border-[#323c63] space-y-2">
+          <label class="block font-pixel text-xs text-[#ffd166]">🔄 다른 요일과 코스 통째로 맞바꾸기 (요일 스왑)</label>
+          <div class="flex gap-2">
+            <select id="swapTargetDay" class="flex-1 px-3 py-2 rounded-lg bg-[#0f1424] border border-[#ffd166] text-white font-bold">
+              <option value="1">DAY 1 (11/21 토)</option>
+              <option value="2">DAY 2 (11/22 일)</option>
+              <option value="3">DAY 3 (11/23 월)</option>
+              <option value="4">DAY 4 (11/24 화)</option>
+            </select>
+            <button onclick="executeDaySwap()" class="pixel-btn px-4 py-2 bg-[#ffd166] text-[#0f1424] font-pixel text-xs font-bold">🔄 맞바꾸기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div id="toast" class="fixed bottom-20 sm:bottom-6 right-4 left-4 sm:left-auto z-50 pointer-events-none opacity-0 transition-opacity duration-200 flex justify-center">
     <div id="toastBox" class="px-4 py-2.5 rounded-xl bg-[#ffd166] text-[#0f1424] font-pixel text-xs sm:text-sm font-bold border-2 border-[#070a14] shadow-[3px_3px_0_#070a14]"></div>
@@ -438,6 +501,56 @@
       cafe: { label: "☕ 카페/산책", badge: "bg-[#06d6a0] text-[#0f1424]" },
       etc: { label: "🚃 이동/기타", badge: "bg-[#5ce1e6] text-[#0f1424]" }
     };
+
+    // Tokyo & Kamakura Station Coordinates for Haversine Nearest Hub & Transit Routing
+    const TOKYO_HUBS = [
+      { name: "닛포리", lat: 35.7277, lng: 139.7709, keys: ["nippori", "닛포리", "日暮里", "arakawa", "아라카와", "taitō", "taito"] },
+      { name: "우에노", lat: 35.7141, lng: 139.7774, keys: ["ueno", "우에노", "上野", "ameyoko", "아메요코"] },
+      { name: "에이후쿠초", lat: 35.6763, lng: 139.6429, keys: ["eifukucho", "에이후쿠", "永福町", "izumi", "이즈미", "미래수산", "미라이수산"] },
+      { name: "고엔지", lat: 35.7053, lng: 139.6499, keys: ["koenji", "고엔지", "高円寺", "suginami", "스기나미", "杉並"] },
+      { name: "나카노", lat: 35.7058, lng: 139.6658, keys: ["nakano", "나카노", "中野"] },
+      { name: "신주쿠", lat: 35.6896, lng: 139.7006, keys: ["shinjuku", "신주쿠", "新宿", "가부키초"] },
+      { name: "시부야", lat: 35.6580, lng: 139.7016, keys: ["shibuya", "시부야", "渋谷"] },
+      { name: "하라주쿠", lat: 35.6702, lng: 139.7027, keys: ["harajuku", "하라주쿠", "原宿", "omotesando", "오모테산도"] },
+      { name: "이케부쿠로", lat: 35.7295, lng: 139.7109, keys: ["ikebukuro", "이케부쿠로", "池袋", "toshima"] },
+      { name: "진보초", lat: 35.6959, lng: 139.7576, keys: ["jinbocho", "jimbocho", "진보초", "神保町", "kanda", "칸다"] },
+      { name: "오차노미즈", lat: 35.6998, lng: 139.7638, keys: ["ochanomizu", "오차노미즈", "御茶ノ水", "칸다 묘진", "칸다묘진"] },
+      { name: "아키하바라", lat: 35.6984, lng: 139.7731, keys: ["akihabara", "아키하바라", "아키바", "秋葉原", "sotokanda", "chiyoda"] },
+      { name: "도쿄/긴자", lat: 35.6812, lng: 139.7671, keys: ["tokyo", "ginza", "도쿄역", "긴자", "銀座", "chuo"] },
+      { name: "아사쿠사", lat: 35.7119, lng: 139.7983, keys: ["asakusa", "아사쿠사", "浅草", "센소지"] },
+      { name: "가마쿠라", lat: 35.3190, lng: 139.5504, keys: ["kamakura", "가마쿠라", "鎌倉", "코마치도리", "가마쿠라코코마에"] },
+      { name: "하세", lat: 35.3113, lng: 139.5361, keys: ["hase", "하세", "長谷", "대불", "하세데라"] },
+      { name: "에노시마", lat: 35.3009, lng: 139.4803, keys: ["enoshima", "에노시마", "江ノ島", "fujisawa", "후지사와"] },
+      { name: "나리타공항", lat: 35.7719, lng: 140.3929, keys: ["narita", "나리타", "成田"] }
+    ];
+
+    function calcDistanceKm(lat1, lng1, lat2, lng2) {
+      const R = 6371;
+      const dLat = ((lat2 - lat1) * Math.PI) / 180;
+      const dLng = ((lng2 - lng1) * Math.PI) / 180;
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function findNearestTokyoHub(lat, lng, fallbackText) {
+      if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
+        let best = TOKYO_HUBS[0];
+        let minD = 99999;
+        for (const h of TOKYO_HUBS) {
+          const d = calcDistanceKm(lat, lng, h.lat, h.lng);
+          if (d < minD) { minD = d; best = h; }
+        }
+        if (minD <= 15) return best.name;
+      }
+      const lower = (fallbackText || "").toLowerCase();
+      for (const h of TOKYO_HUBS) {
+        if (h.keys.some(k => lower.includes(k))) return h.name;
+      }
+      return currentDay === 1 ? "고엔지" : currentDay === 2 ? "가마쿠라" : "아키하바라";
+    }
 
     const RES_META = {
       none: { label: "", cls: "hidden" },
@@ -548,16 +661,35 @@
     function estimateTransitBetween(itemA, itemB) {
       const a = (itemA.area || itemA.name || "").trim();
       const b = (itemB.area || itemB.name || "").trim();
+
+      // Calculate GPS distance if both items have coordinates from Google Maps links
+      let gpsKm = null;
+      if (itemA.lat && itemA.lng && itemB.lat && itemB.lng) {
+        gpsKm = calcDistanceKm(Number(itemA.lat), Number(itemA.lng), Number(itemB.lat), Number(itemB.lng));
+        if (gpsKm < 0.9) {
+          const walkMin = Math.max(4, Math.round(gpsKm * 13));
+          return { mins: walkMin, label: `${a} 내 도보 이동 (약 ${(gpsKm * 1000).toFixed(0)}m)`, mode: "🚶 도보" };
+        }
+      }
+
       if (!a || !b || a === b) return { mins: 8, label: `${a || "현 위치"} 도보 이동`, mode: "🚶 도보" };
 
       const pair = `${a}->${b}`;
-      if (pair.includes("닛포리") && pair.includes("에이후쿠초")) return { mins: 42, label: "JR 야마노테선 ➔ 게이오/이노카시라선 에이후쿠초역", mode: "🚇 전철 환승" };
+      if (pair.includes("닛포리") && pair.includes("에이후쿠초")) return { mins: 42, label: "JR 야마노테선(신주쿠) ➔ 게이오·이노카시라선 에이후쿠초역", mode: "🚇 전철 환승" };
       if (pair.includes("에이후쿠초") && pair.includes("고엔지")) return { mins: 18, label: "에이후쿠초역 앞 관동버스(고엔지역행 직통)", mode: "🚌 직통버스" };
       if (pair.includes("고엔지") && pair.includes("나카노")) return { mins: 5, label: "JR 주오·소부선 1정거장 직통", mode: "🚇 JR 전철" };
       if (pair.includes("닛포리") && pair.includes("가마쿠라")) return { mins: 65, label: "도쿄역 JR 요코스카선 환승 ➔ 가마쿠라역", mode: "🚇 JR 직통환승" };
       if (pair.includes("가마쿠라") || pair.includes("하세") || pair.includes("에노시마")) return { mins: 15, label: "에노덴 해안 열차 탑승 이동", mode: "🚋 에노덴 열차" };
+      if (pair.includes("진보초") && pair.includes("오차노미즈")) return { mins: 10, label: "메이지도리·악기거리 도보 산책 이동", mode: "🚶 도보 산책" };
+      if (pair.includes("오차노미즈") && pair.includes("아키하바라")) return { mins: 10, label: "칸다 묘진 비탈길 경유 아키하바라 도보 이동", mode: "🚶 도보 산책" };
       if (pair.includes("진보초") && pair.includes("아키하바라")) return { mins: 15, label: "오차노미즈·칸다 묘진 경유 도보 산책", mode: "🚶 도보 산책" };
       if (pair.includes("닛포리") && pair.includes("아키하바라")) return { mins: 8, label: "JR 야마노테선 직통 4정거장", mode: "🚇 JR 직통" };
+      if (pair.includes("닛포리") && pair.includes("나리타")) return { mins: 36, label: "케이세이 스카이라이너 직통 (전석 지정석)", mode: "🚄 스카이라이너" };
+
+      if (gpsKm !== null) {
+        const estMin = Math.min(75, Math.max(12, Math.round(gpsKm * 2.8 + 8)));
+        return { mins: estMin, label: `${a} ➔ ${b} 전철 이동 (직선 ${gpsKm.toFixed(1)}km)`, mode: "🚇 전철 이동" };
+      }
       return { mins: 22, label: `${a} ➔ ${b} 도쿄 메트로 / JR 전철 이동`, mode: "🚇 전철 이동" };
     }
 
@@ -583,8 +715,150 @@
     }
 
     // =========================================================================
-    // 2. GEMINI AI AUTO-SEARCH ENGINE (WITH GROUNDING & FALLBACK)
+    // 2. GOOGLE MAPS LINK & SHARE TEXT PARSER + OSM REVERSE GEOCODING
     // =========================================================================
+    async function parseGoogleMapInput(mode) {
+      const isCourse = mode === "course";
+      const rawInput = document.getElementById(isCourse ? "cFormMapRaw" : "sFormMapRaw");
+      const statusEl = document.getElementById(isCourse ? "cFormParseStatus" : "sFormParseStatus");
+      const raw = (rawInput?.value || "").trim();
+
+      if (!raw) {
+        showToast("구글 지도 링크나 공유 문구를 먼저 붙여넣어 주세요!");
+        rawInput?.focus();
+        return;
+      }
+
+      if (statusEl) {
+        statusEl.classList.remove("hidden");
+        statusEl.textContent = "⏳ 구글 지도 링크에서 장소명·GPS 좌표·역 정보를 분석 중...";
+      }
+
+      let extractedUrl = "";
+      let extractedName = "";
+      let lat = null;
+      let lng = null;
+
+      // 1) Extract URL from pasted share text or full URL
+      const urlMatch = raw.match(/https?:\/\/[^\s]+/i);
+      if (urlMatch) {
+        extractedUrl = urlMatch[0];
+        const beforeText = raw.replace(extractedUrl, "").replace(/[·|,\-\n]+/g, " ").trim();
+        if (beforeText && beforeText.length >= 2) {
+          extractedName = beforeText.split("  ")[0].trim();
+        }
+      }
+
+      // 2) Extract place name from /maps/place/NAME/...
+      const placeSlug = raw.match(/\/maps\/place\/([^/@?]+)/i) || raw.match(/[?&]q=([^&]+)/i);
+      if (placeSlug && placeSlug[1]) {
+        try {
+          const decoded = decodeURIComponent(placeSlug[1].replace(/\+/g, " ")).trim();
+          if (!/^\d+\.\d+/.test(decoded)) extractedName = decoded;
+        } catch (e) {}
+      }
+
+      // 3) Extract exact coordinates from @lat,lng or !3dlat!4dlng
+      const atCoord = raw.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      const bangCoord = raw.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+      if (bangCoord) {
+        lat = parseFloat(bangCoord[1]);
+        lng = parseFloat(bangCoord[2]);
+      } else if (atCoord) {
+        lat = parseFloat(atCoord[1]);
+        lng = parseFloat(atCoord[2]);
+      }
+
+      // 4) Check built-in Tokyo DB first
+      const searchTarget = (extractedName || raw).toLowerCase();
+      const kbMatch = FALLBACK_PLACE_DB.find(p => p.keys.some(k => searchTarget.includes(k)) || p.name.toLowerCase().includes(searchTarget));
+
+      let area = findNearestTokyoHub(lat, lng, extractedName || raw);
+      let cat = kbMatch ? kbMatch.cat : "subculture";
+      let hours = kbMatch ? kbMatch.hours : "";
+      let stay = kbMatch ? kbMatch.stay : 60;
+      let tip = kbMatch ? kbMatch.tip : "";
+
+      // 5) Query OpenStreetMap Nominatim (Reverse if lat/lng exists, or bounded Search if name exists)
+      try {
+        if (lat && lng) {
+          const revRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&extratags=1`, {
+            headers: { "Accept-Language": "ko,ja,en" }
+          });
+          if (revRes.ok) {
+            const revData = await revRes.json();
+            if (!extractedName && revData.name) extractedName = revData.name;
+            const addr = revData.address || {};
+            const addrStr = `${addr.suburb || ""} ${addr.quarter || ""} ${addr.neighbourhood || ""} ${addr.city_district || ""} ${addr.city || ""}`;
+            area = findNearestTokyoHub(lat, lng, addrStr + " " + (extractedName || ""));
+            if (revData.extratags?.opening_hours && !hours) {
+              hours = revData.extratags.opening_hours;
+            }
+            const osmType = `${revData.category || ""} ${revData.type || ""}`;
+            if (/restaurant|fast_food|bar|izakaya|pub|ramen|sushi/i.test(osmType)) cat = "food";
+            else if (/cafe|bakery|park|garden|shrine|temple/i.test(osmType)) cat = "cafe";
+            else if (/clothes|second_hand|fashion|department/i.test(osmType)) cat = "vintage";
+          }
+        } else if (extractedName) {
+          const qUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(extractedName + " Tokyo")}&limit=1&addressdetails=1&extratags=1`;
+          const sRes = await fetch(qUrl, { headers: { "Accept-Language": "ko,ja,en" } });
+          if (sRes.ok) {
+            const sArr = await sRes.json();
+            if (sArr && sArr.length > 0) {
+              const top = sArr[0];
+              lat = parseFloat(top.lat);
+              lng = parseFloat(top.lon);
+              area = findNearestTokyoHub(lat, lng, top.display_name || extractedName);
+              if (top.extratags?.opening_hours && !hours) hours = top.extratags.opening_hours;
+            }
+          }
+        }
+      } catch (err) {}
+
+      const finalName = extractedName || (kbMatch ? kbMatch.name : "구글맵 저장 스팟");
+      if (!hours) hours = cat === "food" ? "11:00 ~ 21:30 (구글맵 확인)" : "11:00 ~ 20:00";
+      if (!tip) tip = `${area} 인근 구글맵 핀 연동 스팟${lat ? ` (GPS 좌표 연동 완료)` : ""}`;
+
+      if (isCourse) {
+        document.getElementById("cFormName").value = finalName;
+        document.getElementById("cFormArea").value = area;
+        document.getElementById("cFormCat").value = cat;
+        document.getElementById("cFormHours").value = hours;
+        document.getElementById("cFormStay").value = stay;
+        document.getElementById("cFormMemo").value = tip;
+        document.getElementById("cFormCustomUrl").value = extractedUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(finalName + " " + area)}`;
+        document.getElementById("cFormLat").value = lat || "";
+        document.getElementById("cFormLng").value = lng || "";
+      } else {
+        document.getElementById("sFormName").value = finalName;
+        document.getElementById("sFormArea").value = area;
+        document.getElementById("sFormCat").value = cat;
+        document.getElementById("sFormHours").value = hours;
+        document.getElementById("sFormSummary").value = tip;
+        document.getElementById("sFormDesc").value = `${finalName} (${area}) - 구글 지도 링크에서 추출한 추천 장소입니다.`;
+        document.getElementById("sFormTip").value = tip;
+        document.getElementById("sFormCustomUrl").value = extractedUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(finalName + " " + area)}`;
+        document.getElementById("sFormLat").value = lat || "";
+        document.getElementById("sFormLng").value = lng || "";
+      }
+
+      if (statusEl) {
+        statusEl.textContent = `✅ 추출 완료: [${finalName}] · 📍 ${area}${lat ? ` (${lat.toFixed(4)}, ${lng.toFixed(4)})` : ""}`;
+      }
+      showToast(`📍 '${finalName}' (${area}) 정보가 자동 입력되었습니다!`);
+    }
+
+    function openCustomOrSearchMap(urlInputId, nameInputId, areaInputId) {
+      const custom = document.getElementById(urlInputId)?.value.trim();
+      if (custom && custom.startsWith("http")) {
+        window.open(custom, "_blank");
+        return;
+      }
+      const name = document.getElementById(nameInputId)?.value.trim() || "Tokyo";
+      const area = document.getElementById(areaInputId)?.value.trim() || "";
+      window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + " " + area + " Tokyo")}`, "_blank");
+    }
+
     async function autoFillWithGemini(mode) {
       const isCourse = mode === "course";
       const nameInput = document.getElementById(isCourse ? "cFormName" : "sFormName");
@@ -738,15 +1012,20 @@
       document.getElementById("dayBanner").innerHTML = `
         <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#323c63]">
           <div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
               <span class="px-2 py-0.5 rounded bg-[#ffd166] text-[#0f1424] font-pixel text-xs font-bold">${info.date}</span>
               <h2 class="font-pixel text-base sm:text-xl text-[#ffd166]">${info.title}</h2>
             </div>
             <p class="text-xs text-slate-300 mt-1">${info.sub}</p>
           </div>
-          <div class="flex items-center gap-2 bg-[#0f1424] px-3 py-1.5 rounded-xl border border-[#45507d]">
-            <label class="font-pixel text-xs text-[#06d6a0]">⏰ 출발시각:</label>
-            <input type="time" value="${info.startTime || "09:00"}" onchange="updateDayStartTime(this.value)" class="bg-transparent text-white font-pixel text-xs font-bold focus:outline-none" />
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <div class="flex items-center gap-1.5 bg-[#0f1424] px-2.5 py-1.5 rounded-xl border border-[#45507d]">
+              <label class="font-pixel text-xs text-[#06d6a0]">⏰ 출발:</label>
+              <input type="time" value="${info.startTime || "09:00"}" onchange="updateDayStartTime(this.value)" class="bg-transparent text-white font-pixel text-xs font-bold focus:outline-none" />
+            </div>
+            <button onclick="openDaySwapModal()" class="pixel-btn px-2.5 py-1.5 bg-[#232c4a] text-[#ffd166] font-pixel text-xs">
+              ✏️ 수정 · 🔄 요일 스왑
+            </button>
           </div>
         </div>
         <div class="pt-3">
@@ -774,7 +1053,9 @@
         let transitBar = "";
         if (row.transitFromPrev) {
           const prevItem = timeline[idx - 1].item;
-          const mapDirUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(prevItem.name + " " + (prevItem.area || "") + " Tokyo")}&destination=${encodeURIComponent(it.name + " " + (it.area || "") + " Tokyo")}&travelmode=transit`;
+          const origParam = (prevItem.lat && prevItem.lng) ? `${prevItem.lat},${prevItem.lng}` : `${prevItem.name} ${prevItem.area || ""} Tokyo`;
+          const destParam = (it.lat && it.lng) ? `${it.lat},${it.lng}` : `${it.name} ${it.area || ""} Tokyo`;
+          const mapDirUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origParam)}&destination=${encodeURIComponent(destParam)}&travelmode=transit`;
           transitBar = `
             <div class="my-1.5 ml-3 sm:ml-6 pl-3 border-l-2 border-dashed border-[#5ce1e6] flex flex-wrap items-center justify-between gap-2 bg-[#0f1424]/90 px-3 py-2 rounded-lg text-xs">
               <div class="flex flex-wrap items-center gap-1.5">
@@ -791,6 +1072,10 @@
             </div>
           `;
         }
+
+        const directMapUrl = (it.customMapUrl && it.customMapUrl.startsWith("http"))
+          ? it.customMapUrl
+          : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(it.name + " " + (it.area || "") + " Tokyo")}`;
 
         return `
           ${transitBar}
@@ -816,6 +1101,7 @@
             </div>
 
             <div class="flex items-center justify-end gap-1 shrink-0 border-t border-[#323c63] sm:border-0 pt-2 sm:pt-0">
+              <a href="${directMapUrl}" target="_blank" class="px-2 py-1 rounded bg-[#0f1424] hover:bg-[#06d6a0] hover:text-[#0f1424] text-[11px] font-pixel text-[#06d6a0]" title="구글맵 열기">📍맵</a>
               <button onclick="adjustStay('${it.id}', -15)" class="px-2 py-1 rounded bg-[#0f1424] hover:bg-[#232c4a] text-[11px] font-pixel text-slate-300" title="체류시간 15분 단축">-15분</button>
               <button onclick="adjustStay('${it.id}', 15)" class="px-2 py-1 rounded bg-[#0f1424] hover:bg-[#232c4a] text-[11px] font-pixel text-[#5ce1e6]" title="체류시간 15분 연장">+15분</button>
               <button onclick="moveCourse('${it.id}', -1)" class="w-7 h-7 rounded bg-[#0f1424] hover:bg-[#ffd166] hover:text-[#0f1424] text-xs font-bold">▲</button>
@@ -942,6 +1228,10 @@
     function openAddCourseModal() {
       document.getElementById("courseModalHeader").textContent = `+ DAY ${currentDay} 코스에 장소 추가`;
       document.getElementById("cFormId").value = "";
+      document.getElementById("cFormLat").value = "";
+      document.getElementById("cFormLng").value = "";
+      document.getElementById("cFormMapRaw").value = "";
+      document.getElementById("cFormParseStatus").classList.add("hidden");
       document.getElementById("cFormName").value = "";
       document.getElementById("cFormArea").value = "";
       document.getElementById("cFormCat").value = "subculture";
@@ -950,6 +1240,7 @@
       document.getElementById("cFormRes").value = "none";
       document.getElementById("cFormDay").value = String(currentDay);
       document.getElementById("cFormMemo").value = "";
+      document.getElementById("cFormCustomUrl").value = "";
       document.getElementById("cFormSearchMsg").classList.add("hidden");
       document.getElementById("cFormDelBtn").classList.add("hidden");
       openModal("courseModal");
@@ -961,6 +1252,10 @@
       if (!it) return;
       document.getElementById("courseModalHeader").textContent = `✏️ 코스 장소 수정`;
       document.getElementById("cFormId").value = it.id;
+      document.getElementById("cFormLat").value = it.lat || "";
+      document.getElementById("cFormLng").value = it.lng || "";
+      document.getElementById("cFormMapRaw").value = "";
+      document.getElementById("cFormParseStatus").classList.add("hidden");
       document.getElementById("cFormName").value = it.name || "";
       document.getElementById("cFormArea").value = it.area || "";
       document.getElementById("cFormCat").value = it.cat || "subculture";
@@ -969,6 +1264,7 @@
       document.getElementById("cFormRes").value = it.res || "none";
       document.getElementById("cFormDay").value = String(currentDay);
       document.getElementById("cFormMemo").value = it.memo || "";
+      document.getElementById("cFormCustomUrl").value = it.customMapUrl || "";
       document.getElementById("cFormSearchMsg").classList.add("hidden");
       document.getElementById("cFormDelBtn").classList.remove("hidden");
       openModal("courseModal");
@@ -978,6 +1274,8 @@
       e.preventDefault();
       const id = document.getElementById("cFormId").value;
       const targetDay = parseInt(document.getElementById("cFormDay").value, 10) || currentDay;
+      const latVal = parseFloat(document.getElementById("cFormLat").value);
+      const lngVal = parseFloat(document.getElementById("cFormLng").value);
       const payload = {
         id: id || "c_" + Date.now(),
         name: document.getElementById("cFormName").value.trim(),
@@ -987,6 +1285,9 @@
         stay: Math.max(5, parseInt(document.getElementById("cFormStay").value, 10) || 60),
         res: document.getElementById("cFormRes").value,
         memo: document.getElementById("cFormMemo").value.trim(),
+        customMapUrl: document.getElementById("cFormCustomUrl").value.trim(),
+        lat: !isNaN(latVal) ? latVal : null,
+        lng: !isNaN(lngVal) ? lngVal : null,
         done: false
       };
 
@@ -1047,8 +1348,12 @@
       };
 
       const q = encodeURIComponent(`${s.name} ${s.area} Tokyo`);
-      document.getElementById("sdMapLink").href = `https://www.google.com/maps/search/?api=1&query=${q}`;
+      document.getElementById("sdMapLink").href = (s.customMapUrl && s.customMapUrl.startsWith("http"))
+        ? s.customMapUrl
+        : `https://www.google.com/maps/search/?api=1&query=${q}`;
       document.getElementById("sdTabelogLink").href = `https://www.google.com/search?q=${encodeURIComponent(s.name + " " + s.area + " 食べログ")}`;
+      const hpBtn = document.getElementById("sdHotpepperLink");
+      if (hpBtn) hpBtn.href = `https://www.google.com/search?q=${encodeURIComponent(s.name + " " + s.area + " ホットペッパーグルメ")}`;
 
       const phoneBtn = document.getElementById("sdPhoneLink");
       if (s.phone) {
@@ -1072,6 +1377,9 @@
           stay: 60,
           res: s.phone ? "call_needed" : "none",
           memo: s.tip || s.summary,
+          customMapUrl: s.customMapUrl || "",
+          lat: s.lat || null,
+          lng: s.lng || null,
           done: false
         });
         closeModal("spotDetailModal");
@@ -1094,6 +1402,10 @@
     function openSpotFormModal(id) {
       const s = id ? state.spots.find(x => x.id === id) : null;
       document.getElementById("sFormId").value = s ? s.id : "";
+      document.getElementById("sFormLat").value = s && s.lat ? s.lat : "";
+      document.getElementById("sFormLng").value = s && s.lng ? s.lng : "";
+      document.getElementById("sFormMapRaw").value = "";
+      document.getElementById("sFormParseStatus").classList.add("hidden");
       document.getElementById("sFormName").value = s ? s.name : "";
       document.getElementById("sFormDay").value = s ? String(s.day) : String(currentDay);
       document.getElementById("sFormCat").value = s ? s.cat : "subculture";
@@ -1102,7 +1414,80 @@
       document.getElementById("sFormDesc").value = s ? s.desc : "";
       document.getElementById("sFormTip").value = s ? s.tip : "";
       document.getElementById("sFormHours").value = s ? s.hours : "";
+      document.getElementById("sFormCustomUrl").value = s && s.customMapUrl ? s.customMapUrl : "";
       openModal("spotFormModal");
+    }
+
+    function saveSpotForm(e) {
+      e.preventDefault();
+      const id = document.getElementById("sFormId").value;
+      const latVal = parseFloat(document.getElementById("sFormLat").value);
+      const lngVal = parseFloat(document.getElementById("sFormLng").value);
+      const obj = {
+        id: id || "s_" + Date.now(),
+        day: parseInt(document.getElementById("sFormDay").value, 10) || currentDay,
+        cat: document.getElementById("sFormCat").value,
+        area: document.getElementById("sFormArea").value.trim(),
+        name: document.getElementById("sFormName").value.trim(),
+        summary: document.getElementById("sFormSummary").value.trim(),
+        desc: document.getElementById("sFormDesc").value.trim(),
+        tip: document.getElementById("sFormTip").value.trim(),
+        hours: document.getElementById("sFormHours").value.trim(),
+        customMapUrl: document.getElementById("sFormCustomUrl").value.trim(),
+        lat: !isNaN(latVal) ? latVal : null,
+        lng: !isNaN(lngVal) ? lngVal : null,
+        starred: true
+      };
+      if (id) {
+        const idx = state.spots.findIndex(x => x.id === id);
+        if (idx >= 0) state.spots[idx] = obj;
+      } else {
+        state.spots.unshift(obj);
+      }
+      closeModal("spotFormModal");
+      saveAndSync(`'${obj.name}' 도감 저장 완료!`);
+    }
+
+    function openDaySwapModal() {
+      const info = state.days[currentDay];
+      document.getElementById("dEditShort").value = info.short || "";
+      document.getElementById("dEditTitle").value = info.title || "";
+      document.getElementById("dEditSub").value = info.sub || "";
+      document.getElementById("swapTargetDay").value = String(currentDay === 2 ? 3 : 2);
+      openModal("daySwapModal");
+    }
+
+    function saveDayMetaEdit() {
+      state.days[currentDay].short = document.getElementById("dEditShort").value.trim() || state.days[currentDay].short;
+      state.days[currentDay].title = document.getElementById("dEditTitle").value.trim() || state.days[currentDay].title;
+      state.days[currentDay].sub = document.getElementById("dEditSub").value.trim() || state.days[currentDay].sub;
+      closeModal("daySwapModal");
+      saveAndSync(`DAY ${currentDay} 제목 수정 완료`);
+    }
+
+    function executeDaySwap() {
+      const target = parseInt(document.getElementById("swapTargetDay").value, 10);
+      if (!target || target === currentDay) {
+        showToast("현재 요일과 다른 요일을 선택해 주세요!");
+        return;
+      }
+      const dA = state.days[currentDay];
+      const dB = state.days[target];
+      const tmpShort = dA.short, tmpTitle = dA.title, tmpSub = dA.sub, tmpStart = dA.startTime;
+      dA.short = dB.short; dA.title = dB.title.replace(`DAY ${target}`, `DAY ${currentDay}`); dA.sub = dB.sub; dA.startTime = dB.startTime;
+      dB.short = tmpShort; dB.title = tmpTitle.replace(`DAY ${currentDay}`, `DAY ${target}`); dB.sub = tmpSub; dB.startTime = tmpStart;
+
+      const tmpCourse = state.courses[currentDay];
+      state.courses[currentDay] = state.courses[target];
+      state.courses[target] = tmpCourse;
+
+      state.spots.forEach(s => {
+        if (Number(s.day) === currentDay) s.day = target;
+        else if (Number(s.day) === target) s.day = currentDay;
+      });
+
+      closeModal("daySwapModal");
+      saveAndSync(`🔄 DAY ${currentDay} ↔ DAY ${target} 일정 스왑 완료!`);
     }
 
     function saveSpotForm(e) {
