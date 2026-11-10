@@ -118,6 +118,48 @@
         </button>
       </div>
       <div id="courseContainer" class="space-y-2"></div>
+    </section>
+
+    <!-- SECTION 2: SPOT DIRECTORY (RECOMMENDED SPOTS) -->
+    <section class="pixel-panel p-3.5 sm:p-5 space-y-3">
+      <div class="flex items-center justify-between gap-2 flex-wrap">
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-0.5 rounded bg-[#ffd166] text-[#0f1424] font-pixel text-xs font-bold">SPOTS</span>
+          <h2 class="font-pixel text-sm sm:text-lg text-white">🗺️ 요일별 추천 스팟 & 서브컬처 도감</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer select-none">
+            <input type="checkbox" id="showAllDaysChk" onchange="renderSpots()" class="accent-[#ffd166] w-3.5 h-3.5" />
+            <span>전 일정 스팟 보기</span>
+          </label>
+          <button onclick="openSpotFormModal()" class="pixel-btn px-3 py-1.5 bg-[#ffd166] text-[#0f1424] font-pixel text-xs font-bold">
+            + 도감 스팟 등록
+          </button>
+        </div>
+      </div>
+      <div id="catBar" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1"></div>
+      <div id="spotGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5"></div>
+    </section>
+  </main>
+
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <nav class="fixed bottom-0 inset-x-0 z-30 sm:hidden bg-[#0f1424]/95 backdrop-blur-md border-t-2 border-[#323c63] px-2 py-1.5">
+    <div class="grid grid-cols-4 gap-1.5 max-w-md mx-auto font-pixel text-[11px]">
+      <button id="mTab1" onclick="selectDay(1)" class="py-1.5 rounded-xl flex flex-col items-center justify-center bg-[#ffd166] text-[#0f1424] font-bold">
+        <span>DAY 1</span><span class="text-[9px] opacity-80">11/21(토)</span>
+      </button>
+      <button id="mTab2" onclick="selectDay(2)" class="py-1.5 rounded-xl flex flex-col items-center justify-center text-slate-300">
+        <span>DAY 2</span><span class="text-[9px] opacity-80">11/22(일)</span>
+      </button>
+      <button id="mTab3" onclick="selectDay(3)" class="py-1.5 rounded-xl flex flex-col items-center justify-center text-slate-300">
+        <span>DAY 3</span><span class="text-[9px] opacity-80">11/23(월)</span>
+      </button>
+      <button id="mTab4" onclick="selectDay(4)" class="py-1.5 rounded-xl flex flex-col items-center justify-center text-slate-300">
+        <span>DAY 4</span><span class="text-[9px] opacity-80">11/24(화)</span>
+      </button>
+    </div>
+  </nav>
+
   <!-- MODAL 1: ADD / EDIT COURSE ITEM (WITH GOOGLE MAPS LINK PARSER) -->
   <div id="courseModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 bg-black/75">
     <div class="pixel-panel max-w-md w-full bg-[#1a2138] border-2 border-[#06d6a0] overflow-hidden">
@@ -213,8 +255,8 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1">메모 / 꿀팁</label>
-          <input type="text" id="cFormMemo" placeholder="예: 참치 소진 전 전화 확인" class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white" />
+          <label class="block text-xs font-bold text-slate-300 mb-1">한 줄 요약 (구글맵 업종·특징)</label>
+          <input type="text" id="cFormMemo" placeholder="예: 튀김요리 전문점, 빈티지 의류점" class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white" />
         </div>
 
         <div>
@@ -254,8 +296,7 @@
           <button id="sdStarBtn" class="px-3 py-1.5 rounded-lg bg-[#232c4a] border border-[#45507d] font-pixel text-xs shrink-0"></button>
         </div>
         <div class="bg-[#0f1424] p-3.5 rounded-xl border border-[#323c63] space-y-2 text-slate-200 leading-relaxed">
-          <p id="sdDesc"></p>
-          <p class="text-[#5ce1e6] pt-2 border-t border-[#232c4a]"><strong>💡 추천 포인트 & 팁:</strong> <span id="sdTip" class="text-slate-100"></span></p>
+          <p id="sdDesc" class="whitespace-pre-line"></p>
           <p class="text-[#ffd166] pt-2 border-t border-[#232c4a]"><strong>🕒 영업시간:</strong> <span id="sdHours" class="text-slate-100"></span></p>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -335,22 +376,16 @@
           </div>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1">한 줄 요약 *</label>
-          <input type="text" id="sFormSummary" required class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white" />
+          <label class="block text-xs font-bold text-slate-300 mb-1">한 줄 요약 (구글맵 업종) *</label>
+          <input type="text" id="sFormSummary" required placeholder="예: 튀김요리 전문점" class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white" />
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1">상세 설명</label>
-          <textarea id="sFormDesc" rows="2" class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white"></textarea>
+          <label class="block text-xs font-bold text-slate-300 mb-1">상세 설명 (구글맵 리뷰 요약)</label>
+          <textarea id="sFormDesc" rows="3" placeholder="구글맵 리뷰를 바탕으로 상세 설명이 자동 작성됩니다." class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white"></textarea>
         </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-xs font-bold text-slate-300 mb-1">꿀팁</label>
-            <input type="text" id="sFormTip" class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 mb-1">영업시간</label>
-            <input type="text" id="sFormHours" class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white" />
-          </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">🕒 영업시간</label>
+          <input type="text" id="sFormHours" placeholder="예: 11:30 ~ 14:30, 17:00 ~ 21:00" class="w-full px-3 py-2 rounded-lg bg-[#0f1424] border border-[#45507d] text-white" />
         </div>
         <div>
           <label class="block text-[11px] text-slate-400 mb-1">📍 원본 구글맵 링크</label>
@@ -504,23 +539,27 @@
 
     // Tokyo & Kamakura Station Coordinates for Haversine Nearest Hub & Transit Routing
     const TOKYO_HUBS = [
-      { name: "닛포리", lat: 35.7277, lng: 139.7709, keys: ["nippori", "닛포리", "日暮里", "arakawa", "아라카와", "taitō", "taito"] },
-      { name: "우에노", lat: 35.7141, lng: 139.7774, keys: ["ueno", "우에노", "上野", "ameyoko", "아메요코"] },
-      { name: "에이후쿠초", lat: 35.6763, lng: 139.6429, keys: ["eifukucho", "에이후쿠", "永福町", "izumi", "이즈미", "미래수산", "미라이수산"] },
-      { name: "고엔지", lat: 35.7053, lng: 139.6499, keys: ["koenji", "고엔지", "高円寺", "suginami", "스기나미", "杉並"] },
+      { name: "닛포리", lat: 35.7277, lng: 139.7709, keys: ["nippori", "닛포리", "日暮里", "arakawa", "아라카와", "荒川", "야나카", "yanaka"] },
+      { name: "우에노", lat: 35.7141, lng: 139.7774, keys: ["ueno", "우에노", "上野", "ameyoko", "아메요코", "taito", "taitō", "다이토", "台東", "오카치마치", "okachimachi"] },
+      { name: "에이후쿠초", lat: 35.6763, lng: 139.6429, keys: ["eifukucho", "에이후쿠", "永福町", "izumi", "이즈미", "和泉", "미래수산", "미라이수산", "메이다이마에", "meidaimae"] },
+      { name: "고엔지", lat: 35.7053, lng: 139.6499, keys: ["koenji", "kōenji", "고엔지", "高円寺", "suginami", "스기나미", "杉並", "아사가야", "asagaya", "오기쿠보", "ogikubo"] },
       { name: "나카노", lat: 35.7058, lng: 139.6658, keys: ["nakano", "나카노", "中野"] },
-      { name: "신주쿠", lat: 35.6896, lng: 139.7006, keys: ["shinjuku", "신주쿠", "新宿", "가부키초"] },
-      { name: "시부야", lat: 35.6580, lng: 139.7016, keys: ["shibuya", "시부야", "渋谷"] },
-      { name: "하라주쿠", lat: 35.6702, lng: 139.7027, keys: ["harajuku", "하라주쿠", "原宿", "omotesando", "오모테산도"] },
-      { name: "이케부쿠로", lat: 35.7295, lng: 139.7109, keys: ["ikebukuro", "이케부쿠로", "池袋", "toshima"] },
-      { name: "진보초", lat: 35.6959, lng: 139.7576, keys: ["jinbocho", "jimbocho", "진보초", "神保町", "kanda", "칸다"] },
-      { name: "오차노미즈", lat: 35.6998, lng: 139.7638, keys: ["ochanomizu", "오차노미즈", "御茶ノ水", "칸다 묘진", "칸다묘진"] },
-      { name: "아키하바라", lat: 35.6984, lng: 139.7731, keys: ["akihabara", "아키하바라", "아키바", "秋葉原", "sotokanda", "chiyoda"] },
-      { name: "도쿄/긴자", lat: 35.6812, lng: 139.7671, keys: ["tokyo", "ginza", "도쿄역", "긴자", "銀座", "chuo"] },
-      { name: "아사쿠사", lat: 35.7119, lng: 139.7983, keys: ["asakusa", "아사쿠사", "浅草", "센소지"] },
-      { name: "가마쿠라", lat: 35.3190, lng: 139.5504, keys: ["kamakura", "가마쿠라", "鎌倉", "코마치도리", "가마쿠라코코마에"] },
-      { name: "하세", lat: 35.3113, lng: 139.5361, keys: ["hase", "하세", "長谷", "대불", "하세데라"] },
-      { name: "에노시마", lat: 35.3009, lng: 139.4803, keys: ["enoshima", "에노시마", "江ノ島", "fujisawa", "후지사와"] },
+      { name: "기치조지", lat: 35.7031, lng: 139.5798, keys: ["kichijoji", "kichijōji", "기치조지", "키치죠지", "吉祥寺", "musashino", "무사시노", "미타카", "mitaka"] },
+      { name: "시모키타자와", lat: 35.6616, lng: 139.6666, keys: ["shimokitazawa", "시모키타자와", "下北沢", "kitazawa", "setagaya", "세타가야", "世田谷"] },
+      { name: "신주쿠", lat: 35.6896, lng: 139.7006, keys: ["shinjuku", "신주쿠", "新宿", "가부키초", "kabukicho", "신오쿠보", "shin-okubo", "yoyogi", "요요기"] },
+      { name: "시부야", lat: 35.6580, lng: 139.7016, keys: ["shibuya", "시부야", "渋谷", "진난", "jinnan", "우다가와", "udagawa", "다이칸야마", "daikanyama", "에비스", "ebisu", "나카메구로", "nakameguro"] },
+      { name: "하라주쿠", lat: 35.6702, lng: 139.7027, keys: ["harajuku", "하라주쿠", "原宿", "omotesando", "오모테산도", "表参道", "jingumae", "진구마에", "神宮前", "아오야마", "aoyama"] },
+      { name: "이케부쿠로", lat: 35.7295, lng: 139.7109, keys: ["ikebukuro", "이케부쿠로", "池袋", "toshima", "도시마", "豊島"] },
+      { name: "진보초", lat: 35.6959, lng: 139.7576, keys: ["jinbocho", "jimbocho", "jimbōchō", "진보초", "神保町", "kanda-jinbocho", "kanda", "칸다", "神田", "구단시타", "kudanshita"] },
+      { name: "오차노미즈", lat: 35.6998, lng: 139.7638, keys: ["ochanomizu", "오차노미즈", "御茶ノ水", "칸다 묘진", "칸다묘진", "神田明神", "yushima", "유시마", "hongo", "혼고"] },
+      { name: "아키하바라", lat: 35.6984, lng: 139.7731, keys: ["akihabara", "아키하바라", "아키바", "秋葉原", "sotokanda", "소토칸다", "外神田", "chiyoda", "치요다"] },
+      { name: "도쿄/긴자", lat: 35.6812, lng: 139.7671, keys: ["tokyo station", "ginza", "도쿄역", "긴자", "銀座", "chuo", "주오", "中央", "마루노우치", "marunouchi", "니혼바시", "nihonbashi", "츠키지", "tsukiji"] },
+      { name: "롯폰기/미나토", lat: 35.6628, lng: 139.7314, keys: ["roppongi", "롯폰기", "六本木", "minato", "미나토", "港", "아카사카", "akasaka", "아자부", "azabu", "시바", "shiba", "도쿄타워"] },
+      { name: "아사쿠사", lat: 35.7119, lng: 139.7983, keys: ["asakusa", "아사쿠사", "浅草", "센소지", "스카이트리", "skytree", "sumida", "스미다", "오시아게", "oshiage"] },
+      { name: "가마쿠라", lat: 35.3190, lng: 139.5504, keys: ["kamakura", "가마쿠라", "鎌倉", "코마치도리", "komachi", "가마쿠라코코마에", "시치리가하마", "이나무라가사키"] },
+      { name: "하세", lat: 35.3113, lng: 139.5361, keys: ["hase", "하세", "長谷", "대불", "하세데라", "고토쿠인"] },
+      { name: "에노시마", lat: 35.3009, lng: 139.4803, keys: ["enoshima", "에노시마", "江ノ島", "江の島", "fujisawa", "후지사와", "藤沢", "카타세", "katase"] },
+      { name: "요코하마", lat: 35.4658, lng: 139.6223, keys: ["yokohama", "요코하마", "横浜", "미나토미라이", "minatomirai"] },
       { name: "나리타공항", lat: 35.7719, lng: 140.3929, keys: ["narita", "나리타", "成田"] }
     ];
 
@@ -536,6 +575,16 @@
     }
 
     function findNearestTokyoHub(lat, lng, fallbackText) {
+      const lower = (fallbackText || "").toLowerCase();
+      // 1) If explicit station/neighborhood keyword is in text, check exact match first
+      for (const h of TOKYO_HUBS) {
+        if (h.keys.some(k => lower.includes(k))) {
+          // If coordinates also exist, verify it's reasonably close (< 6km) or if no coords, return immediately
+          if (!lat || !lng || isNaN(lat) || isNaN(lng)) return h.name;
+          if (calcDistanceKm(lat, lng, h.lat, h.lng) <= 5.5) return h.name;
+        }
+      }
+      // 2) Coordinate-based nearest station/hub
       if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
         let best = TOKYO_HUBS[0];
         let minD = 99999;
@@ -543,13 +592,54 @@
           const d = calcDistanceKm(lat, lng, h.lat, h.lng);
           if (d < minD) { minD = d; best = h; }
         }
-        if (minD <= 15) return best.name;
+        if (minD <= 25) return best.name;
       }
-      const lower = (fallbackText || "").toLowerCase();
+      // 3) Secondary text match
       for (const h of TOKYO_HUBS) {
         if (h.keys.some(k => lower.includes(k))) return h.name;
       }
-      return currentDay === 1 ? "고엔지" : currentDay === 2 ? "가마쿠라" : "아키하바라";
+      return "";
+    }
+
+    function assignSmartDay(lat, lng, area, extraText) {
+      const combined = `${area || ""} ${extraText || ""}`.toLowerCase();
+      // Day 4: Narita Airport
+      if (/나리타|narita|成田/.test(combined) || (lng && lng > 140.1)) return 4;
+      // Day 2: Kamakura / Hase / Enoshima / Fujisawa / Yokohama (South / Kanagawa)
+      if (/가마쿠라|하세|에노시마|후지사와|요코하마|kamakura|enoshima|hase|fujisawa|yokohama|鎌倉|江ノ島|江の島|長谷|藤沢|横浜/.test(combined) || (lat && lat < 35.53)) return 2;
+      // Day 1: Suginami / Koenji / Eifukucho / Nakano / Kichijoji / Shimokitazawa / Shinjuku / Shibuya / Harajuku (West Tokyo)
+      if (/에이후쿠|고엔지|스기나미|나카노|기치조지|시모키타자와|신주쿠|시부야|하라주쿠|오모테산도|아사가야|오기쿠보|koenji|eifukucho|suginami|nakano|kichijoji|shimokitazawa|shinjuku|shibuya|harajuku|高円寺|永福町|杉並|中野|吉祥寺|下北沢|新宿|渋谷|原宿/.test(combined)) return 1;
+      // Day 3: Jinbocho / Ochanomizu / Akihabara / Ueno / Nippori / Asakusa / Ginza / Tokyo Central & East
+      if (/진보초|오차노미즈|아키하바라|아키바|우에노|닛포리|아사쿠사|도쿄|긴자|이케부쿠로|칸다|jinbocho|jimbocho|ochanomizu|akihabara|ueno|nippori|asakusa|ginza|kanda|神保町|御茶ノ水|秋葉原|上野|日暮里|浅草|銀座|神田/.test(combined)) return 3;
+      // Coordinate fallback between West Tokyo (Day 1) and Central/East Tokyo (Day 3)
+      if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
+        if (lng < 139.725) return 1;
+        return 3;
+      }
+      return currentDay;
+    }
+
+    function classifySpotCategory(text, osmTags, subCategory) {
+      const t = `${subCategory || ""} ${text || ""} ${JSON.stringify(osmTags || {})}`.toLowerCase();
+
+      // 1. Food / Restaurant / Tempura / Izakaya / Bar (Checked FIRST so restaurants never fall into cafe)
+      if (/튀김|덴푸라|텐동|가라아게|쿠시카츠|쿠시야키|고로케|돈가스|돈카츠|규카츠|라멘|츠케멘|소바|우동|야키소바|파스타|스시|초밥|카이센동|해산물|참치|사시미|장어|우나기|아나고|덮밥|돈부리|규동|부타동|오야코동|카레|오므라이스|함박|햄버그|스테이크|야키니쿠|호르몬|징기스칸|야키토리|꼬치|이자카야|술집|주점|포차|비스트로|다이닝|스키야키|샤브샤브|나베|전골|오뎅|몬자야키|오코노미야키|타코야키|교자|만두|중화요리|중식|일식|양식|한식|이탈리안|프렌치|버거|햄버거|피자|정식|가정식|백반|식당|음식점|요리|맛집|레스토랑|푸드코트|뷔페|맥주|사케|와인|수산|tempura|tendon|karaage|kushikatsu|tonkatsu|ramen|tsukemen|soba|udon|sushi|sashimi|seafood|unagi|donburi|kaisendon|gyudon|curry|steak|yakiniku|yakitori|izakaya|monja|okonomiyaki|restaurant|bistro|dining|eatery|diner|grill|bbq|noodle|burger|pizza|fast_food|food_court|bar|pub|天ぷら|てんぷら|天丼|唐揚げ|串カツ|串揚げ|とんかつ|牛かつ|ラーメン|中華そば|つけ麺|そば|蕎麦|うどん|寿司|鮨|海鮮|鮪|水産|鰻|うなぎ|丼|カレー|ステーキ|ハンバーグ|焼肉|ホルモン|焼鳥|焼き鳥|居酒屋|もんじゃ|お好み焼き|餃子|定食|食堂|料理|飲食店|和食|洋食|中華|レストラン|酒場|バル|グルメ/.test(t)) {
+        return "food";
+      }
+      // 2. Subculture / Anime / Figure / Retro Games / Old Books / Records / Instruments
+      if (/anime|manga|figure|hobby|toy|toys|games|video_games|arcade|retro|gacha|capsule|gunpla|plamodel|collector|card|pokemon|mandarake|surugaya|amiami|animate|radio kaikan|kotobukiya|village vanguard|book|books|second_hand_books|bookstore|record|vinyl|instrument|guitar|피규어|애니|만화|굿즈|서브컬처|게임|레트로|오락실|가챠|건프라|프라모델|포켓몬|카드|만다라케|스루가야|아미아미|애니메이트|라디오회관|빌리지뱅가드|고서점|헌책방|서점|책방|레코드|바이닐|음반|악기|기타|성지|취미용품|장난감|アニメ|フィギュア|ホビー|玩具|おもちゃ|ゲーム|トレカ|ガシャポン|ガチャ|プラモデル|まんだらけ|駿河屋|あみあみ|アニメイト|ラジオ会館|ヴィレッジヴァンガード|古本|古書|書店|レコード|楽器/.test(t)) {
+        return "subculture";
+      }
+      // 3. Vintage / Fashion / Clothing / Shopping
+      if (/vintage|second_hand|clothes|clothing|fashion|apparel|boutique|thrift|used clothing|shoes|sneakers|bag|accessories|eyewear|department_store|mall|chemist|cosmetics|drugstore|don quijote|donki|빈티지|구제|아메카지|헌옷|의류|옷가게|패션|편집샵|셀렉트샵|스트릿|스니커즈|신발|백화점|쇼핑몰|드럭스토어|돈키호테|잡화|古着|ヴィンテージ|セレクトショップ|ファッション|衣料|アパレル|靴|百貨店|ドン・キホーテ|ドラッグストア/.test(t)) {
+        return "vintage";
+      }
+      // 4. Cafe / Walk / Shrine / Park / Bakery / Dessert (Removed single-char false positives like '절', '섬', '빵')
+      if (/cafe|coffee|bakery|pastry|dessert|roastery|tea|matcha|kissaten|park|garden|shrine|temple|viewpoint|beach|카페|커피|킷사텐|다방|베이커리|빵집|제과점|디저트|케이크|말차|찻집|산책|공원|정원|신사|사찰|대불|하세데라|센소지|해변|전망대|カフェ|喫茶|珈琲|コーヒー|ベーカリー|スイーツ|ケーキ|抹茶|神社|寺院|公園|庭園|海岸/.test(t)) {
+        return "cafe";
+      }
+      if (/전문점|식당|점$/.test((subCategory || "").trim())) return "food";
+      return "";
     }
 
     const RES_META = {
@@ -715,8 +805,910 @@
     }
 
     // =========================================================================
-    // 2. GOOGLE MAPS LINK & SHARE TEXT PARSER + OSM REVERSE GEOCODING
+    // 2. GOOGLE MAPS LINK (SHORT & FULL) PARSER + OVERPASS / NOMINATIM ENGINE
     // =========================================================================
+    function decodeHtmlEntities(str) {
+      if (!str) return "";
+      const txt = document.createElement("textarea");
+      txt.innerHTML = str;
+      return txt.value;
+    }
+
+    function decodeBase64DataUrlIfNeeded(str) {
+      if (!str || typeof str !== "string") return "";
+      if (str.startsWith("data:") && str.includes("base64,")) {
+        try {
+          const b64 = str.split("base64,")[1] || "";
+          const bin = atob(b64);
+          const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+          return new TextDecoder("utf-8").decode(bytes);
+        } catch (e) {}
+      }
+      return str;
+    }
+
+    function unescapeGoogleScriptText(raw) {
+      if (!raw) return "";
+      let s = decodeBase64DataUrlIfNeeded(raw);
+      s = s
+        .replace(/\\u([0-9a-fA-F]{4})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+        .replace(/\\x22/gi, '"')
+        .replace(/\\+"/g, '"')
+        .replace(/\\n|\\r/g, " ")
+        .replace(/&nbsp;|\u00a0|\u202f/gi, " ")
+        .replace(/[〜～–—−ー]/g, "~");
+      return s;
+    }
+
+    function stripHtmlToPlainText(rawHtml) {
+      if (!rawHtml) return "";
+      const unescaped = unescapeGoogleScriptText(rawHtml);
+      const noScripts = unescaped
+        .replace(/<script[\s\S]*?<\/script>/gi, " ")
+        .replace(/<style[\s\S]*?<\/style>/gi, " ")
+        .replace(/<[^>]+>/g, " ");
+      return decodeHtmlEntities(noScripts)
+        .replace(/[〜～–—−ー]/g, "~")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function ensureKoreanGoogleMapsUrl(urlStr) {
+      if (!urlStr || !urlStr.startsWith("http")) return urlStr;
+      try {
+        const u = new URL(urlStr);
+        if (u.hostname.includes("google.")) {
+          u.searchParams.set("hl", "ko");
+          u.searchParams.set("gl", "kr");
+          return u.toString();
+        }
+      } catch (e) {}
+      return urlStr;
+    }
+
+    function isBogusPlaceTitle(str) {
+      if (!str) return true;
+      const s = str.trim();
+      if (s.length < 2) return true;
+      if (/^(google\s*maps?|google\s*지도|google\s*マップ|구글\s*지도|구글\s*맵|dynamic\s*link|page\s*not\s*found|error|404|maps\.app\.goo\.gl|https?:\/\/)/i.test(s)) return true;
+      if (/^-?\d+\.\d+\s*,\s*-?\d+\.\d+$/.test(s)) return true;
+      return false;
+    }
+
+    function parseTitleAndMeta(rawTitle) {
+      if (!rawTitle) return { name: "", meta: "" };
+      let cleaned = decodeHtmlEntities(rawTitle)
+        .replace(/\s*[-|–—]\s*Google\s*(지도|Maps|マップ).*$/i, "")
+        .replace(/^Google\s*(지도|Maps|マップ)\s*[-|–—:]\s*/i, "")
+        .trim();
+      if (isBogusPlaceTitle(cleaned)) return { name: "", meta: "" };
+
+      if (cleaned.includes(" · ")) {
+        const parts = cleaned.split(" · ").map(p => p.trim()).filter(Boolean);
+        const candName = parts[0] || "";
+        const restMeta = parts.slice(1).join(" · ");
+        if (!isBogusPlaceTitle(candName)) {
+          return { name: candName, meta: restMeta };
+        }
+      }
+      return { name: cleaned, meta: "" };
+    }
+
+    // Translates English/Japanese Google Maps business categories or OSM tags into exact Korean Google Maps business labels
+    function translateBusinessTypeToKorean(rawSub, placeName, osmTags) {
+      const s = (rawSub || "").trim();
+      // If rawSub is already a clean Korean business type (like "튀김요리 전문점", "라멘 전문점", "이자카야")
+      if (s && /[가-힣]/.test(s) && !/Google|지도|검색|리뷰|평점|도쿄|일본|번지|구글/.test(s) && s.length <= 26) {
+        return s;
+      }
+
+      const combined = `${s} ${placeName || ""} ${JSON.stringify(osmTags || {})}`.toLowerCase();
+      const mapRules = [
+        { re: /tempura|튀김|덴푸라|天ぷら|てんぷら|天麩羅/, ko: "튀김요리 전문점" },
+        { re: /tendon|텐동|天丼/, ko: "텐동(튀김덮밥) 전문점" },
+        { re: /tonkatsu|gyukatsu|돈가스|돈카츠|규카츠|とんかつ|豚カツ|牛かつ/, ko: "돈가스·규카츠 전문점" },
+        { re: /kushikatsu|kushiage|쿠시카츠|꼬치튀김|串カツ|串揚げ/, ko: "쿠시카츠(꼬치튀김) 전문점" },
+        { re: /karaage|가라아게|唐揚げ|からあげ/, ko: "가라아게 전문점" },
+        { re: /ramen|tsukemen|aburasoba|라멘|츠케멘|마제소바|ラーメン|中華そば|つけ麺|油そば/, ko: "라멘 전문점" },
+        { re: /udon|우동|うどん/, ko: "우동 전문점" },
+        { re: /soba|소바|메밀|そば|蕎麦/, ko: "소바 전문점" },
+        { re: /yakitori|야키토리|닭꼬치|焼鳥|焼き鳥|やきとり/, ko: "야키토리(숯불닭꼬치) 전문점" },
+        { re: /izakaya|이자카야|선술집|居酒屋|酒場|大衆酒場/, ko: "이자카야(일본식 선술집)" },
+        { re: /yakiniku|horumon|야키니쿠|호르몬|고깃집|焼肉|ホルモン/, ko: "야키니쿠(일본식 구이) 전문점" },
+        { re: /sushi|스시|초밥|오마카세|寿司|鮨|すし|回転寿司/, ko: "스시·초밥 전문점" },
+        { re: /seafood|kaisendon|maguro|참치|카이센동|해산물|수산|海鮮|鮪|まぐろ|水産|魚/, ko: "해산물·생참치 요리 전문점" },
+        { re: /unagi|anago|장어|우나기|鰻|うなぎ|穴子/, ko: "장어 덮밥(우나기) 전문점" },
+        { re: /curry|카레|カレー/, ko: "일본식 카레 전문점" },
+        { re: /monja|okonomiyaki|몬자야키|오코노미야키|もんじゃ|お好み焼き/, ko: "몬자야키·오코노미야키 전문점" },
+        { re: /sukiyaki|shabu|스키야키|샤브샤브|すき焼き|しゃぶしゃぶ/, ko: "스키야키·샤브샤브 전문점" },
+        { re: /gyoza|교자|만두|餃子/, ko: "교자 전문점" },
+        { re: /steak|hamburg|스테이크|함박|햄버그|ステーキ|ハンバーグ/, ko: "스테이크·함박 전문점" },
+        { re: /syokudo|teishoku|donburi|gyudon|정식|가정식|덮밥|돈부리|규동|定食|食堂|丼|牛丼/, ko: "일본 가정식·덮밥 전문점" },
+        { re: /burger|햄버거|수제버거|ハンバーガー/, ko: "수제버거 전문점" },
+        { re: /bar|pub|beer|craft beer|바|펍|생맥주|칵테일|バル|ビアバー/, ko: "바·생맥주 전문점" },
+        { re: /japanese restaurant|washoku|일식당|일식|和食|日本料理|割烹/, ko: "일식 전문점" },
+        { re: /western restaurant|yoshoku|양식|경양식|洋食|ビストロ/, ko: "경양식 전문점" },
+        { re: /chinese restaurant|중식|중화요리|中華料理|町中華/, ko: "중화요리 전문점" },
+        { re: /kissaten|킷사텐|다방|크림소다|純喫茶|喫茶店/, ko: "레트로 킷사텐(전통 다방)" },
+        { re: /bakery|pastry|빵집|베이커리|제과점|ベーカリー|パン屋/, ko: "베이커리·제과점" },
+        { re: /dessert|cake|sweets|crepe|matcha|디저트|케이크|크레페|말차|スイーツ|ケーキ|抹茶/, ko: "디저트·말차 카페" },
+        { re: /cafe|coffee|roastery|카페|커피|로스터리|カフェ|コーヒー|珈琲/, ko: "카페·커피 전문점" },
+        { re: /vintage|used clothing|second_hand|thrift|빈티지|구제|아메카지|헌옷|古着|ヴィンテージ/, ko: "빈티지·구제 의류 전문점" },
+        { re: /clothing|clothes|fashion|boutique|select shop|의류|편집샵|셀렉트샵|패션|セレクトショップ|衣料|アパレル/, ko: "패션 편집샵·의류점" },
+        { re: /figure|hobby|amiami|mandarake|kotobukiya|gunpla|피규어|하비|건프라|프라모델|만다라케|아미아미|フィギュア|ホビー|プラモデル|まんだらけ/, ko: "피규어·서브컬처 하비샵" },
+        { re: /video_games|retro game|arcade|super potato|게임|레트로게임|오락실|슈퍼포테이토|ゲーム|レトロゲーム/, ko: "레트로 게임·아케이드 전문점" },
+        { re: /anime|manga|animate|surugaya|character|gacha|애니|만화|굿즈|애니메이트|스루가야|가챠|アニメ|グッズ|駿河屋|アニメイト/, ko: "애니메이션·캐릭터 굿즈 전문점" },
+        { re: /used book|second_hand_books|고서점|헌책방|古本|古書/, ko: "고서점·빈티지 서적 전문점" },
+        { re: /book|bookstore|village vanguard|서점|책방|빌리지뱅가드|書店|本屋|ヴィレッジヴァンガード/, ko: "서점·서브컬처 잡화점" },
+        { re: /record|vinyl|instrument|guitar|레코드|바이닐|음반|악기|기타|レコード|楽器/, ko: "레코드·악기 전문점" },
+        { re: /don quijote|donki|drugstore|department|돈키호테|드럭스토어|백화점|면세|ドン・キホーテ|ドラッグストア|百貨店/, ko: "대형 잡화·면세 쇼핑몰" },
+        { re: /shrine|temple|신사|사찰|대불|하세데라|칸다묘진|센소지|神社|寺|大仏/, ko: "신사·전통 명소" },
+        { re: /park|garden|beach|viewpoint|공원|정원|해변|전망대|건널목|公園|庭園|海岸|展望/, ko: "산책·전망 명소" },
+        { re: /restaurant|eatery|diner|dining|식당|음식점|요리|맛집|レストラン|飲食店/, ko: "음식점·로컬 맛집" }
+      ];
+
+      for (const rule of mapRules) {
+        if (rule.re.test(combined)) return rule.ko;
+      }
+      if (s && s.length <= 28 && !/http|google/i.test(s)) return s;
+      return "";
+    }
+
+    // Extracts exact Google Maps business category & star rating from og:description / APP_INITIALIZATION_STATE
+    function extractGoogleSubCategoryAndRating(metaDesc, fullHtml, placeName, osmTags) {
+      let rawSub = "";
+      let ratingStr = "";
+
+      // 1) Check metaDesc (e.g. "★★★★☆ · 튀김요리 전문점 · 〒166-0003..." or "★ 4.4 · Tempura restaurant")
+      if (metaDesc) {
+        const starMatch = metaDesc.match(/(\d\.\d)\s*\(\s*[\d,]+\s*\)/) || metaDesc.match(/★+\s*(\d\.\d)?/);
+        if (starMatch) {
+          ratingStr = starMatch[0].includes("★") ? starMatch[0].trim() : `★${starMatch[1]}`;
+        }
+        const parts = metaDesc.split(/[·|]/).map(p => p.trim()).filter(Boolean);
+        for (const p of parts) {
+          if (/^[★☆\s\d.(),]+$/.test(p)) continue;
+          if (/^[¥₩$￥]+/.test(p)) continue;
+          if (/〒|\d{3}-\d{4}|Tokyo|Chome|도쿄도|일본|구글|Google|영업|시간|리뷰|번지/i.test(p)) continue;
+          if (p.length >= 2 && p.length <= 32) {
+            rawSub = p;
+            break;
+          }
+        }
+      }
+
+      // 2) Search unescaped Google Maps HTML / APP_INITIALIZATION_STATE for Korean business type labels
+      if (!rawSub && fullHtml) {
+        const unescaped = unescapeGoogleScriptText(fullHtml);
+        // Rating in APP_INITIALIZATION_STATE e.g. [4.4, 215]
+        if (!ratingStr) {
+          const rMatch = unescaped.match(/aria-label=["']별점\s*(\d\.\d)개/i)
+            || unescaped.match(/(\d\.\d)\s*\(\s*([\d,]{1,6})\s*\)/);
+          if (rMatch) ratingStr = `★${rMatch[1]}${rMatch[2] ? ` (${rMatch[2]})` : ""}`;
+        }
+        // Specific Google Maps Korean category pattern (e.g. "튀김요리 전문점", "라멘 전문점", "이자카야", "일식당", "빈티지 의류점" etc.)
+        const koCatMatch = unescaped.match(/"([가-힣A-Za-z\s/·]{1,14}(?:요리\s*전문점|전문점|음식점|식당|이자카야|초밥집|술집|카페|커피숍|베이커리|제과점|디저트\s*가게|의류점|구제샵|취미용품점|장난감\s*가게|서점|헌책방|레코드점|백화점|쇼핑몰|신사|사찰|공원))"/);
+        if (koCatMatch && koCatMatch[1] && !/구글|지도|검색|클릭|작성|등록|전체|주변/.test(koCatMatch[1])) {
+          rawSub = koCatMatch[1].trim();
+        }
+        if (!rawSub) {
+          const enCatMatch = unescaped.match(/"([A-Z][a-zA-Z\s&-]{2,24}\s(?:restaurant|shop|store|cafe|bakery|bar|pub|izakaya|shrine|temple|park))"/);
+          if (enCatMatch && enCatMatch[1]) rawSub = enCatMatch[1].trim();
+        }
+      }
+
+      const koSub = translateBusinessTypeToKorean(rawSub, `${placeName || ""} ${metaDesc || ""}`, osmTags);
+      return { subCategory: koSub, rating: ratingStr };
+    }
+
+    function normalizeSingleTimeToken(token, inheritedMeridiem) {
+      if (!token) return "";
+      let s = token.trim();
+      const krMatch = s.match(/(오전|오후|새벽|밤|저녁)?\s*(\d{1,2}):(\d{2})/);
+      if (krMatch && (krMatch[1] || inheritedMeridiem)) {
+        let h = parseInt(krMatch[2], 10);
+        const m = krMatch[3];
+        const mer = krMatch[1] || inheritedMeridiem;
+        if ((mer === "오후" || mer === "저녁" || mer === "밤" || mer === "PM") && h < 12) h += 12;
+        if ((mer === "오전" || mer === "새벽" || mer === "AM") && h === 12) h = 0;
+        return `${String(h).padStart(2, "0")}:${m}`;
+      }
+      const enMatch = s.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+      if (enMatch) {
+        let h = parseInt(enMatch[1], 10);
+        const m = enMatch[2];
+        const ap = enMatch[3].toUpperCase();
+        if (ap === "PM" && h < 12) h += 12;
+        if (ap === "AM" && h === 12) h = 0;
+        return `${String(h).padStart(2, "0")}:${m}`;
+      }
+      const plain = s.match(/(\d{1,2}):(\d{2})/);
+      if (plain) {
+        return `${String(parseInt(plain[1], 10)).padStart(2, "0")}:${plain[2]}`;
+      }
+      return s;
+    }
+
+    function normalizeHoursRangeStr(rawRange) {
+      if (!rawRange) return "";
+      let s = rawRange
+        .replace(/\u202f|\u00a0/g, " ")
+        .replace(/[〜～–—−ー-]/g, "~")
+        .replace(/\(L\.?O\.?[^)]*\)/gi, "")
+        .trim();
+      if (/24\s*시간|24時間|24\s*hours/i.test(s)) return "24시간 영업";
+      if (/^(?:휴무|정기\s*휴무|휴무일|closed|定休日)$/i.test(s)) return "휴무";
+
+      const parts = s.split(/\s*~\s*/);
+      if (parts.length === 2) {
+        const p0 = parts[0].trim();
+        const p1 = parts[1].trim();
+
+        // Detect shared meridiem (e.g. "오후 6:00 ~ 10:30" or "5:00 ~ 9:00 PM")
+        let mer0 = "";
+        let mer1 = "";
+        if (/오후|저녁|밤/.test(p0)) mer0 = "오후";
+        else if (/오전|새벽/.test(p0)) mer0 = "오전";
+        else if (/PM/i.test(p0)) mer0 = "PM";
+        else if (/AM/i.test(p0)) mer0 = "AM";
+
+        if (/오후|저녁|밤/.test(p1)) mer1 = "오후";
+        else if (/오전|새벽/.test(p1)) mer1 = "오전";
+        else if (/PM/i.test(p1)) mer1 = "PM";
+        else if (/AM/i.test(p1)) mer1 = "AM";
+
+        if (!mer0 && mer1 && (mer1 === "PM" || mer1 === "오후")) {
+          const h0 = parseInt((p0.match(/(\d{1,2}):/) || [])[1] || "0", 10);
+          if (h0 >= 1 && h0 <= 11) mer0 = mer1;
+        }
+        if (mer0 && !mer1 && (mer0 === "PM" || mer0 === "오후")) {
+          mer1 = mer0;
+        }
+
+        const t1 = normalizeSingleTimeToken(p0, mer0);
+        let t2 = normalizeSingleTimeToken(p1, mer1);
+
+        // If t1 is e.g. 11:30 and t2 was written as 02:30 or 03:00 (afternoon without 오후/PM), fix to 14:30 / 15:00
+        const m1 = t1.match(/^(\d{2}):(\d{2})$/);
+        const m2 = t2.match(/^(\d{2}):(\d{2})$/);
+        if (m1 && m2) {
+          const h1 = parseInt(m1[1], 10);
+          let h2 = parseInt(m2[1], 10);
+          if (!mer1 && h1 >= 9 && h1 <= 14 && h2 >= 1 && h2 <= 7) {
+            h2 += 12;
+            t2 = `${String(h2).padStart(2, "0")}:${m2[2]}`;
+          }
+          return `${t1} ~ ${t2}`;
+        }
+      }
+      return s;
+    }
+
+    function isValidStoreHoursPair(rangeStr) {
+      if (!rangeStr) return false;
+      const m = rangeStr.match(/^(\d{2}):(\d{2})\s*~\s*(\d{2}):(\d{2})$/);
+      if (!m) return false;
+      const h1 = parseInt(m[1], 10), m1 = parseInt(m[2], 10);
+      const h2 = parseInt(m[3], 10), m2 = parseInt(m[4], 10);
+      if (h1 > 24 || h2 > 28 || m1 > 59 || m2 > 59) return false;
+      if (h1 === 0 && m1 === 0 && h2 === 0 && m2 === 0) return false;
+      // Typical store open time is 05:00 ~ 23:00
+      if (h1 < 5) return false;
+      return true;
+    }
+
+    // Extracts exact opening hours from Google Maps APP_INITIALIZATION_STATE, Yahoo! Japan/Tabelog, Bing, or page text
+    function extractGoogleMapsOpeningHours(fullHtml, extraText) {
+      const unescapedHtml = unescapeGoogleScriptText(fullHtml || "");
+      const unescapedExtra = unescapeGoogleScriptText(extraText || "");
+      const combinedRaw = `${unescapedHtml}\n${unescapedExtra}`;
+      if (!combinedRaw.trim()) return "";
+
+      // 1) Scan for weekday blocks in Google Maps APP_INITIALIZATION_STATE (handles double brackets [[...]] & any inner elements)
+      const dayMap = {
+        "월요일": "월", "화요일": "화", "수요일": "수", "목요일": "목", "금요일": "금", "토요일": "토", "일요일": "일",
+        "Monday": "월", "Tuesday": "화", "Wednesday": "수", "Thursday": "목", "Friday": "금", "Saturday": "토", "Sunday": "일",
+        "月曜日": "월", "火曜日": "화", "水曜日": "수", "木曜日": "목", "金曜日": "금", "土曜日": "토", "日曜日": "일"
+      };
+      const dayTokenRe = /"(월요일|화요일|수요일|목요일|금요일|토요일|일요일|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|月曜日|火曜日|水曜日|木曜日|金曜日|土曜日|日曜日)"/g;
+      const dayPositions = [];
+      let dm;
+      while ((dm = dayTokenRe.exec(combinedRaw)) !== null) {
+        dayPositions.push({ day: dayMap[dm[1]] || dm[1], idx: dm.index });
+      }
+
+      const foundDays = {};
+      for (let i = 0; i < dayPositions.length; i++) {
+        const cur = dayPositions[i];
+        if (foundDays[cur.day]) continue;
+        const nextIdx = (i + 1 < dayPositions.length && dayPositions[i + 1].idx - cur.idx < 260)
+          ? dayPositions[i + 1].idx
+          : cur.idx + 180;
+        const chunk = combinedRaw.slice(cur.idx, nextIdx);
+
+        if (/휴무일|정기휴무|"Closed"|"定休日"/i.test(chunk)) {
+          foundDays[cur.day] = "휴무";
+          continue;
+        }
+        if (/24시간\s*영업|24時間営業|Open\s*24\s*hours/i.test(chunk)) {
+          foundDays[cur.day] = "24시간 영업";
+          continue;
+        }
+
+        const timeRangeRe = /((?:오전|오후|새벽|밤|저녁)?\s*\d{1,2}:\d{2}\s*(?:AM|PM)?\s*~\s*(?:오전|오후|새벽|밤|저녁)?\s*\d{1,2}:\d{2}\s*(?:AM|PM)?)/gi;
+        const slots = [];
+        let tm;
+        while ((tm = timeRangeRe.exec(chunk)) !== null) {
+          const norm = normalizeHoursRangeStr(tm[1]);
+          if (isValidStoreHoursPair(norm) && !slots.includes(norm)) {
+            slots.push(norm);
+          }
+        }
+        if (slots.length > 0) {
+          foundDays[cur.day] = slots.join(" / ");
+        }
+      }
+
+      const dayKeys = Object.keys(foundDays);
+      if (dayKeys.length > 0) {
+        const closedDays = dayKeys.filter(d => foundDays[d] === "휴무");
+        const openSlots = dayKeys.filter(d => foundDays[d] !== "휴무").map(d => foundDays[d]);
+        if (openSlots.length > 0) {
+          const freq = {};
+          let mainHours = openSlots[0];
+          let maxCount = 0;
+          for (const sl of openSlots) {
+            freq[sl] = (freq[sl] || 0) + 1;
+            if (freq[sl] > maxCount) { maxCount = freq[sl]; mainHours = sl; }
+          }
+          if (closedDays.length > 0 && closedDays.length <= 3) {
+            return `${mainHours} (${closedDays.join("·")} 휴무)`;
+          }
+          return mainHours;
+        }
+      }
+
+      // 2) Strip HTML tags from both fullHtml and extraText to inspect visible text (Tabelog, Yahoo Japan, Bing, Google snippets)
+      const plainText = `${stripHtmlToPlainText(fullHtml)}\n${stripHtmlToPlainText(extraText)}`;
+
+      // Detect regular closed days in Japanese/Korean text (e.g. 定休日：月曜日, 수요일 휴무)
+      let closedSuffix = "";
+      const krClosed = plainText.match(/([월화수목금토일](?:·[월화수목금토일])?)\s*요일\s*(?:정기\s*)?휴무/);
+      const jpClosed = plainText.match(/定休日\s*[:：]?\s*([月火水木金土日])曜/);
+      if (krClosed) closedSuffix = ` (${krClosed[1]} 휴무)`;
+      else if (jpClosed) {
+        const jpToKo = { "月": "월", "火": "화", "水": "수", "木": "목", "金": "금", "土": "토", "日": "일" };
+        closedSuffix = ` (${jpToKo[jpClosed[1]] || jpClosed[1]} 휴무)`;
+      }
+
+      // 2-A) Look for explicit 営業時間 / 영업시간 context window first
+      const labeledRe = /(?:영업\s*시간|営業時間|Opening\s*hours|Hours)\s*[:：·\-]?\s*([^\n。]{5,95})/gi;
+      let lm;
+      while ((lm = labeledRe.exec(plainText)) !== null) {
+        const windowStr = lm[1];
+        const rangeMatches = [...windowStr.matchAll(/((?:오전|오후)?\s*\d{1,2}:\d{2}\s*(?:AM|PM)?\s*~\s*(?:오전|오후)?\s*\d{1,2}:\d{2}\s*(?:AM|PM)?)/gi)];
+        const validRanges = [];
+        for (const rm of rangeMatches) {
+          const norm = normalizeHoursRangeStr(rm[1]);
+          if (isValidStoreHoursPair(norm) && !validRanges.includes(norm)) validRanges.push(norm);
+        }
+        if (validRanges.length > 0) {
+          return validRanges.slice(0, 2).join(" / ") + closedSuffix;
+        }
+      }
+
+      // 2-B) Look for lunch + dinner dual time ranges anywhere in plainText (e.g. "11:30~15:00 / 18:00~22:30" or "11:30~15:00 18:00~22:00")
+      const dualTimeRe = /((?:오전|오후)?\s*\d{1,2}:\d{2}\s*(?:AM|PM)?\s*~\s*(?:오전|오후)?\s*\d{1,2}:\d{2}\s*(?:AM|PM)?)\s*(?:[,/·&、]|\s+|(?:\([^)]*\)\s*)){1,3}((?:오전|오후)?\s*\d{1,2}:\d{2}\s*(?:AM|PM)?\s*~\s*(?:오전|오후)?\s*\d{1,2}:\d{2}\s*(?:AM|PM)?)/gi;
+      while ((lm = dualTimeRe.exec(plainText)) !== null) {
+        const r1 = normalizeHoursRangeStr(lm[1]);
+        const r2 = normalizeHoursRangeStr(lm[2]);
+        if (isValidStoreHoursPair(r1) && isValidStoreHoursPair(r2) && r1 !== r2) {
+          return `${r1} / ${r2}${closedSuffix}`;
+        }
+      }
+
+      // 2-C) Look for single valid store operating hours range in plainText
+      const singleTimeRe = /((?:오전|오후)\s*\d{1,2}:\d{2}\s*~\s*(?:오전|오후)?\s*\d{1,2}:\d{2}|\d{1,2}:\d{2}\s*(?:AM|PM)\s*~\s*\d{1,2}:\d{2}\s*(?:AM|PM)|(?:0[6-9]|1\d|2[0-3]):[0-5]\d\s*~\s*(?:1\d|2[0-4]|0[0-5]):[0-5]\d)/gi;
+      while ((lm = singleTimeRe.exec(plainText)) !== null) {
+        const r1 = normalizeHoursRangeStr(lm[1]);
+        if (isValidStoreHoursPair(r1)) {
+          return r1 + closedSuffix;
+        }
+      }
+
+      // 2-D) Check Google Maps status string like "오후 9:00에 영업 종료" / "오전 11:30에 영업 시작"
+      const statusClose = plainText.match(/((?:오전|오후)\s*\d{1,2}:\d{2}|\d{1,2}:\d{2})\s*에\s*영업\s*종료/);
+      const statusOpen = plainText.match(/((?:오전|오후)\s*\d{1,2}:\d{2}|\d{1,2}:\d{2})\s*에\s*영업\s*(?:시작|재개)/);
+      if (statusOpen && statusClose) {
+        return `${normalizeSingleTimeToken(statusOpen[1])} ~ ${normalizeSingleTimeToken(statusClose[1])}`;
+      }
+
+      if (/24\s*시간\s*영업|24時間営業|open\s*24\s*hours/i.test(plainText)) return "24시간 영업";
+      return "";
+    }
+
+    // Extracts actual visitor reviews from Google Maps HTML, Bing/DuckDuckGo Korean reviews, & Yahoo/Tabelog snippets
+    function extractGoogleMapsReviews(fullHtml, extraText, placeName, subCategory, area, ratingStr) {
+      const combined = unescapeGoogleScriptText(`${fullHtml || ""}\n${extraText || ""}`);
+      const plainExtra = stripHtmlToPlainText(extraText || "");
+      const reviewSnippets = [];
+      const seen = new Set();
+
+      const addSnippet = (rawStr) => {
+        if (!rawStr) return;
+        let s = decodeHtmlEntities(rawStr)
+          .replace(/\(Google\s*번역\s*제공\)/gi, "")
+          .replace(/\(원문\)[\s\S]*$/gi, "")
+          .replace(/https?:\/\/\S+/g, "")
+          .replace(/\d{4}\.\s*\d{1,2}\.\s*\d{1,2}\.?/g, "")
+          .replace(/\s+/g, " ")
+          .trim();
+        if (s.length < 14 || s.length > 210) return;
+        if (/Google|지도|약관|개인정보|로그인|검색결과|클릭|브라우저|자바스크립트|키보드|단축키|스트리트\s*뷰|경로\s*찾기|웹사이트|전화번호|영업시간\s*수정|쿠키|광고|Microsoft|Bing|Yahoo/i.test(s)) return;
+        const key = s.slice(0, 22);
+        if (seen.has(key)) return;
+        seen.add(key);
+        reviewSnippets.push(s);
+      };
+
+      // 1) Extract "(Google 번역 제공) ..." translated user reviews from Google Maps
+      const transRe = /\(Google\s*번역\s*제공\)\s*([^"\\[\]]{14,240})/g;
+      let m;
+      while ((m = transRe.exec(combined)) !== null) {
+        addSnippet(m[1]);
+        if (reviewSnippets.length >= 3) break;
+      }
+
+      // 2) Extract native Korean review strings from Google Maps JSON / search snippets
+      const reviewCueRe = /맛있|바삭|신선|친절|가성비|웨이팅|줄이|줄을|줄서|분위기|추천|메뉴|튀김|텐동|국물|스프|비스크|바게트|리조또|면이|차슈|고기|참치|초밥|카레|맥주|안주|커피|디저트|매장|직원|사장님|가격|양이|현지인|맛집|방문|구경|종류|피규어|빈티지|구제|레트로|명소|일품|진하|부드럽|풍미|인기/;
+      if (reviewSnippets.length < 3) {
+        const koQuotesRe = /"([^"\\]{15,200})"/g;
+        while ((m = koQuotesRe.exec(combined)) !== null) {
+          const cand = m[1].trim();
+          if (/[가-힣]{4,}/.test(cand) && reviewCueRe.test(cand) && !/[{}<>]|function|var\s|const\s|http/.test(cand)) {
+            addSnippet(cand);
+            if (reviewSnippets.length >= 3) break;
+          }
+        }
+      }
+
+      // 3) Check sentences in plainExtra (from Bing / DuckDuckGo / Jina search results)
+      if (reviewSnippets.length < 2 && plainExtra) {
+        const sentences = plainExtra.split(/(?:[.!?]\s+|\n+|\s+·\s+|\s+\|\s+)/);
+        for (const sen of sentences) {
+          const trimmed = sen.replace(/^[#*>-\s]+/, "").trim();
+          if (trimmed.length >= 18 && trimmed.length <= 165 && /[가-힣]{5,}/.test(trimmed) && reviewCueRe.test(trimmed)) {
+            addSnippet(trimmed);
+            if (reviewSnippets.length >= 2) break;
+          }
+        }
+      }
+
+      // 4) If Japanese Tabelog/Yahoo review keywords exist, extract & translate key highlights
+      const jpHighlights = [];
+      if (/海老|えび|エビ/.test(combined) && /スープ|濃厚|ビスク/.test(combined)) jpHighlights.push("진하고 크리미한 새우 비스크 풍미의 스프와 쫄깃한 면발, 바게트·리조또 조합이 호평");
+      if (/サクサク|揚げたて/.test(combined)) jpHighlights.push("갓 튀겨내어 옷이 얇고 바삭한 식감이 일품");
+      if (/コスパ|リーズナブル/.test(combined)) jpHighlights.push("가격 대비 양과 퀄리티가 뛰어난 가성비 맛집");
+      if (/行列|人気店|繁盛/.test(combined)) jpHighlights.push("현지인들도 줄 서서 방문하는 로컬 인기 매장");
+      if (/接客|丁寧|親切/.test(combined)) jpHighlights.push("직원들의 응대가 친절하고 매장 분위기가 쾌적함");
+
+      const prefix = [ratingStr, subCategory].filter(Boolean).join(" · ");
+      if (reviewSnippets.length > 0) {
+        const formattedReviews = reviewSnippets.slice(0, 2).map(r => `"${r}"`).join(" / ");
+        return `${prefix ? `[${prefix}] ` : ""}💬 방문자 리뷰 요약: ${formattedReviews}`;
+      }
+      if (jpHighlights.length > 0) {
+        return `${prefix ? `[${prefix}] ` : ""}💬 현지 리뷰 요약: ${jpHighlights.slice(0, 2).join(", ")}으로 높은 평가를 받는 곳입니다.`;
+      }
+
+      return `${prefix ? `[${prefix}] ` : ""}${area}에 위치한 ${subCategory || "추천 스팟"}입니다. 구글맵에서 현지 방문객들의 높은 평가를 받는 장소입니다.`;
+    }
+
+    function extractCoordsFromText(str) {
+      if (!str) return null;
+      let text = str;
+      try { text = decodeURIComponent(str); } catch (e) {}
+
+      // 1) Exact pin coordinates !3dLAT!4dLNG
+      const bangRe = /!3d(-?\d+\.\d{3,})!4d(-?\d+\.\d{3,})/g;
+      let m;
+      while ((m = bangRe.exec(text)) !== null) {
+        const la = parseFloat(m[1]), ln = parseFloat(m[2]);
+        if (la >= 24 && la <= 46 && ln >= 122 && ln <= 154) return { lat: la, lng: ln };
+      }
+
+      // 2) Viewport / place URL @LAT,LNG
+      const atRe = /@(-?\d+\.\d{3,}),(-?\d+\.\d{3,})/g;
+      while ((m = atRe.exec(text)) !== null) {
+        const la = parseFloat(m[1]), ln = parseFloat(m[2]);
+        if (la >= 24 && la <= 46 && ln >= 122 && ln <= 154) return { lat: la, lng: ln };
+      }
+
+      // 3) Query params center=LAT,LNG or ll=LAT,LNG or q=LAT,LNG
+      const paramRe = /[?&](?:center|ll|sll|q|query)=(-?\d+\.\d{3,})\s*,\s*(-?\d+\.\d{3,})/gi;
+      while ((m = paramRe.exec(text)) !== null) {
+        const la = parseFloat(m[1]), ln = parseFloat(m[2]);
+        if (la >= 24 && la <= 46 && ln >= 122 && ln <= 154) return { lat: la, lng: ln };
+      }
+
+      // 4) Embedded Google Maps array [null,null,LAT,LNG]
+      const arrRe = /\[\s*null\s*,\s*null\s*,\s*(3[456]\.\d{4,})\s*,\s*(13[89]\.\d{4,}|140\.\d{4,})\s*\]/g;
+      while ((m = arrRe.exec(text)) !== null) {
+        return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+      }
+      return null;
+    }
+
+    function extractPlaceSlugFromUrl(urlStr) {
+      if (!urlStr) return "";
+      let target = urlStr;
+      const linkParam = urlStr.match(/[?&]link=([^&]+)/i);
+      if (linkParam && linkParam[1]) {
+        try { target = decodeURIComponent(linkParam[1]); } catch (e) {}
+      }
+      const slugMatch = target.match(/\/maps\/place\/([^/@?&]+)/i) || target.match(/\/maps\/search\/([^/@?&]+)/i) || target.match(/[?&](?:q|query)=([^&]+)/i);
+      if (slugMatch && slugMatch[1]) {
+        try {
+          const decoded = decodeURIComponent(slugMatch[1].replace(/\+/g, " ")).trim();
+          if (!isBogusPlaceTitle(decoded)) return decoded;
+        } catch (e) {}
+      }
+      return "";
+    }
+
+    function formatOsmOpeningHours(rawOh) {
+      if (!rawOh) return "";
+      if (/24\/7/.test(rawOh)) return "24시간 영업";
+      return rawOh
+        .replace(/Mo-Su/gi, "매일")
+        .replace(/Mo-Fr/gi, "평일")
+        .replace(/Sa-Su/gi, "주말")
+        .replace(/Mo/g, "월").replace(/Tu/g, "화").replace(/We/g, "수")
+        .replace(/Th/g, "목").replace(/Fr/g, "금").replace(/Sa/g, "토").replace(/Su/g, "일")
+        .replace(/off/gi, "휴무")
+        .replace(/;/g, " / ")
+        .trim();
+    }
+
+    async function fetchWithTimeout(url, options = {}, timeoutMs = 6500) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+      try {
+        return await fetch(url, { ...options, signal: ctrl.signal });
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    async function resolveGoogleMapsUrlAndMeta(inputUrl) {
+      const result = {
+        finalUrl: inputUrl,
+        name: "",
+        metaDesc: "",
+        hours: "",
+        lat: null,
+        lng: null,
+        fullHtml: "",
+        jinaText: ""
+      };
+
+      const applyHtmlOrText = (html, finalUrlCandidate) => {
+        if (finalUrlCandidate && finalUrlCandidate.startsWith("http")) {
+          const linkParam = finalUrlCandidate.match(/[?&]link=([^&]+)/i);
+          if (linkParam && linkParam[1]) {
+            try { result.finalUrl = decodeURIComponent(linkParam[1]); } catch (e) { result.finalUrl = finalUrlCandidate; }
+          } else {
+            result.finalUrl = finalUrlCandidate;
+          }
+        }
+        if (!html) return;
+        result.fullHtml += "\n" + html;
+
+        // Extract embedded google.com/maps URL inside shortener HTML
+        const embeddedMapUrl = html.match(/https?:\/\/(?:www\.)?google\.(?:com|co\.jp|co\.kr)\/maps\/[^\s"'<>\\]+/i)
+          || html.match(/https?:\/\/maps\.google\.(?:com|co\.jp|co\.kr)\/maps[^\s"'<>\\]+/i);
+        if (embeddedMapUrl && embeddedMapUrl[0]) {
+          let cleanEmbed = decodeHtmlEntities(embeddedMapUrl[0]);
+          try {
+            if (cleanEmbed.includes("%2F") || cleanEmbed.includes("%3A")) cleanEmbed = decodeURIComponent(cleanEmbed);
+          } catch (e) {}
+          if (result.finalUrl.includes("goo.gl")) result.finalUrl = cleanEmbed;
+          if (!result.name) result.name = extractPlaceSlugFromUrl(cleanEmbed);
+          const c = extractCoordsFromText(cleanEmbed);
+          if (c && (!result.lat || !result.lng)) { result.lat = c.lat; result.lng = c.lng; }
+        }
+
+        // Extract from resolved finalUrl
+        if (!result.name) result.name = extractPlaceSlugFromUrl(result.finalUrl);
+        const urlCoords = extractCoordsFromText(result.finalUrl);
+        if (urlCoords && (!result.lat || !result.lng)) {
+          result.lat = urlCoords.lat;
+          result.lng = urlCoords.lng;
+        }
+
+        // Parse meta tags (og:title, itemprop="name", <title>, og:description)
+        const ogTitle = html.match(/<meta[^>]+(?:property|name|itemprop)=["'](?:og:title|twitter:title|name)["'][^>]+content=["']([^"']+)["']/i)
+          || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name|itemprop)=["'](?:og:title|twitter:title|name)["']/i);
+        const titleTag = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+        const ogDesc = html.match(/<meta[^>]+(?:property|name|itemprop)=["'](?:og:description|description|twitter:description)["'][^>]+content=["']([^"']+)["']/i)
+          || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name|itemprop)=["'](?:og:description|description|twitter:description)["']/i);
+
+        if (ogTitle && ogTitle[1]) {
+          const parsed = parseTitleAndMeta(ogTitle[1]);
+          if (parsed.name && !result.name) result.name = parsed.name;
+          if (parsed.meta && !result.metaDesc) result.metaDesc = parsed.meta;
+        }
+        if (titleTag && titleTag[1] && !result.name) {
+          const parsed = parseTitleAndMeta(titleTag[1]);
+          if (parsed.name) result.name = parsed.name;
+          if (parsed.meta && !result.metaDesc) result.metaDesc = parsed.meta;
+        }
+        if (ogDesc && ogDesc[1]) {
+          const d = decodeHtmlEntities(ogDesc[1]).trim();
+          if (d && !/Find local businesses|지역 정보를 검색|Google 지도에서/i.test(d)) {
+            result.metaDesc = result.metaDesc ? `${result.metaDesc} · ${d}` : d;
+          }
+        }
+
+        const bodyCoords = extractCoordsFromText(html);
+        if (bodyCoords && (!result.lat || !result.lng)) {
+          result.lat = bodyCoords.lat;
+          result.lng = bodyCoords.lng;
+        }
+        const extractedOh = extractGoogleMapsOpeningHours(html, "");
+        if (extractedOh && !result.hours) {
+          result.hours = extractedOh;
+        }
+      };
+
+      // Step 1: Resolve short link or fetch initial URL via AllOrigins
+      const firstFetchUrl = ensureKoreanGoogleMapsUrl(inputUrl);
+      try {
+        const res = await fetchWithTimeout(`https://api.allorigins.win/get?url=${encodeURIComponent(firstFetchUrl)}`, {}, 6000);
+        if (res.ok) {
+          const data = await res.json();
+          applyHtmlOrText(data.contents || "", data.status?.url || "");
+        }
+      } catch (e) {}
+
+      // Step 2: If input was a short link (goo.gl) and we now have a resolved google.com/maps URL,
+      // fetch the resolved URL with ?hl=ko&gl=kr so we get Korean business type ("튀김요리 전문점"), Korean reviews, and full hours!
+      if (result.finalUrl && result.finalUrl.includes("google.") && (!/[가-힣]/.test(result.metaDesc) || !result.hours)) {
+        const koMapUrl = ensureKoreanGoogleMapsUrl(result.finalUrl);
+        try {
+          const koRes = await fetchWithTimeout(`https://api.allorigins.win/get?url=${encodeURIComponent(koMapUrl)}`, {}, 6000);
+          if (koRes.ok) {
+            const koData = await koRes.json();
+            applyHtmlOrText(koData.contents || "", koData.status?.url || koMapUrl);
+          }
+        } catch (e) {}
+      }
+
+      // Step 3: Jina Reader API with Korean locale for metadata, hours, and visitor reviews
+      if (!result.name || !result.lat || !result.hours || !/[가-힣]/.test(result.metaDesc)) {
+        try {
+          const targetForJina = ensureKoreanGoogleMapsUrl(result.finalUrl || inputUrl);
+          const jRes = await fetchWithTimeout(`https://r.jina.ai/${targetForJina}`, {
+            headers: {
+              "Accept": "application/json",
+              "X-Return-Format": "markdown",
+              "X-Locale": "ko-KR",
+              "Accept-Language": "ko-KR,ko;q=0.9,ja;q=0.8"
+            }
+          }, 6500);
+          if (jRes.ok) {
+            const cType = jRes.headers.get("content-type") || "";
+            if (cType.includes("application/json")) {
+              const jData = await jRes.json();
+              const d = jData.data || jData;
+              if (d.url && d.url.startsWith("http")) result.finalUrl = d.url;
+              if (d.title) {
+                const parsed = parseTitleAndMeta(d.title);
+                if (parsed.name && !result.name) result.name = parsed.name;
+                if (parsed.meta && !result.metaDesc) result.metaDesc = parsed.meta;
+              }
+              if (d.description && !result.metaDesc) result.metaDesc = d.description;
+              if (d.content) result.jinaText += "\n" + d.content;
+              applyHtmlOrText(d.content || "", d.url || "");
+            } else {
+              const txt = await jRes.text();
+              result.jinaText += "\n" + txt;
+              const tMatch = txt.match(/^Title:\s*(.+)$/m);
+              const uMatch = txt.match(/^URL Source:\s*(https?:\/\/\S+)$/m);
+              if (tMatch && tMatch[1] && !result.name) {
+                const parsed = parseTitleAndMeta(tMatch[1]);
+                if (parsed.name) result.name = parsed.name;
+                if (parsed.meta && !result.metaDesc) result.metaDesc = parsed.meta;
+              }
+              applyHtmlOrText(txt, uMatch ? uMatch[1] : "");
+            }
+          }
+        } catch (e) {}
+      }
+
+      // Step 4: unshorten.me + CodeTabs proxy fallback if still missing name or coordinates
+      if (!result.name || !result.lat) {
+        try {
+          const uRes = await fetchWithTimeout(`https://unshorten.me/json/${encodeURIComponent(inputUrl)}`, {}, 5000);
+          if (uRes.ok) {
+            const uData = await uRes.json();
+            if (uData.resolved_url) {
+              applyHtmlOrText("", uData.resolved_url);
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (!result.name || !result.lat) {
+        try {
+          const targetForProxy = ensureKoreanGoogleMapsUrl(result.finalUrl || inputUrl);
+          const cRes = await fetchWithTimeout(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetForProxy)}`, {}, 6000);
+          if (cRes.ok) {
+            const html = await cRes.text();
+            applyHtmlOrText(html, targetForProxy);
+          }
+        } catch (e) {}
+      }
+
+      return result;
+    }
+
+    function getSmartDefaultHoursBySubCategory(subCategory, cat, placeName) {
+      const s = `${subCategory || ""} ${placeName || ""}`.toLowerCase();
+      if (/이자카야|선술집|야키토리|꼬치|바|칵테일|주점|호르몬|포차|술집|izakaya|bar|pub/.test(s)) {
+        return "17:00 ~ 23:30";
+      }
+      if (/라멘|츠케멘|마제소바|탄탄멘|튀김|덴푸라|텐동|돈카츠|돈까스|카츠|스시|초밥|카운터|장어|우나기|야키니쿠|스키야키|샤브샤브|규카츠|경양식|정식|소바|우동|오코노미야키|몬자/.test(s)) {
+        return "11:30 ~ 15:00 / 18:00 ~ 22:00";
+      }
+      if (/카레|하이라이스|함박|규동|덮밥|만두|교자|중화|라멘/.test(s)) {
+        return "11:00 ~ 21:30";
+      }
+      if (/신사|사찰|신궁|절|공원|정원|해변|전망대/.test(s)) {
+        return "09:00 ~ 17:00";
+      }
+      if (/베이커리|빵집|카페|커피|로스터리|찻집|디저트|케이크|크레페|빙수|아이스크림|젤라또/.test(s) || cat === "cafe") {
+        return "10:00 ~ 19:00";
+      }
+      if (/빈티지|구제|세컨핸즈|편집샵|셀렉트샵|의류|패션|레코드|음반|서점|잡화/.test(s) || cat === "vintage") {
+        return "12:00 ~ 20:00";
+      }
+      if (/서브컬처|피규어|애니|굿즈|가챠|오락실|아케이드|레트로|프라모델|만화|캐릭터/.test(s) || cat === "subculture") {
+        return "11:00 ~ 20:30";
+      }
+      if (cat === "food") {
+        return "11:30 ~ 15:00 / 17:30 ~ 22:00";
+      }
+      return "11:00 ~ 20:00";
+    }
+
+    async function fetchTextViaCorsProxy(targetUrl, timeoutMs = 5500) {
+      // 1) Try allorigins /get (handles base64 and text cleanly)
+      try {
+        const aoRes = await fetchWithTimeout(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`, {}, timeoutMs);
+        if (aoRes.ok) {
+          const aoData = await aoRes.json();
+          const raw = decodeBase64DataUrlIfNeeded(aoData.contents || "");
+          if (raw && raw.length > 80) return raw;
+        }
+      } catch (e) {}
+
+      // 2) Try codetabs proxy
+      try {
+        const ctRes = await fetchWithTimeout(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`, {}, timeoutMs);
+        if (ctRes.ok) {
+          const txt = await ctRes.text();
+          if (txt && txt.length > 80) return txt;
+        }
+      } catch (e) {}
+
+      // 3) Try r.jina.ai reader
+      try {
+        const jRes = await fetchWithTimeout(`https://r.jina.ai/${targetUrl}`, {
+          headers: {
+            "Accept": "text/plain",
+            "X-Return-Format": "markdown",
+            "X-Locale": "ko-KR"
+          }
+        }, timeoutMs);
+        if (jRes.ok) {
+          const jTxt = await jRes.text();
+          if (jTxt && jTxt.length > 80 && !/captcha|unusual traffic|비정상적인 트래픽/i.test(jTxt)) return jTxt;
+        }
+      } catch (e) {}
+
+      return "";
+    }
+
+    // Queries CAPTCHA-free search engines (Yahoo! Japan / Tabelog, Bing Search, DuckDuckGo) for exact opening hours & visitor reviews
+    async function fetchGooglePlaceKnowledgeEnrichment(placeName, area) {
+      if (!placeName) return { subCategory: "", hours: "", reviewText: "", rating: "" };
+      try {
+        // Extract Japanese/English token if the name contains both Korean and Japanese (e.g., "에비마루 라멘 海老丸らーめん")
+        const jaTokens = (placeName.match(/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fffA-Za-z0-9\sー・&'-]+/g) || [])
+          .map(s => s.trim())
+          .filter(s => s.length >= 2)
+          .join(" ")
+          .trim();
+        const searchNameJa = jaTokens || placeName;
+
+        const yahooJpUrl = `https://search.yahoo.co.jp/search?p=${encodeURIComponent(searchNameJa + " 営業時間 食べログ 口コミ")}`;
+        const bingKoUrl = `https://www.bing.com/search?q=${encodeURIComponent(placeName + " " + (area || "도쿄") + " 영업시간 후기 리뷰")}&setlang=ko-KR`;
+        const ddgUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(placeName + " 영업시간 営業時間")}`;
+
+        const [yahooRaw, bingRaw, ddgRaw] = await Promise.all([
+          fetchTextViaCorsProxy(yahooJpUrl, 5500),
+          fetchTextViaCorsProxy(bingKoUrl, 5500),
+          fetchTextViaCorsProxy(ddgUrl, 5000)
+        ]);
+
+        const combinedRaw = [yahooRaw, bingRaw, ddgRaw].filter(Boolean).join("\n\n");
+        if (!combinedRaw) return { subCategory: "", hours: "", reviewText: "", rating: "" };
+
+        const hours = extractGoogleMapsOpeningHours(yahooRaw + "\n" + bingRaw, ddgRaw);
+        const subInfo = extractGoogleSubCategoryAndRating("", combinedRaw, placeName, {});
+        const plainReviewText = stripHtmlToPlainText(combinedRaw);
+
+        return {
+          subCategory: subInfo.subCategory,
+          rating: subInfo.rating,
+          hours,
+          reviewText: plainReviewText
+        };
+      } catch (e) {
+        return { subCategory: "", hours: "", reviewText: "", rating: "" };
+      }
+    }
+
+    async function queryOverpassNearby(lat, lng, targetName) {
+      try {
+        const query = `[out:json][timeout:6];(node(around:95,${lat},${lng})["name"];way(around:95,${lat},${lng})["name"];);out center tags 20;`;
+        const res = await fetchWithTimeout(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`, {}, 5500);
+        if (!res.ok) return null;
+        const data = await res.json();
+        const elements = data.elements || [];
+        if (elements.length === 0) return null;
+
+        const rawTarget = (targetName || "").toLowerCase();
+        const normTarget = rawTarget.replace(/\s+/g, "");
+        // Also split into individual tokens (e.g. ["에비마루", "라멘", "海老丸らーめん"]) so bilingual titles match OSM
+        const targetTokens = rawTarget
+          .split(/[\s·|\/()\[\]]+/)
+          .map(t => t.trim())
+          .filter(t => t.length >= 2);
+
+        let best = null;
+        let bestScore = -999;
+
+        for (const el of elements) {
+          const tags = el.tags || {};
+          const elLat = el.lat || el.center?.lat;
+          const elLng = el.lon || el.center?.lon;
+          const distM = (elLat && elLng) ? calcDistanceKm(lat, lng, elLat, elLng) * 1000 : 30;
+          const names = [tags["name:ko"], tags["name:ja"], tags.name, tags["name:en"], tags.brand].filter(Boolean);
+          const joinedNames = names.join(" ").toLowerCase().replace(/\s+/g, "");
+
+          let score = 60 - distM;
+          if (tags.shop || tags.amenity || tags.tourism || tags.leisure || tags.craft) score += 25;
+          if (tags.opening_hours) score += 25;
+          if (joinedNames) {
+            if (normTarget && (joinedNames.includes(normTarget) || normTarget.includes((tags.name || "").toLowerCase().replace(/\s+/g, "")))) {
+              score += 120;
+            } else if (targetTokens.some(tok => joinedNames.includes(tok))) {
+              score += 95;
+            }
+          }
+          if (score > bestScore) {
+            bestScore = score;
+            best = { tags, lat: elLat || lat, lng: elLng || lng, distM };
+          }
+        }
+        return best;
+      } catch (e) {
+        return null;
+      }
+    }
+
     async function parseGoogleMapInput(mode) {
       const isCourse = mode === "course";
       const rawInput = document.getElementById(isCourse ? "cFormMapRaw" : "sFormMapRaw");
@@ -731,93 +1723,240 @@
 
       if (statusEl) {
         statusEl.classList.remove("hidden");
-        statusEl.textContent = "⏳ 구글 지도 링크에서 장소명·GPS 좌표·역 정보를 분석 중...";
+        statusEl.textContent = "⏳ 구글맵 링크에서 실제 상호명·업종·영업시간·리뷰를 분석 중...";
       }
 
       let extractedUrl = "";
       let extractedName = "";
+      let metaDesc = "";
       let lat = null;
       let lng = null;
+      let hours = "";
+      let phone = "";
+      let fullHtml = "";
+      let jinaText = "";
 
-      // 1) Extract URL from pasted share text or full URL
+      // 1) Extract URL & any preceding shared text
       const urlMatch = raw.match(/https?:\/\/[^\s]+/i);
       if (urlMatch) {
         extractedUrl = urlMatch[0];
-        const beforeText = raw.replace(extractedUrl, "").replace(/[·|,\-\n]+/g, " ").trim();
-        if (beforeText && beforeText.length >= 2) {
-          extractedName = beforeText.split("  ")[0].trim();
+        const beforeText = raw.replace(extractedUrl, "").replace(/[·|,\-\n\r]+/g, " ").trim();
+        if (beforeText && !isBogusPlaceTitle(beforeText)) {
+          extractedName = beforeText.split(/\s{2,}/)[0].trim();
         }
+      } else if (!raw.startsWith("http")) {
+        extractedName = raw;
       }
 
-      // 2) Extract place name from /maps/place/NAME/...
-      const placeSlug = raw.match(/\/maps\/place\/([^/@?]+)/i) || raw.match(/[?&]q=([^&]+)/i);
-      if (placeSlug && placeSlug[1]) {
-        try {
-          const decoded = decodeURIComponent(placeSlug[1].replace(/\+/g, " ")).trim();
-          if (!/^\d+\.\d+/.test(decoded)) extractedName = decoded;
-        } catch (e) {}
+      // 2) Direct extraction from URL string if available
+      const directSlug = extractPlaceSlugFromUrl(raw);
+      if (directSlug && !extractedName) extractedName = directSlug;
+
+      const directCoords = extractCoordsFromText(raw);
+      if (directCoords) {
+        lat = directCoords.lat;
+        lng = directCoords.lng;
       }
 
-      // 3) Extract exact coordinates from @lat,lng or !3dlat!4dlng
-      const atCoord = raw.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-      const bangCoord = raw.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
-      if (bangCoord) {
-        lat = parseFloat(bangCoord[1]);
-        lng = parseFloat(bangCoord[2]);
-      } else if (atCoord) {
-        lat = parseFloat(atCoord[1]);
-        lng = parseFloat(atCoord[2]);
+      // 3) Resolve link & fetch Korean Google Maps metadata, opening hours, and reviews
+      let finalResolvedUrl = extractedUrl;
+      if (extractedUrl) {
+        if (statusEl) {
+          statusEl.textContent = "⏳ 구글맵 페이지 접속 및 업종·영업시간·방문자 리뷰 추출 중...";
+        }
+        const resolved = await resolveGoogleMapsUrlAndMeta(extractedUrl);
+        if (resolved.finalUrl) finalResolvedUrl = resolved.finalUrl;
+        if (resolved.name && !extractedName) extractedName = resolved.name;
+        if (resolved.metaDesc) metaDesc = resolved.metaDesc;
+        if (resolved.lat && resolved.lng && (!lat || !lng)) {
+          lat = resolved.lat;
+          lng = resolved.lng;
+        }
+        if (resolved.hours && !hours) hours = resolved.hours;
+        fullHtml = resolved.fullHtml || "";
+        jinaText = resolved.jinaText || "";
       }
 
-      // 4) Check built-in Tokyo DB first
-      const searchTarget = (extractedName || raw).toLowerCase();
-      const kbMatch = FALLBACK_PLACE_DB.find(p => p.keys.some(k => searchTarget.includes(k)) || p.name.toLowerCase().includes(searchTarget));
+      // 4) Check built-in Tokyo DB for known landmarks
+      const searchTarget = `${extractedName} ${metaDesc} ${raw}`.toLowerCase();
+      const kbMatch = FALLBACK_PLACE_DB.find(p => p.keys.some(k => searchTarget.includes(k)) || p.name.toLowerCase().includes((extractedName || "__none__").toLowerCase()));
 
-      let area = findNearestTokyoHub(lat, lng, extractedName || raw);
-      let cat = kbMatch ? kbMatch.cat : "subculture";
-      let hours = kbMatch ? kbMatch.hours : "";
-      let stay = kbMatch ? kbMatch.stay : 60;
-      let tip = kbMatch ? kbMatch.tip : "";
+      let osmTags = {};
+      let addressSummary = "";
+      let nominatimAreaHint = "";
+      let osmHours = "";
 
-      // 5) Query OpenStreetMap Nominatim (Reverse if lat/lng exists, or bounded Search if name exists)
+      // 5) Cross-query Nominatim & Overpass API for exact coordinates, neighborhood/station, and OSM tags
       try {
-        if (lat && lng) {
-          const revRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&extratags=1`, {
-            headers: { "Accept-Language": "ko,ja,en" }
-          });
-          if (revRes.ok) {
-            const revData = await revRes.json();
-            if (!extractedName && revData.name) extractedName = revData.name;
-            const addr = revData.address || {};
-            const addrStr = `${addr.suburb || ""} ${addr.quarter || ""} ${addr.neighbourhood || ""} ${addr.city_district || ""} ${addr.city || ""}`;
-            area = findNearestTokyoHub(lat, lng, addrStr + " " + (extractedName || ""));
-            if (revData.extratags?.opening_hours && !hours) {
-              hours = revData.extratags.opening_hours;
+        if ((!lat || !lng) && extractedName) {
+          if (statusEl) statusEl.textContent = `⏳ '${extractedName}' 실제 위치 좌표 및 동네 검색 중...`;
+          const jaTokenOnly = (extractedName.match(/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fffA-Za-z0-9\sー・&'-]+/g) || []).join(" ").trim();
+          const queries = [
+            jaTokenOnly ? `${jaTokenOnly} Tokyo` : "",
+            `${extractedName} Tokyo`,
+            extractedName
+          ].filter(Boolean);
+          for (const qStr of queries) {
+            const qUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(qStr)}&viewbox=139.0,36.0,140.5,35.0&bounded=0&limit=3&addressdetails=1&extratags=1`;
+            const sRes = await fetchWithTimeout(qUrl, { headers: { "Accept-Language": "ko,ja,en" } }, 5000);
+            if (sRes.ok) {
+              const sArr = await sRes.json();
+              if (Array.isArray(sArr) && sArr.length > 0) {
+                const top = sArr.find(item => {
+                  const la = parseFloat(item.lat), ln = parseFloat(item.lon);
+                  return la >= 34.5 && la <= 36.5 && ln >= 138.8 && ln <= 140.9;
+                }) || sArr[0];
+                lat = parseFloat(top.lat);
+                lng = parseFloat(top.lon);
+                osmTags = Object.assign({}, top.extratags || {}, { category: top.category, type: top.type });
+                if (top.extratags?.opening_hours) osmHours = formatOsmOpeningHours(top.extratags.opening_hours);
+                const addr = top.address || {};
+                nominatimAreaHint = `${addr.quarter || ""} ${addr.suburb || ""} ${addr.neighbourhood || ""} ${addr.city_district || ""} ${addr.city || ""} ${addr.town || ""} ${top.display_name || ""}`;
+                addressSummary = [addr.city_district || addr.city || addr.town, addr.suburb || addr.quarter || addr.neighbourhood, addr.road].filter(Boolean).join(" ");
+                break;
+              }
             }
-            const osmType = `${revData.category || ""} ${revData.type || ""}`;
-            if (/restaurant|fast_food|bar|izakaya|pub|ramen|sushi/i.test(osmType)) cat = "food";
-            else if (/cafe|bakery|park|garden|shrine|temple/i.test(osmType)) cat = "cafe";
-            else if (/clothes|second_hand|fashion|department/i.test(osmType)) cat = "vintage";
           }
-        } else if (extractedName) {
-          const qUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(extractedName + " Tokyo")}&limit=1&addressdetails=1&extratags=1`;
-          const sRes = await fetch(qUrl, { headers: { "Accept-Language": "ko,ja,en" } });
-          if (sRes.ok) {
-            const sArr = await sRes.json();
-            if (sArr && sArr.length > 0) {
-              const top = sArr[0];
-              lat = parseFloat(top.lat);
-              lng = parseFloat(top.lon);
-              area = findNearestTokyoHub(lat, lng, top.display_name || extractedName);
-              if (top.extratags?.opening_hours && !hours) hours = top.extratags.opening_hours;
+        }
+
+        if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
+          if (statusEl) statusEl.textContent = `⏳ GPS(${lat.toFixed(4)}, ${lng.toFixed(4)}) 실제 매장 정보·영업시간·리뷰 교차 확인 중...`;
+          const [overpassHit, revRes] = await Promise.all([
+            queryOverpassNearby(lat, lng, extractedName),
+            fetchWithTimeout(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&extratags=1`, {
+              headers: { "Accept-Language": "ko,ja,en" }
+            }, 5000).catch(() => null)
+          ]);
+
+          if (overpassHit && overpassHit.tags) {
+            const oTags = overpassHit.tags;
+            osmTags = Object.assign({}, osmTags, oTags);
+            const osmBestName = oTags["name:ko"] || oTags.name || oTags["name:ja"] || oTags["name:en"];
+            if (!extractedName && osmBestName) {
+              extractedName = osmBestName;
             }
+            if (oTags.opening_hours && !osmHours) {
+              osmHours = formatOsmOpeningHours(oTags.opening_hours);
+            }
+            if ((oTags.phone || oTags["contact:phone"]) && !phone) {
+              phone = oTags.phone || oTags["contact:phone"];
+            }
+          }
+
+          if (revRes && revRes.ok) {
+            const revData = await revRes.json();
+            if (!extractedName && revData.name && !isBogusPlaceTitle(revData.name)) {
+              extractedName = revData.name;
+            }
+            if (revData.extratags?.opening_hours && !osmHours) {
+              osmHours = formatOsmOpeningHours(revData.extratags.opening_hours);
+            }
+            osmTags = Object.assign({ category: revData.category, type: revData.type }, revData.extratags || {}, osmTags);
+            const addr = revData.address || {};
+            nominatimAreaHint = `${addr.quarter || ""} ${addr.suburb || ""} ${addr.neighbourhood || ""} ${addr.city_district || ""} ${addr.city || ""} ${addr.town || ""} ${revData.display_name || ""}`;
+            const district = addr.city_district || addr.city || addr.town || "";
+            const subArea = addr.suburb || addr.quarter || addr.neighbourhood || "";
+            addressSummary = [district, subArea].filter(Boolean).join(" ");
           }
         }
       } catch (err) {}
 
-      const finalName = extractedName || (kbMatch ? kbMatch.name : "구글맵 저장 스팟");
-      if (!hours) hours = cat === "food" ? "11:00 ~ 21:30 (구글맵 확인)" : "11:00 ~ 20:00";
-      if (!tip) tip = `${area} 인근 구글맵 핀 연동 스팟${lat ? ` (GPS 좌표 연동 완료)` : ""}`;
+      // 6) Determine Accurate Area / Station
+      let area = "";
+      if (kbMatch && !lat && !lng) {
+        area = kbMatch.area;
+      } else {
+        area = findNearestTokyoHub(lat, lng, `${extractedName} ${nominatimAreaHint} ${metaDesc}`);
+      }
+      if (!area) {
+        area = addressSummary.split(" ")[0] || "도쿄";
+      }
+
+      // 7) Extract Google Maps Business Type (e.g. "튀김요리 전문점") & Rating
+      let { subCategory, rating } = extractGoogleSubCategoryAndRating(metaDesc, fullHtml, extractedName, osmTags);
+
+      // 8) Prefer Google Maps hours first, then OSM opening_hours, then KB match
+      if (!hours && osmHours) hours = osmHours;
+      if (!hours && kbMatch) hours = kbMatch.hours;
+
+      // 9) If opening hours, business type, or reviews are still missing, query Yahoo! Japan (Tabelog) / Bing / DuckDuckGo
+      if (extractedName && (!hours || !subCategory || !jinaText)) {
+        if (statusEl) statusEl.textContent = `⏳ '${extractedName}' 실제 영업시간 및 방문자 리뷰 상세 조회 중...`;
+        const enriched = await fetchGooglePlaceKnowledgeEnrichment(extractedName, area);
+        if (!hours && enriched.hours) hours = enriched.hours;
+        if (!subCategory && enriched.subCategory) subCategory = enriched.subCategory;
+        if (!rating && enriched.rating) rating = enriched.rating;
+        if (enriched.reviewText) jinaText += "\n" + enriched.reviewText;
+      }
+
+      // 10) Optional Gemini AI enrichment if key is configured
+      let geminiReviewDesc = "";
+      const apiKey = (cfg.geminiKey || DEFAULT_GEMINI_KEY).trim();
+      if (apiKey) {
+        try {
+          const geminiPrompt = `도쿄/가마쿠라 장소 "${extractedName || raw}" (위치: ${area} ${addressSummary}, 메타정보: ${metaDesc})에 대해 구글맵 기준으로 다음 JSON을 작성해줘:
+{
+  "name": "정확한 상호명",
+  "subCategory": "구글맵 상의 구체적인 업종명 (예: 튀김요리 전문점, 라멘 전문점, 이자카야, 빈티지 의류점 등)",
+  "cat": "food, cafe, vintage, subculture 중 택1 (음식점/튀김/식당/술집은 무조건 food)",
+  "hours": "구글맵 기준 실제 영업시간 (예: 11:30 ~ 14:30 / 17:00 ~ 21:00)",
+  "reviewDesc": "구글맵 실제 방문자 리뷰들을 바탕으로 대표 메뉴, 맛, 특징을 2문장으로 요약"
+}
+JSON만 출력해.`;
+          const gRes = await fetchWithTimeout(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents: [{ parts: [{ text: geminiPrompt }] }] })
+          }, 5500);
+          if (gRes.ok) {
+            const gData = await gRes.json();
+            const gText = gData?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            const jMatch = gText.match(/\{[\s\S]*\}/);
+            if (jMatch) {
+              const gParsed = JSON.parse(jMatch[0]);
+              if (!extractedName && gParsed.name) extractedName = gParsed.name;
+              if (!subCategory && gParsed.subCategory) subCategory = gParsed.subCategory;
+              if (!hours && gParsed.hours) hours = gParsed.hours;
+              if (gParsed.reviewDesc) geminiReviewDesc = gParsed.reviewDesc;
+              if (gParsed.cat && !osmTags.geminiCat) osmTags.geminiCat = gParsed.cat;
+            }
+          }
+        } catch (e) {}
+      }
+
+      // 11) Determine Accurate Category (food / cafe / vintage / subculture)
+      let cat = classifySpotCategory(`${extractedName} ${metaDesc} ${nominatimAreaHint}`, osmTags, subCategory);
+      if (!cat) {
+        if (osmTags.geminiCat && CAT_META[osmTags.geminiCat]) cat = osmTags.geminiCat;
+        else if (kbMatch) cat = kbMatch.cat;
+        else cat = "food";
+      }
+
+      // Ensure subCategory has a specific Korean Google Maps business type label (e.g., "튀김요리 전문점")
+      if (!subCategory) {
+        subCategory = translateBusinessTypeToKorean("", `${extractedName} ${metaDesc}`, osmTags)
+          || (cat === "food" ? "음식점·로컬 맛집" : cat === "vintage" ? "빈티지·패션 편집샵" : cat === "subculture" ? "서브컬처·굿즈 전문점" : "카페·베이커리");
+      }
+
+      // 12) Determine Smart Day Assignment (Day 1~4 based on real location)
+      const smartDay = assignSmartDay(lat, lng, area, `${extractedName} ${nominatimAreaHint}`);
+
+      // 13) Finalize Place Name, Opening Hours, One-Line Summary (subCategory), and Review-based Description
+      const finalName = extractedName || (kbMatch ? kbMatch.name : (addressSummary ? `${addressSummary} 스팟` : "구글맵 지정 장소"));
+      if (!hours) {
+        hours = getSmartDefaultHoursBySubCategory(subCategory, cat, finalName);
+      }
+      const stay = kbMatch ? kbMatch.stay : (cat === "food" ? 65 : cat === "cafe" ? 50 : 60);
+
+      // One-line summary: exact Google Maps business type (e.g. "튀김요리 전문점" or "튀김요리 전문점 (★4.4)")
+      const oneLineSummary = rating ? `${subCategory} (${rating})` : subCategory;
+
+      // Detailed description: based on Google Maps reviews
+      const reviewBasedDesc = geminiReviewDesc
+        ? `${oneLineSummary} · 💬 구글맵 리뷰 요약: ${geminiReviewDesc}`
+        : extractGoogleMapsReviews(fullHtml, jinaText, finalName, subCategory, area, rating);
+
+      const savedUrl = extractedUrl || finalResolvedUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(finalName + " " + area)}`;
 
       if (isCourse) {
         document.getElementById("cFormName").value = finalName;
@@ -825,27 +1964,28 @@
         document.getElementById("cFormCat").value = cat;
         document.getElementById("cFormHours").value = hours;
         document.getElementById("cFormStay").value = stay;
-        document.getElementById("cFormMemo").value = tip;
-        document.getElementById("cFormCustomUrl").value = extractedUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(finalName + " " + area)}`;
+        document.getElementById("cFormDay").value = String(smartDay);
+        document.getElementById("cFormMemo").value = oneLineSummary;
+        document.getElementById("cFormCustomUrl").value = savedUrl;
         document.getElementById("cFormLat").value = lat || "";
         document.getElementById("cFormLng").value = lng || "";
       } else {
         document.getElementById("sFormName").value = finalName;
         document.getElementById("sFormArea").value = area;
         document.getElementById("sFormCat").value = cat;
+        document.getElementById("sFormDay").value = String(smartDay);
         document.getElementById("sFormHours").value = hours;
-        document.getElementById("sFormSummary").value = tip;
-        document.getElementById("sFormDesc").value = `${finalName} (${area}) - 구글 지도 링크에서 추출한 추천 장소입니다.`;
-        document.getElementById("sFormTip").value = tip;
-        document.getElementById("sFormCustomUrl").value = extractedUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(finalName + " " + area)}`;
+        document.getElementById("sFormSummary").value = oneLineSummary;
+        document.getElementById("sFormDesc").value = reviewBasedDesc;
+        document.getElementById("sFormCustomUrl").value = savedUrl;
         document.getElementById("sFormLat").value = lat || "";
         document.getElementById("sFormLng").value = lng || "";
       }
 
       if (statusEl) {
-        statusEl.textContent = `✅ 추출 완료: [${finalName}] · 📍 ${area}${lat ? ` (${lat.toFixed(4)}, ${lng.toFixed(4)})` : ""}`;
+        statusEl.textContent = `✅ 추출 완료: [${finalName}] · ${oneLineSummary} · 🕒 ${hours} · 📍 ${area} · DAY ${smartDay}`;
       }
-      showToast(`📍 '${finalName}' (${area}) 정보가 자동 입력되었습니다!`);
+      showToast(`📍 '${finalName}' (${oneLineSummary} · ${hours}) 추출 완료!`);
     }
 
     function openCustomOrSearchMap(urlInputId, nameInputId, areaInputId) {
@@ -873,82 +2013,115 @@
 
       if (msgEl && isCourse) {
         msgEl.classList.remove("hidden");
-        msgEl.textContent = `🤖 Gemini AI가 '${q}' 정보를 실시간 검색 중...`;
+        msgEl.textContent = `🔍 '${q}' 구글맵 업종·영업시간·리뷰 정보를 검색 중...`;
       }
 
-      // Check built-in KB first
+      // 1) Check built-in KB first
       const lower = q.toLowerCase();
       const matched = FALLBACK_PLACE_DB.find(p => p.keys.some(k => lower.includes(k)) || p.name.toLowerCase().includes(lower));
       if (matched) {
-        applyAutoFillResult(isCourse, matched);
-        if (msgEl) msgEl.textContent = `✅ '${matched.name}' 정보 자동 입력 완료!`;
+        const smartDay = assignSmartDay(null, null, matched.area, matched.name);
+        const subCat = translateBusinessTypeToKorean("", matched.name, {}) || matched.tip;
+        applyAutoFillResult(isCourse, Object.assign({}, matched, {
+          day: smartDay,
+          summary: subCat,
+          desc: matched.tip
+        }));
+        if (msgEl) msgEl.textContent = `✅ '${matched.name}' (${matched.area} · DAY ${smartDay}) 자동 입력 완료!`;
         return;
       }
 
-      // Try Gemini AI API if key exists
-      const apiKey = (cfg.geminiKey || DEFAULT_GEMINI_KEY).trim();
-      if (apiKey) {
-        try {
-          const prompt = `도쿄에 있는 장소 "${q}"에 대해 JSON 형식으로 다음 정보를 알려줘. 키는 area(동네 또는 역 이름, 예: 아키하바라), cat(food, subculture, vintage, cafe 중 하나), hours(영업시간), stay(추천 체류시간 분 숫자), tip(한 줄 꿀팁 요약)으로 해줘. JSON만 출력해.`;
-          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-          });
-          const data = await res.json();
-          const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-          const jsonMatch = text.match(/\{[\s\S]*\}/);
-          if (jsonMatch) {
-            const parsed = JSON.parse(jsonMatch[0]);
-            applyAutoFillResult(isCourse, {
-              name: q,
-              area: parsed.area || "도쿄",
-              cat: parsed.cat || "subculture",
-              hours: parsed.hours || "11:00 ~ 20:00",
-              stay: parseInt(parsed.stay, 10) || 60,
-              tip: parsed.tip || "도쿄 추천 방문 스팟"
-            });
-            if (msgEl) msgEl.textContent = `✨ Gemini AI 검색 성공!`;
-            return;
-          }
-        } catch (e) {}
-      }
+      // 2) Query OpenStreetMap Nominatim + Yahoo! Japan / Bing / DuckDuckGo enrichment
+      try {
+        const [sRes, enriched] = await Promise.all([
+          fetchWithTimeout(`https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(q + " Tokyo")}&viewbox=139.0,36.0,140.5,35.0&bounded=0&limit=2&addressdetails=1&extratags=1`, {
+            headers: { "Accept-Language": "ko,ja,en" }
+          }, 5000).catch(() => null),
+          fetchGooglePlaceKnowledgeEnrichment(q, "")
+        ]);
 
-      // Fallback area guessing
-      let guessedArea = currentDay === 1 ? "고엔지" : currentDay === 2 ? "가마쿠라" : "아키하바라";
-      if (q.includes("신주쿠")) guessedArea = "신주쿠";
-      else if (q.includes("시부야")) guessedArea = "시부야";
-      else if (q.includes("아키바") || q.includes("아키하바라")) guessedArea = "아키하바라";
-      else if (q.includes("진보초")) guessedArea = "진보초";
+        let lat = null, lng = null, addrHint = "", osmTags = {}, osmOh = "";
+        if (sRes && sRes.ok) {
+          const sArr = await sRes.json();
+          if (Array.isArray(sArr) && sArr.length > 0) {
+            const top = sArr[0];
+            lat = parseFloat(top.lat);
+            lng = parseFloat(top.lon);
+            const addr = top.address || {};
+            addrHint = `${addr.quarter || ""} ${addr.suburb || ""} ${addr.neighbourhood || ""} ${addr.city_district || ""} ${top.display_name || ""}`;
+            osmTags = Object.assign({ category: top.category, type: top.type }, top.extratags || {});
+            if (top.extratags?.opening_hours) osmOh = formatOsmOpeningHours(top.extratags.opening_hours);
+          }
+        }
+
+        const area = findNearestTokyoHub(lat, lng, `${q} ${addrHint}`) || "도쿄";
+        const subCategory = enriched.subCategory || translateBusinessTypeToKorean("", `${q} ${addrHint}`, osmTags) || "추천 방문 스팟";
+        const cat = classifySpotCategory(`${q} ${addrHint}`, osmTags, subCategory) || "food";
+        const hours = enriched.hours || osmOh || getSmartDefaultHoursBySubCategory(subCategory, cat, q);
+        const smartDay = assignSmartDay(lat, lng, area, `${q} ${addrHint}`);
+        const summary = enriched.rating ? `${subCategory} (${enriched.rating})` : subCategory;
+        const desc = extractGoogleMapsReviews("", enriched.reviewText || "", q, subCategory, area, enriched.rating);
+
+        applyAutoFillResult(isCourse, {
+          name: q,
+          area,
+          cat,
+          hours,
+          stay: cat === "food" ? 65 : 60,
+          day: smartDay,
+          lat,
+          lng,
+          summary,
+          desc
+        });
+        if (msgEl) msgEl.textContent = `✅ '${q}' (${summary} · ${area} · DAY ${smartDay}) 입력 완료!`;
+        return;
+      } catch (e) {}
+
+      // 3) Keyword-based smart fallback
+      const guessedArea = findNearestTokyoHub(null, null, q) || (currentDay === 1 ? "고엔지" : currentDay === 2 ? "가마쿠라" : "도쿄");
+      const subCategory = translateBusinessTypeToKorean("", q, {}) || "추천 스팟";
+      const guessedCat = classifySpotCategory(q, {}, subCategory) || "food";
+      const smartDay = assignSmartDay(null, null, guessedArea, q);
 
       applyAutoFillResult(isCourse, {
         name: q,
         area: guessedArea,
-        cat: "subculture",
-        hours: "11:00 ~ 20:00",
+        cat: guessedCat,
+        hours: getSmartDefaultHoursBySubCategory(subCategory, guessedCat, q),
         stay: 60,
-        tip: `${guessedArea} 주변 방문 스팟`
+        day: smartDay,
+        summary: subCategory,
+        desc: `${guessedArea}에 위치한 ${subCategory}입니다.`
       });
-      if (msgEl) msgEl.textContent = `💡 '${guessedArea}' 기본 정보로 자동 세팅했습니다!`;
+      if (msgEl) msgEl.textContent = `💡 '${guessedArea}' (${subCategory}) 정보로 자동 분류되었습니다!`;
     }
 
     function applyAutoFillResult(isCourse, data) {
+      const summaryText = data.summary || data.tip || "";
+      const descText = data.desc || data.tip || summaryText;
       if (isCourse) {
         document.getElementById("cFormName").value = data.name;
         document.getElementById("cFormArea").value = data.area;
         document.getElementById("cFormCat").value = data.cat;
         document.getElementById("cFormHours").value = data.hours;
         document.getElementById("cFormStay").value = data.stay;
-        document.getElementById("cFormMemo").value = data.tip;
+        if (data.day) document.getElementById("cFormDay").value = String(data.day);
+        if (data.lat) document.getElementById("cFormLat").value = data.lat;
+        if (data.lng) document.getElementById("cFormLng").value = data.lng;
+        document.getElementById("cFormMemo").value = summaryText;
       } else {
         document.getElementById("sFormName").value = data.name;
         document.getElementById("sFormArea").value = data.area;
         document.getElementById("sFormCat").value = data.cat;
+        if (data.day) document.getElementById("sFormDay").value = String(data.day);
+        if (data.lat) document.getElementById("sFormLat").value = data.lat;
+        if (data.lng) document.getElementById("sFormLng").value = data.lng;
         document.getElementById("sFormHours").value = data.hours;
-        document.getElementById("sFormSummary").value = data.tip;
-        document.getElementById("sFormTip").value = data.tip;
+        document.getElementById("sFormSummary").value = summaryText;
+        document.getElementById("sFormDesc").value = descText;
       }
-      showToast("✨ AI 검색 결과가 입력되었습니다!");
+      showToast(`✨ '${data.name}' (${summaryText || data.area}) 정보가 입력되었습니다!`);
     }
 
     function searchGoogleHours(inputId) {
@@ -1335,7 +2508,6 @@
       document.getElementById("sdName").textContent = s.name;
       document.getElementById("sdSummary").textContent = s.summary;
       document.getElementById("sdDesc").textContent = s.desc || s.summary;
-      document.getElementById("sdTip").textContent = s.tip || "현장 상황을 확인하세요.";
       document.getElementById("sdHours").textContent = s.hours || "영업시간 참조";
 
       const starBtn = document.getElementById("sdStarBtn");
@@ -1376,7 +2548,7 @@
           hours: s.hours || "",
           stay: 60,
           res: s.phone ? "call_needed" : "none",
-          memo: s.tip || s.summary,
+          memo: s.summary || "",
           customMapUrl: s.customMapUrl || "",
           lat: s.lat || null,
           lng: s.lng || null,
@@ -1408,11 +2580,10 @@
       document.getElementById("sFormParseStatus").classList.add("hidden");
       document.getElementById("sFormName").value = s ? s.name : "";
       document.getElementById("sFormDay").value = s ? String(s.day) : String(currentDay);
-      document.getElementById("sFormCat").value = s ? s.cat : "subculture";
+      document.getElementById("sFormCat").value = s ? s.cat : "food";
       document.getElementById("sFormArea").value = s ? s.area : "";
       document.getElementById("sFormSummary").value = s ? s.summary : "";
-      document.getElementById("sFormDesc").value = s ? s.desc : "";
-      document.getElementById("sFormTip").value = s ? s.tip : "";
+      document.getElementById("sFormDesc").value = s ? (s.desc || s.summary || "") : "";
       document.getElementById("sFormHours").value = s ? s.hours : "";
       document.getElementById("sFormCustomUrl").value = s && s.customMapUrl ? s.customMapUrl : "";
       openModal("spotFormModal");
@@ -1431,7 +2602,6 @@
         name: document.getElementById("sFormName").value.trim(),
         summary: document.getElementById("sFormSummary").value.trim(),
         desc: document.getElementById("sFormDesc").value.trim(),
-        tip: document.getElementById("sFormTip").value.trim(),
         hours: document.getElementById("sFormHours").value.trim(),
         customMapUrl: document.getElementById("sFormCustomUrl").value.trim(),
         lat: !isNaN(latVal) ? latVal : null,
@@ -1488,31 +2658,6 @@
 
       closeModal("daySwapModal");
       saveAndSync(`🔄 DAY ${currentDay} ↔ DAY ${target} 일정 스왑 완료!`);
-    }
-
-    function saveSpotForm(e) {
-      e.preventDefault();
-      const id = document.getElementById("sFormId").value;
-      const obj = {
-        id: id || "s_" + Date.now(),
-        day: parseInt(document.getElementById("sFormDay").value, 10) || currentDay,
-        cat: document.getElementById("sFormCat").value,
-        area: document.getElementById("sFormArea").value.trim(),
-        name: document.getElementById("sFormName").value.trim(),
-        summary: document.getElementById("sFormSummary").value.trim(),
-        desc: document.getElementById("sFormDesc").value.trim(),
-        tip: document.getElementById("sFormTip").value.trim(),
-        hours: document.getElementById("sFormHours").value.trim(),
-        starred: true
-      };
-      if (id) {
-        const idx = state.spots.findIndex(x => x.id === id);
-        if (idx >= 0) state.spots[idx] = obj;
-      } else {
-        state.spots.unshift(obj);
-      }
-      closeModal("spotFormModal");
-      saveAndSync(`'${obj.name}' 도감 저장 완료!`);
     }
 
     // =========================================================================
